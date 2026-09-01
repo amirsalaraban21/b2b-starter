@@ -4,7 +4,7 @@ import { Heading, Text } from "@medusajs/ui"
 const EmptyCartMessage = () => {
   return (
     <div
-      className="py-48 px-2 flex flex-col justify-center items-start"
+      className="my-8 rounded-2xl border border-dashed border-ui-border-base py-24 px-6 flex flex-col justify-center items-start"
       data-testid="empty-cart-message"
     >
       <Heading

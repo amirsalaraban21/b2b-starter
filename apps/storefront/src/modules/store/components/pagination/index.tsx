@@ -119,6 +119,5 @@ export function Pagination({
         <button className="hidden xsmall:inline-flex h-10 items-center rounded-md px-3 text-sm disabled:opacity-40 hover:bg-ui-bg-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700" disabled={page >= totalPages} onClick={() => handlePageChange(page + 1)}>{locale === "fa" ? "بعدی" : "Next"}</button>
       </div>
     </nav>
-    </div>
   )
 }
