@@ -5,6 +5,8 @@ import { Pagination } from "@/modules/store/components/pagination"
 import { SortOptions } from "@/modules/store/components/refinement-list/sort-products"
 import { B2BCustomer } from "@/types"
 import { Container } from "@medusajs/ui"
+import { cookies } from "next/headers"
+import { getLocale } from "@/lib/i18n"
 
 const PRODUCT_LIMIT = 12
 
@@ -55,6 +57,7 @@ export default async function PaginatedProducts({
   }
 
   const region = await getRegion(countryCode)
+  const locale = getLocale((await cookies()).get("earmed-locale")?.value)
 
   if (!region) {
     return null
@@ -87,8 +90,8 @@ export default async function PaginatedProducts({
             )
           })
         ) : (
-          <Container className="text-center text-sm text-neutral-500">
-            No products found for this category.
+          <Container className="rounded-xl border border-dashed border-ui-border-base p-8 text-center text-sm text-neutral-500">
+            {locale === "fa" ? "محصولی برای این دسته‌بندی یافت نشد." : "No products were found for this category."}
           </Container>
         )}
       </ul>

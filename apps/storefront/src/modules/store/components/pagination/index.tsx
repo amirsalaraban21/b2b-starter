@@ -1,6 +1,7 @@
 "use client"
 
 import { clx } from "@medusajs/ui"
+import { getLocale, messages } from "@/lib/i18n"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 export function Pagination({
@@ -15,6 +16,8 @@ export function Pagination({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const locale = getLocale(typeof document === "undefined" ? undefined : document.documentElement.lang)
+  const t = messages[locale]
 
   // Helper function to generate an array of numbers within a range
   const arrayRange = (start: number, stop: number) =>
@@ -24,7 +27,7 @@ export function Pagination({
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams)
     params.set("page", newPage.toString())
-    router.push(`${pathname}?${params.toString()}`)
+    router.push(`${pathname}?${params.toString()}`, { scroll: true })
   }
 
   // Function to render a page button
@@ -35,10 +38,12 @@ export function Pagination({
   ) => (
     <button
       key={p}
-      className={clx("txt-xlarge-plus text-ui-fg-muted", {
-        "text-ui-fg-base hover:text-ui-fg-subtle": isCurrent,
+      className={clx("grid h-10 min-w-10 place-items-center rounded-md px-2 text-sm text-ui-fg-muted transition hover:bg-ui-bg-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700", {
+        "bg-teal-700 text-white hover:bg-teal-800": isCurrent,
       })}
       disabled={isCurrent}
+      aria-current={isCurrent ? "page" : undefined}
+      aria-label={`${locale === "fa" ? "صفحه" : "Page"} ${p}`}
       onClick={() => handlePageChange(p)}
     >
       {label}
@@ -107,8 +112,13 @@ export function Pagination({
 
   // Render the component
   return (
-    <div className="flex justify-center w-full mt-12">
-      <div className="flex gap-3 items-end" data-testid={dataTestid}>{renderPageButtons()}</div>
+    <nav className="flex justify-center w-full mt-10" aria-label={locale === "fa" ? "صفحه‌بندی محصولات" : "Product pagination"} dir={locale === "fa" ? "rtl" : "ltr"}>
+      <div className="flex max-w-full items-center gap-1" data-testid={dataTestid}>
+        <button className="hidden xsmall:inline-flex h-10 items-center rounded-md px-3 text-sm disabled:opacity-40 hover:bg-ui-bg-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700" disabled={page <= 1} onClick={() => handlePageChange(page - 1)}>{locale === "fa" ? "قبلی" : "Previous"}</button>
+        {renderPageButtons()}
+        <button className="hidden xsmall:inline-flex h-10 items-center rounded-md px-3 text-sm disabled:opacity-40 hover:bg-ui-bg-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700" disabled={page >= totalPages} onClick={() => handlePageChange(page + 1)}>{locale === "fa" ? "بعدی" : "Next"}</button>
+      </div>
+    </nav>
     </div>
   )
 }

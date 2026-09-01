@@ -119,9 +119,11 @@ const ImageGallery = ({ product }: ImageGalleryProps) => {
             >
               <Image
                 src={image.url}
-                alt={(image.metadata?.alt as string) || ""}
-                height={32}
-                width={32}
+              alt={(image.metadata?.alt as string) || ""}
+              height={32}
+              width={32}
+              sizes="32px"
+              loading="lazy"
                 className={clx(
                   index === selectedImageIndex ? "opacity-100" : "opacity-40",
                   "hover:opacity-100 object-contain"
