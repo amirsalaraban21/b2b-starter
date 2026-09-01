@@ -38,6 +38,9 @@ export async function NavigationHeader() {
                 </li>
               </ul>
             </nav>
+            <LocalizedClientLink href="/store" className="small:hidden min-h-9 rounded-md px-2 py-2 text-xs font-semibold text-teal-700 hover:bg-ui-bg-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700">
+              {t.products}
+            </LocalizedClientLink>
           </div>
           <div className="flex justify-end items-center gap-2">
             <div className="relative mr-2 hidden small:inline-flex">

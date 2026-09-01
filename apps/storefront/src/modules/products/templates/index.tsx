@@ -26,13 +26,13 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   }
 
   return (
-    <div className="flex flex-col gap-y-2 my-2">
+    <div className="flex flex-col gap-y-6 py-4 small:py-8">
       <div
-        className="content-container grid grid-cols-1 md:grid-cols-2 gap-2 w-full h-fit"
+        className="content-container grid grid-cols-1 gap-4 w-full h-fit small:grid-cols-2"
         data-testid="product-container"
       >
         <ImageGallery product={product} />
-        <div className="flex flex-col bg-neutral-100 w-full gap-6 items-start justify-center small:p-20 p-6 h-full">
+        <div className="flex flex-col rounded-2xl bg-neutral-100 w-full gap-6 items-start justify-center small:p-12 p-6 h-full">
           <ProductInfo product={product} />
           <Suspense
             fallback={<ProductActions product={product} region={region} />}

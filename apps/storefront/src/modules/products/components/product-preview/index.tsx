@@ -28,12 +28,12 @@ export default async function ProductPreview({
   }, 0)
 
   return (
-    <LocalizedClientLink href={`/products/${product.handle}`} className="group">
+    <LocalizedClientLink href={`/products/${product.handle}`} className="group block h-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
       <div
         data-testid="product-wrapper"
-        className="flex flex-col gap-4 relative aspect-[3/5] w-full overflow-hidden p-4 bg-white shadow-borders-base rounded-lg group-hover:shadow-[0_0_0_4px_rgba(0,0,0,0.1)] transition-shadow ease-in-out duration-150"
+        className="flex h-full min-h-[320px] flex-col gap-4 relative w-full overflow-hidden p-4 bg-white shadow-borders-base rounded-xl group-hover:-translate-y-1 group-hover:shadow-[0_8px_24px_rgba(15,118,110,0.12)] transition duration-200"
       >
-        <div className="w-full h-full p-10">
+        <div className="aspect-square w-full p-6">
           <Thumbnail
             thumbnail={product.thumbnail}
             images={product.images}
@@ -42,14 +42,13 @@ export default async function ProductPreview({
           />
         </div>
         <div className="flex flex-col txt-compact-medium">
-          <Text className="text-neutral-600 text-xs">BRAND</Text>
+          {typeof product.metadata?.brand === "string" && <Text className="text-neutral-600 text-xs">{product.metadata.brand}</Text>}
           <Text className="text-ui-fg-base" data-testid="product-title">
             {product.title}
           </Text>
         </div>
         <div className="flex flex-col gap-0">
           {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
-          <Text className="text-neutral-600 text-[0.6rem]">Excl. VAT</Text>
         </div>
         <div className="flex justify-between">
           <div className="flex flex-row gap-1 items-center">

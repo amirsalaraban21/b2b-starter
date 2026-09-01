@@ -1,8 +1,5 @@
-import FeaturedProducts from "@/modules/home/components/featured-products"
-import Hero from "@/modules/home/components/hero"
-import SkeletonFeaturedProducts from "@/modules/skeletons/templates/skeleton-featured-products"
+import StorefrontHome from "@/modules/home/components/storefront-home"
 import { Metadata } from "next"
-import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: "Medusa Next.js Starter Template",
@@ -18,11 +15,6 @@ export default async function Home(props: {
   const { countryCode } = params
 
   return (
-    <div className="flex flex-col gap-y-2 m-2">
-      <Hero />
-      <Suspense fallback={<SkeletonFeaturedProducts />}>
-        <FeaturedProducts countryCode={countryCode} />
-      </Suspense>
-    </div>
+    <StorefrontHome countryCode={countryCode} />
   )
 }
