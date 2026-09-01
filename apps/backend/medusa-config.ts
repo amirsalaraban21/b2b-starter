@@ -3,6 +3,7 @@ import path from "path"
 import { QUOTE_MODULE } from "./src/modules/quote"
 import { APPROVAL_MODULE } from "./src/modules/approval"
 import { COMPANY_MODULE } from "./src/modules/company"
+import { PROFESSIONAL_APPLICATION_MODULE } from "./src/modules/professional-application"
 import { loadEnv, defineConfig } from "@medusajs/framework/utils"
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd())
@@ -46,6 +47,9 @@ module.exports = defineConfig({
 
     [APPROVAL_MODULE]: {
       resolve: "./modules/approval",
+    },
+    [PROFESSIONAL_APPLICATION_MODULE]: {
+      resolve: "./modules/professional-application",
     },
   },
 })

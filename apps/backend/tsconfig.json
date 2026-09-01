@@ -14,8 +14,6 @@
     "inlineSourceMap": true,
     "outDir": "./.medusa/server",
     "rootDir": "./",
-    "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
     "jsx": "react-jsx",
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
