@@ -4,57 +4,310 @@ import { getLocale, messages } from "@/lib/i18n"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import ProductPreview from "@/modules/products/components/product-preview"
 import { cookies } from "next/headers"
+import Image from "next/image"
 
 const categoryLabels = {
-  fa: ["تجهیزات معاینه گوش", "لوازم ادیولوژی", "تجهیزات کلینیکی", "لوازم مصرفی", "قطعات و جانبی"],
-  en: ["Ear examination", "Audiology supplies", "Clinical equipment", "Consumables", "Parts & accessories"],
+  fa: [
+    "تجهیزات معاینه گوش",
+    "تجهیزات ادیولوژی",
+    "تجهیزات کلینیکی",
+    "لوازم مصرفی",
+    "قطعات و لوازم جانبی",
+  ],
+  en: [
+    "Ear examination equipment",
+    "Audiology equipment",
+    "Clinical equipment",
+    "Consumables",
+    "Parts & accessories",
+  ],
 }
 
-const benefits = {
-  fa: ["محصولات تخصصی", "پشتیبانی حرفه‌ای", "خرید امن", "پردازش سریع سفارش"],
-  en: ["Specialist products", "Professional support", "Secure purchasing", "Fast order processing"],
+const copy = {
+  fa: {
+    heroKicker: "فروشگاه تخصصی تجهیزات گوش و ادیولوژی",
+    heroTitle: "ابزار تخصصی برای معاینه، ارزیابی و کار کلینیکی",
+    heroBody:
+      "تجهیزات معاینه گوش، ابزار ادیولوژی و اقلام مصرفی برای متخصصان و مراکز درمانی.",
+    shopNow: "مشاهده محصولات",
+    professional: "خرید حرفه‌ای",
+    browse: "دسته‌بندی محصولات",
+    browseLead: "مستقیم به بخش مورد نیازتان بروید.",
+    selected: "محصولات منتخب",
+    allProducts: "همه محصولات",
+    examTitle: "تجهیزات معاینه گوش",
+    examBody:
+      "از اتوسکوپ و چراغ معاینه تا لوازم مورد نیاز برای بررسی روزمره گوش؛ یک بخش متمرکز برای ابزارهای اصلی معاینه.",
+    examCta: "مشاهده تجهیزات معاینه",
+    professionalEyebrow: "برای کلینیک‌ها و متخصصان",
+    professionalTitle: "خرید حرفه‌ای و دریافت پیش‌فاکتور",
+    professionalBody:
+      "برای خریدهای سازمانی، سفارش‌های حرفه‌ای و درخواست پیش‌فاکتور از مسیر حساب حرفه‌ای اقدام کنید.",
+    professionalCta: "ثبت درخواست حرفه‌ای",
+    quoteCta: "درخواست پیش‌فاکتور",
+    catalogTitle: "کاتالوگ تخصصی EarMed",
+    catalogBody:
+      "فروشگاه به‌جای یک صفحه تبلیغاتی، حول محصول ساخته شده است: دسته‌بندی، مشخصات، قیمت و مسیر خرید در دسترس شماست.",
+    catalogCta: "ورود به فروشگاه",
+  },
+  en: {
+    heroKicker: "Specialist ear & audiology equipment store",
+    heroTitle: "Professional tools for examination, assessment and clinic work",
+    heroBody:
+      "Ear examination equipment, audiology tools and consumables for specialists and care centers.",
+    shopNow: "Shop products",
+    professional: "Professional purchasing",
+    browse: "Browse departments",
+    browseLead: "Go directly to the equipment you need.",
+    selected: "Selected products",
+    allProducts: "View all products",
+    examTitle: "Ear examination equipment",
+    examBody:
+      "From otoscopes and examination lights to everyday ear-care accessories, this department keeps the core examination tools together.",
+    examCta: "Browse examination equipment",
+    professionalEyebrow: "For clinics and professionals",
+    professionalTitle: "Professional purchasing and quote requests",
+    professionalBody:
+      "Use a professional account for organizational purchasing, larger orders and quote requests.",
+    professionalCta: "Apply for professional access",
+    quoteCta: "Request a quote",
+    catalogTitle: "The EarMed specialist catalog",
+    catalogBody:
+      "The storefront is built around products rather than marketing blocks: departments, specifications, pricing and purchasing stay close at hand.",
+    catalogCta: "Enter the store",
+  },
 }
 
-export default async function StorefrontHome({ countryCode }: { countryCode: string }) {
+export default async function StorefrontHome({
+  countryCode,
+}: {
+  countryCode: string
+}) {
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
   const t = messages[locale]
+  const c = copy[locale]
   const region = await getRegion(countryCode)
   const products = region
-    ? (await listProducts({ countryCode, queryParams: { limit: 8 } })).response.products
+    ? (await listProducts({ countryCode, queryParams: { limit: 8 } })).response
+        .products
     : []
 
   return (
-    <div className="bg-ui-bg-base">
-      <section className="relative overflow-hidden border-b border-ui-border-base bg-gradient-to-br from-teal-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-900 dark:to-teal-950">
-        <div className="content-container grid min-h-[500px] items-center gap-10 py-16 small:grid-cols-[1.15fr_.85fr] small:py-24">
-          <div className="max-w-2xl">
-            <p className="mb-4 text-sm font-semibold text-teal-700">{t.heroEyebrow}</p>
-            <h1 className="text-4xl font-semibold leading-tight text-ui-fg-base small:text-6xl">{t.heroTitle}</h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-ui-fg-subtle">{t.heroDescription}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <LocalizedClientLink href="/store" className="rounded-lg bg-teal-700 px-5 py-3 font-medium text-white transition hover:bg-teal-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">{t.exploreProducts}</LocalizedClientLink>
-              <LocalizedClientLink href="/account" className="rounded-lg border border-ui-border-base px-5 py-3 font-medium text-ui-fg-base transition hover:bg-ui-bg-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">{locale === "fa" ? "خرید سازمانی و کلینیکی" : "Professional & clinic purchasing"}</LocalizedClientLink>
+    <div className="bg-ui-bg-base text-ui-fg-base">
+      <section className="border-b border-ui-border-base bg-slate-950 text-white">
+        <div className="content-container grid min-h-[520px] small:grid-cols-[.9fr_1.1fr]">
+          <div className="relative min-h-[300px] overflow-hidden small:min-h-[520px]">
+            <Image
+              src="/hero-image.jpg"
+              alt={locale === "fa" ? "تجهیزات تخصصی ادیولوژی" : "Specialist audiology equipment"}
+              fill
+              priority
+              sizes="(max-width: 767px) 100vw, 48vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-transparent" />
+          </div>
+
+          <div className="flex items-center px-6 py-12 small:px-12 large:px-16">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-300">
+                {c.heroKicker}
+              </p>
+              <h1 className="mt-5 text-4xl font-semibold leading-[1.2] small:text-5xl large:text-6xl">
+                {c.heroTitle}
+              </h1>
+              <p className="mt-6 max-w-xl text-base leading-8 text-slate-300 small:text-lg">
+                {c.heroBody}
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <LocalizedClientLink
+                  href="/store"
+                  className="bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-teal-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  {c.shopNow}
+                </LocalizedClientLink>
+                <LocalizedClientLink
+                  href="/account"
+                  className="border border-slate-600 px-6 py-3 text-sm font-semibold text-white transition hover:border-teal-300 hover:text-teal-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  {c.professional}
+                </LocalizedClientLink>
+              </div>
             </div>
           </div>
-          <div className="relative mx-auto grid aspect-square w-full max-w-md place-items-center rounded-3xl border border-teal-100 bg-white/70 p-10 shadow-sm dark:border-slate-700 dark:bg-slate-800/70">
-            <div className="grid h-48 w-48 place-items-center rounded-full bg-teal-700 text-7xl text-white" aria-hidden="true">◖</div>
-            <span className="absolute bottom-8 rounded-full bg-teal-50 px-4 py-2 text-sm font-medium text-teal-800 dark:bg-teal-950 dark:text-teal-100">EarMed Store</span>
+        </div>
+      </section>
+
+      <section className="border-b border-ui-border-base">
+        <div className="content-container py-10 small:py-12">
+          <div className="mb-6 flex items-end justify-between gap-6">
+            <div>
+              <p className="text-sm font-semibold text-teal-700 dark:text-teal-300">
+                {c.browse}
+              </p>
+              <p className="mt-1 text-sm text-ui-fg-subtle">{c.browseLead}</p>
+            </div>
+            <LocalizedClientLink
+              href="/store"
+              className="hidden text-sm font-semibold text-ui-fg-base hover:text-teal-700 small:inline"
+            >
+              {c.allProducts} ←
+            </LocalizedClientLink>
+          </div>
+
+          <div className="grid border-y border-ui-border-base xsmall:grid-cols-2 small:grid-cols-5">
+            {categoryLabels[locale].map((label, index) => (
+              <LocalizedClientLink
+                key={label}
+                href="/store"
+                className="group flex min-h-28 items-end border-b border-ui-border-base p-4 transition hover:bg-ui-bg-subtle xsmall:[&:nth-child(odd)]:border-e small:min-h-32 small:border-b-0 small:border-e small:last:border-e-0"
+              >
+                <div>
+                  <span className="mb-4 block text-xs font-medium text-teal-700 dark:text-teal-300">
+                    0{index + 1}
+                  </span>
+                  <span className="text-sm font-semibold leading-6 group-hover:text-teal-700">
+                    {label}
+                  </span>
+                </div>
+              </LocalizedClientLink>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="content-container py-14 small:py-20">
-        <div className="mb-8 flex items-end justify-between gap-4"><div><p className="text-sm font-medium text-teal-700">{locale === "fa" ? "دسته‌بندی‌ها" : "Categories"}</p><h2 className="mt-2 text-3xl font-semibold">{locale === "fa" ? "برای هر محیط درمانی" : "For every care setting"}</h2></div><LocalizedClientLink href="/store" className="text-sm font-medium text-teal-700 hover:underline">{t.exploreProducts}</LocalizedClientLink></div>
-        <div className="grid gap-4 xsmall:grid-cols-2 small:grid-cols-5">
-          {categoryLabels[locale].map((label, index) => <LocalizedClientLink key={label} href="/store" className="group min-h-36 rounded-2xl border border-ui-border-base bg-ui-bg-subtle p-5 transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700"><span className="mb-8 block text-2xl text-teal-700" aria-hidden="true">{["◉", "◌", "✦", "□", "◇"][index]}</span><span className="font-medium text-ui-fg-base">{label}</span></LocalizedClientLink>)}
+      {products.length > 0 && region ? (
+        <section className="content-container py-12 small:py-16">
+          <div className="mb-7 flex items-center justify-between gap-6">
+            <h2 className="text-2xl font-semibold small:text-3xl">{c.selected}</h2>
+            <LocalizedClientLink
+              href="/store"
+              className="text-sm font-semibold text-teal-700 hover:underline dark:text-teal-300"
+            >
+              {c.allProducts}
+            </LocalizedClientLink>
+          </div>
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-8 small:grid-cols-4 small:gap-x-6">
+            {products.slice(0, 4).map((product) => (
+              <li key={product.id}>
+                <ProductPreview product={product} region={region} isFeatured />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      <section className="border-y border-ui-border-base bg-ui-bg-subtle">
+        <div className="content-container grid small:grid-cols-[1.15fr_.85fr]">
+          <div className="relative min-h-[340px] overflow-hidden small:min-h-[460px]">
+            <Image
+              src="/hero-image.jpg"
+              alt={locale === "fa" ? "ابزار معاینه گوش" : "Ear examination tools"}
+              fill
+              sizes="(max-width: 767px) 100vw, 58vw"
+              className="object-cover object-left"
+            />
+          </div>
+          <div className="flex items-center px-6 py-10 small:px-10 large:px-14">
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700 dark:text-teal-300">
+                01 / EAR EXAMINATION
+              </span>
+              <h2 className="mt-4 text-3xl font-semibold leading-tight small:text-4xl">
+                {c.examTitle}
+              </h2>
+              <p className="mt-5 max-w-lg leading-7 text-ui-fg-subtle">
+                {c.examBody}
+              </p>
+              <LocalizedClientLink
+                href="/store"
+                className="mt-7 inline-flex border-b border-ui-fg-base pb-1 text-sm font-semibold transition hover:border-teal-700 hover:text-teal-700"
+              >
+                {c.examCta}
+              </LocalizedClientLink>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="border-y border-ui-border-base bg-ui-bg-subtle"><div className="content-container py-14 small:py-20"><div className="mb-8"><p className="text-sm font-medium text-teal-700">{locale === "fa" ? "محصولات منتخب" : "Featured products"}</p><h2 className="mt-2 text-3xl font-semibold">{locale === "fa" ? "محصولات پرمراجعه" : "Popular products"}</h2></div>{products.length && region ? <ul className="grid grid-cols-2 gap-3 small:grid-cols-4 small:gap-5">{products.map(product => <li key={product.id}><ProductPreview product={product} region={region} isFeatured /></li>)}</ul> : <p className="rounded-xl border border-dashed border-ui-border-base p-8 text-ui-fg-subtle">{locale === "fa" ? "محصولی برای نمایش موجود نیست." : "No products are available to display yet."}</p>}</div></section>
+      <section className="content-container py-12 small:py-16">
+        <div className="grid overflow-hidden bg-teal-900 text-white small:grid-cols-[1fr_.72fr]">
+          <div className="px-7 py-10 small:px-12 small:py-14">
+            <p className="text-sm font-medium text-teal-200">{c.professionalEyebrow}</p>
+            <h2 className="mt-3 max-w-2xl text-3xl font-semibold leading-tight small:text-4xl">
+              {c.professionalTitle}
+            </h2>
+            <p className="mt-5 max-w-xl leading-7 text-teal-50/80">
+              {c.professionalBody}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <LocalizedClientLink
+                href="/account"
+                className="bg-white px-5 py-3 text-sm font-semibold text-teal-950 transition hover:bg-teal-50"
+              >
+                {c.professionalCta}
+              </LocalizedClientLink>
+              <LocalizedClientLink
+                href="/account"
+                className="border border-teal-600 px-5 py-3 text-sm font-semibold text-white transition hover:border-teal-300"
+              >
+                {c.quoteCta}
+              </LocalizedClientLink>
+            </div>
+          </div>
+          <div className="hidden border-s border-teal-800 p-10 small:flex small:flex-col small:justify-between">
+            <span className="text-6xl font-light text-teal-400">02</span>
+            <div className="space-y-3 text-sm text-teal-100/80">
+              <p>{locale === "fa" ? "سفارش حرفه‌ای" : "Professional orders"}</p>
+              <p>{locale === "fa" ? "درخواست پیش‌فاکتور" : "Quote requests"}</p>
+              <p>{locale === "fa" ? "حساب کلینیک و سازمان" : "Clinic & organization accounts"}</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <section className="content-container py-14 small:py-20"><div className="grid gap-8 rounded-3xl bg-teal-800 p-8 text-white small:grid-cols-[1.1fr_.9fr] small:p-14"><div><p className="text-sm font-medium text-teal-100">{locale === "fa" ? "برای متخصصان" : "For professionals"}</p><h2 className="mt-3 text-3xl font-semibold">{locale === "fa" ? "خرید حرفه‌ای برای پزشکان و کلینیک‌ها" : "Professional purchasing for doctors and clinics"}</h2><p className="mt-4 max-w-xl leading-7 text-teal-50">{locale === "fa" ? "برای سفارش‌های عمده، درخواست پیش‌فاکتور و خرید سازمانی از مسیر حساب کاربری اقدام کنید." : "Use your account for bulk orders, quote requests and organization purchasing."}</p><LocalizedClientLink href="/account" className="mt-7 inline-block rounded-lg bg-white px-5 py-3 font-medium text-teal-800 hover:bg-teal-50">{locale === "fa" ? "ورود و خرید حرفه‌ای" : "Sign in for professional purchasing"}</LocalizedClientLink></div><ul className="grid content-center gap-4 text-teal-50">{[locale === "fa" ? "درخواست پیش‌فاکتور" : "Quote requests", locale === "fa" ? "سفارش عمده" : "Bulk orders", locale === "fa" ? "خرید سازمانی" : "Organization purchasing"].map(item => <li key={item} className="rounded-xl border border-teal-600 bg-teal-700/50 p-4">{item}</li>)}</ul></div></section>
+      {products.length > 4 && region ? (
+        <section className="border-y border-ui-border-base">
+          <div className="content-container py-12 small:py-16">
+            <div className="mb-7 flex items-center justify-between gap-6">
+              <h2 className="text-2xl font-semibold small:text-3xl">
+                {locale === "fa" ? "بیشتر از کاتالوگ" : "More from the catalog"}
+              </h2>
+              <LocalizedClientLink
+                href="/store"
+                className="text-sm font-semibold text-teal-700 hover:underline dark:text-teal-300"
+              >
+                {c.allProducts}
+              </LocalizedClientLink>
+            </div>
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-8 small:grid-cols-4 small:gap-x-6">
+              {products.slice(4, 8).map((product) => (
+                <li key={product.id}>
+                  <ProductPreview product={product} region={region} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ) : null}
 
-      <section className="border-t border-ui-border-base"><div className="content-container grid gap-4 py-12 xsmall:grid-cols-2 small:grid-cols-4">{benefits[locale].map((benefit, index) => <div key={benefit} className="rounded-xl p-4"><span className="text-xl text-teal-700">{["✓", "◌", "◈", "→"][index]}</span><h3 className="mt-3 font-semibold">{benefit}</h3><p className="mt-1 text-sm text-ui-fg-subtle">{locale === "fa" ? "جزئیات این بخش پیش از راه‌اندازی نهایی تکمیل می‌شود." : "Details for this area will be completed before launch."}</p></div>)}</div></section>
+      <section className="bg-slate-950 text-white">
+        <div className="content-container grid gap-8 py-12 small:grid-cols-[1fr_auto] small:items-end small:py-16">
+          <div>
+            <p className="text-sm font-medium text-teal-300">EarMed Store</p>
+            <h2 className="mt-3 max-w-2xl text-3xl font-semibold small:text-4xl">
+              {c.catalogTitle}
+            </h2>
+            <p className="mt-4 max-w-2xl leading-7 text-slate-400">{c.catalogBody}</p>
+          </div>
+          <LocalizedClientLink
+            href="/store"
+            className="inline-flex w-fit bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-teal-50"
+          >
+            {c.catalogCta}
+          </LocalizedClientLink>
+        </div>
+      </section>
     </div>
   )
 }
