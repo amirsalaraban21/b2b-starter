@@ -39,7 +39,7 @@ export default async function ProductPreview({
           {isAvailable ? (fa ? "موجود" : "In stock") : (fa ? "ناموجود" : "Unavailable")}
         </div>
         <div className="aspect-square w-full p-5 small:p-6">
-          <Thumbnail thumbnail={product.thumbnail} images={product.images} size="square" isFeatured={isFeatured} />
+          <Thumbnail thumbnail={product.thumbnail} images={product.images} productTitle={product.title} size="square" isFeatured={isFeatured} />
         </div>
       </LocalizedClientLink>
 
