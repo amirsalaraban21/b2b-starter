@@ -1,13 +1,13 @@
-import { clx } from "@medusajs/ui"
-import Image from "next/image"
-import React from "react"
+import { getDemoProductImage } from "@/lib/product-demo-images"
 import { HttpTypes } from "@medusajs/types"
-
+import { clx } from "@medusajs/ui"
+import React from "react"
 import PlaceholderImage from "@/modules/common/icons/placeholder-image"
 
 type ThumbnailProps = {
   thumbnail?: string | null
   images?: HttpTypes.StoreProductImage[] | null
+  productTitle?: string | null
   size?: "small" | "medium" | "large" | "full" | "square"
   isFeatured?: boolean
   className?: string
@@ -18,13 +18,15 @@ type ThumbnailProps = {
 const Thumbnail: React.FC<ThumbnailProps> = ({
   thumbnail,
   images,
+  productTitle,
   size = "small",
   isFeatured,
   className,
   "data-testid": dataTestid,
   type,
 }) => {
-  const initialImage = thumbnail || images?.[0]?.url
+  const fallback = thumbnail || images?.[0]?.url
+  const initialImage = getDemoProductImage(productTitle, fallback)
 
   return (
     <div
@@ -39,34 +41,22 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
       })}
       data-testid={dataTestid}
     >
-      <ImageOrPlaceholder image={initialImage} size={size} type={type} />
-    </div>
-  )
-}
-
-const ImageOrPlaceholder = ({
-  image,
-  size,
-  type,
-}: Pick<ThumbnailProps, "size" | "type"> & {
-  image?: string
-}) => {
-  return image ? (
-    <Image
-      src={image}
-      alt=""
-      className={clx("absolute inset-0 object-contain", {
-        "p-4": type === "full",
-        "p-2": type === "preview",
-      })}
-      draggable={false}
-      quality={50}
-      sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
-      fill
-    />
-  ) : (
-    <div className="w-full h-full absolute inset-0 flex items-center justify-center">
-      <PlaceholderImage size={size === "small" ? 16 : 24} />
+      {initialImage ? (
+        <img
+          src={initialImage}
+          alt={productTitle || ""}
+          className={clx("absolute inset-0 h-full w-full object-contain", {
+            "p-4": type === "full",
+            "p-2": type === "preview",
+          })}
+          draggable={false}
+          loading={isFeatured ? "eager" : "lazy"}
+        />
+      ) : (
+        <div className="absolute inset-0 flex h-full w-full items-center justify-center">
+          <PlaceholderImage size={size === "small" ? 16 : 24} />
+        </div>
+      )}
     </div>
   )
 }
