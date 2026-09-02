@@ -1,6 +1,6 @@
 import { listProducts } from "@/lib/data/products"
 import { getRegion } from "@/lib/data/regions"
-import { getLocale, messages } from "@/lib/i18n"
+import { getLocale } from "@/lib/i18n"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import ProductPreview from "@/modules/products/components/product-preview"
 import { cookies } from "next/headers"
@@ -8,72 +8,72 @@ import Image from "next/image"
 
 const categoryLabels = {
   fa: [
-    "تجهیزات معاینه گوش",
-    "تجهیزات ادیولوژی",
-    "تجهیزات کلینیکی",
-    "لوازم مصرفی",
-    "قطعات و لوازم جانبی",
+    "باتری سمعک",
+    "تمیزکاری و نگهداری",
+    "خشک‌کن و رطوبت‌گیر",
+    "قطعات مصرفی سمعک",
+    "مراقبت و لوازم جانبی",
   ],
   en: [
-    "Ear examination equipment",
-    "Audiology equipment",
-    "Clinical equipment",
-    "Consumables",
-    "Parts & accessories",
+    "Hearing aid batteries",
+    "Cleaning & care",
+    "Drying & moisture control",
+    "Hearing aid consumables",
+    "Care & accessories",
   ],
 }
 
 const copy = {
   fa: {
-    heroKicker: "فروشگاه تخصصی تجهیزات گوش و ادیولوژی",
-    heroTitle: "ابزار تخصصی برای معاینه، ارزیابی و کار کلینیکی",
+    heroKicker: "فروشگاه تخصصی لوازم و اقلام مصرفی سمعک",
+    heroTitle: "باتری، مراقبت و قطعات مصرفی سمعک؛ ساده و مشخص",
     heroBody:
-      "تجهیزات معاینه گوش، ابزار ادیولوژی و اقلام مصرفی برای متخصصان و مراکز درمانی.",
+      "محصولات روزمره مورد نیاز کاربران و متخصصان؛ از باتری‌های سایز ۱۰، ۱۳، ۳۱۲ و ۶۷۵ تا لوازم تمیزکاری، رطوبت‌گیر و قطعات مصرفی.",
     shopNow: "مشاهده محصولات",
     professional: "خرید حرفه‌ای",
     browse: "دسته‌بندی محصولات",
-    browseLead: "مستقیم به بخش مورد نیازتان بروید.",
+    browseLead: "محصول مورد نیازتان را سریع‌تر پیدا کنید.",
     selected: "محصولات منتخب",
     allProducts: "همه محصولات",
-    examTitle: "تجهیزات معاینه گوش",
+    examTitle: "باتری‌های سمعک",
     examBody:
-      "از اتوسکوپ و چراغ معاینه تا لوازم مورد نیاز برای بررسی روزمره گوش؛ یک بخش متمرکز برای ابزارهای اصلی معاینه.",
-    examCta: "مشاهده تجهیزات معاینه",
-    professionalEyebrow: "برای کلینیک‌ها و متخصصان",
-    professionalTitle: "خرید حرفه‌ای و دریافت پیش‌فاکتور",
+      "چهار سایز رایج باتری سمعک در یک بخش مشخص قرار گرفته‌اند تا انتخاب و مقایسه ساده‌تر باشد. برند، تعداد در بسته و قیمت نهایی بعد از ورود اطلاعات واقعی تأمین‌کننده تکمیل می‌شود.",
+    examCta: "مشاهده باتری‌ها",
+    professionalEyebrow: "برای متخصصان و مراکز شنوایی",
+    professionalTitle: "مسیر خرید حرفه‌ای برای سفارش‌های تخصصی",
     professionalBody:
-      "برای خریدهای سازمانی، سفارش‌های حرفه‌ای و درخواست پیش‌فاکتور از مسیر حساب حرفه‌ای اقدام کنید.",
+      "حساب حرفه‌ای برای سفارش‌های کلینیکی، خریدهای تعداد بالاتر و مدیریت بهتر سفارش‌ها در نظر گرفته شده است.",
     professionalCta: "ثبت درخواست حرفه‌ای",
-    quoteCta: "درخواست پیش‌فاکتور",
-    catalogTitle: "کاتالوگ تخصصی EarMed",
+    quoteCta: "ورود به حساب حرفه‌ای",
+    catalogTitle: "کاتالوگ EarMed",
     catalogBody:
-      "فروشگاه به‌جای یک صفحه تبلیغاتی، حول محصول ساخته شده است: دسته‌بندی، مشخصات، قیمت و مسیر خرید در دسترس شماست.",
+      "تمرکز فروشگاه روی اقلام واقعی و پرمصرف مرتبط با سمعک است؛ بدون فروش خود سمعک و بدون محصولات نامرتبط با هویت اصلی فروشگاه.",
     catalogCta: "ورود به فروشگاه",
   },
   en: {
-    heroKicker: "Specialist ear & audiology equipment store",
-    heroTitle: "Professional tools for examination, assessment and clinic work",
+    heroKicker: "Hearing aid care & consumables store",
+    heroTitle: "Batteries, care products and hearing aid consumables",
     heroBody:
-      "Ear examination equipment, audiology tools and consumables for specialists and care centers.",
+      "Everyday essentials for users and professionals, from size 10, 13, 312 and 675 batteries to cleaning, drying and replacement consumables.",
     shopNow: "Shop products",
     professional: "Professional purchasing",
     browse: "Browse departments",
-    browseLead: "Go directly to the equipment you need.",
+    browseLead: "Find the product category you need faster.",
     selected: "Selected products",
     allProducts: "View all products",
-    examTitle: "Ear examination equipment",
+    examTitle: "Hearing aid batteries",
     examBody:
-      "From otoscopes and examination lights to everyday ear-care accessories, this department keeps the core examination tools together.",
-    examCta: "Browse examination equipment",
-    professionalEyebrow: "For clinics and professionals",
-    professionalTitle: "Professional purchasing and quote requests",
+      "The four common hearing aid battery sizes are grouped in one clear department. Brand, pack size and final pricing will be completed when real supplier data is available.",
+    examCta: "Browse batteries",
+    professionalEyebrow: "For hearing-care professionals",
+    professionalTitle: "A professional purchasing path for specialist orders",
     professionalBody:
-      "Use a professional account for organizational purchasing, larger orders and quote requests.",
+      "Professional accounts are intended for clinic purchasing, larger quantities and easier order management.",
     professionalCta: "Apply for professional access",
-    quoteCta: "Request a quote",
-    catalogTitle: "The EarMed specialist catalog",
+    quoteCta: "Professional account",
+    catalogTitle: "The EarMed catalog",
     catalogBody:
-      "The storefront is built around products rather than marketing blocks: departments, specifications, pricing and purchasing stay close at hand.",
+      "The store now focuses on practical hearing aid essentials and consumables, without selling hearing aids themselves or unrelated clinical equipment.",
     catalogCta: "Enter the store",
   },
 }
@@ -84,7 +84,6 @@ export default async function StorefrontHome({
   countryCode: string
 }) {
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
-  const t = messages[locale]
   const c = copy[locale]
   const region = await getRegion(countryCode)
   const products = region
@@ -99,7 +98,7 @@ export default async function StorefrontHome({
           <div className="relative min-h-[300px] overflow-hidden small:min-h-[520px]">
             <Image
               src="/hero-image.jpg"
-              alt={locale === "fa" ? "تجهیزات تخصصی ادیولوژی" : "Specialist audiology equipment"}
+              alt={locale === "fa" ? "لوازم و اقلام مصرفی سمعک" : "Hearing aid care products"}
               fill
               priority
               sizes="(max-width: 767px) 100vw, 48vw"
@@ -202,7 +201,7 @@ export default async function StorefrontHome({
           <div className="relative min-h-[340px] overflow-hidden small:min-h-[460px]">
             <Image
               src="/hero-image.jpg"
-              alt={locale === "fa" ? "ابزار معاینه گوش" : "Ear examination tools"}
+              alt={locale === "fa" ? "باتری و لوازم سمعک" : "Hearing aid batteries and care products"}
               fill
               sizes="(max-width: 767px) 100vw, 58vw"
               className="object-cover object-left"
@@ -211,7 +210,7 @@ export default async function StorefrontHome({
           <div className="flex items-center px-6 py-10 small:px-10 large:px-14">
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700 dark:text-teal-300">
-                01 / EAR EXAMINATION
+                {locale === "fa" ? "۰۱ / باتری سمعک" : "01 / HEARING AID BATTERIES"}
               </span>
               <h2 className="mt-4 text-3xl font-semibold leading-tight small:text-4xl">
                 {c.examTitle}
@@ -259,8 +258,8 @@ export default async function StorefrontHome({
             <span className="text-6xl font-light text-teal-400">02</span>
             <div className="space-y-3 text-sm text-teal-100/80">
               <p>{locale === "fa" ? "سفارش حرفه‌ای" : "Professional orders"}</p>
-              <p>{locale === "fa" ? "درخواست پیش‌فاکتور" : "Quote requests"}</p>
-              <p>{locale === "fa" ? "حساب کلینیک و سازمان" : "Clinic & organization accounts"}</p>
+              <p>{locale === "fa" ? "خرید تعداد بالاتر" : "Larger quantity purchasing"}</p>
+              <p>{locale === "fa" ? "حساب کلینیک و مرکز شنوایی" : "Clinic & hearing-care accounts"}</p>
             </div>
           </div>
         </div>
