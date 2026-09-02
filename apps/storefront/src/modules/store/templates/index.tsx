@@ -1,19 +1,14 @@
 import { getLocale } from "@/lib/i18n"
+import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import SkeletonProductGrid from "@/modules/skeletons/templates/skeleton-product-grid"
 import RefinementList from "@/modules/store/components/refinement-list"
 import { SortOptions } from "@/modules/store/components/refinement-list/sort-products"
-import StoreBreadcrumb from "@/modules/store/components/store-breadcrumb"
 import PaginatedProducts from "@/modules/store/templates/paginated-products"
 import { HttpTypes } from "@medusajs/types"
 import { cookies } from "next/headers"
 import { Suspense } from "react"
 
-const StoreTemplate = async ({
-  sortBy,
-  page,
-  countryCode,
-  categories,
-}: {
+const StoreTemplate = async ({ sortBy, page, countryCode, categories }: {
   sortBy?: SortOptions
   page?: string
   countryCode: string
@@ -25,79 +20,41 @@ const StoreTemplate = async ({
   const fa = locale === "fa"
 
   const departments = fa
-    ? [
-        ["باتری سمعک", "سایزهای ۱۰، ۱۳، ۳۱۲ و ۶۷۵"],
-        ["تمیزکننده", "اسپری، دستمال، برس و ابزار نگهداری"],
-        ["رطوبت‌گیر و خشک‌کن", "لوازم نگهداری روزانه"],
-        ["فیلتر و قطعات مصرفی", "Wax guard، dome و tubing"],
-      ]
-    : [
-        ["Hearing aid batteries", "Sizes 10, 13, 312 and 675"],
-        ["Cleaning", "Sprays, wipes, brushes and care tools"],
-        ["Drying & moisture care", "Everyday maintenance supplies"],
-        ["Filters & consumables", "Wax guards, domes and tubing"],
-      ]
+    ? [["باتری سمعک", "۱۰ · ۱۳ · ۳۱۲ · ۶۷۵", "bg-amber-50"], ["نظافت و نگهداری", "اسپری · دستمال · برس", "bg-cyan-50"], ["رطوبت‌گیر و خشک‌کن", "کپسول · ظرف · کیت", "bg-teal-50"], ["قطعات مصرفی", "فیلتر · دام · تیوب", "bg-slate-100"]]
+    : [["Hearing aid batteries", "10 · 13 · 312 · 675", "bg-amber-50"], ["Cleaning & care", "Spray · wipes · brushes", "bg-cyan-50"], ["Drying & moisture care", "Capsules · cups · kits", "bg-teal-50"], ["Consumable parts", "Guards · domes · tubing", "bg-slate-100"]]
 
   return (
-    <main className="bg-white">
-      <section className="border-b border-slate-200 bg-slate-50">
-        <div className="content-container py-8 small:py-12">
-          <StoreBreadcrumb />
-          <div className="mt-6 grid gap-7 medium:grid-cols-[1fr_auto] medium:items-end">
-            <div className="max-w-3xl">
-              <p className="text-sm font-semibold text-teal-700">EarMed Store</p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950 small:text-4xl">
-                {fa ? "لوازم مصرفی و نگهداری سمعک" : "Hearing aid care & supplies"}
-              </h1>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 small:text-base">
-                {fa
-                  ? "باتری، لوازم تمیزکاری، رطوبت‌گیر و قطعات مصرفی را در یک کاتالوگ ساده و قابل مقایسه پیدا کنید."
-                  : "Find batteries, cleaning supplies, moisture care and everyday consumable parts in one focused catalog."}
-              </p>
+    <main dir={fa ? "rtl" : "ltr"} className="bg-white text-slate-950">
+      <section className="border-b border-slate-200 bg-[#f6f9f9]">
+        <div className="content-container py-8 small:py-10">
+          <div className="flex flex-col gap-5 medium:flex-row medium:items-end medium:justify-between">
+            <div>
+              <div className="mb-2 flex items-center gap-2 text-xs text-slate-500"><LocalizedClientLink href="/" className="hover:text-teal-700">{fa ? "خانه" : "Home"}</LocalizedClientLink><span>/</span><span>{fa ? "فروشگاه" : "Store"}</span></div>
+              <h1 className="text-3xl font-bold small:text-4xl">{fa ? "فروشگاه لوازم سمعک" : "Hearing aid supplies"}</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">{fa ? "باتری، لوازم نگهداری و قطعات مصرفی؛ همه در یک کاتالوگ تخصصی." : "Batteries, care products and replacement consumables in one focused catalog."}</p>
             </div>
-            <div className="rounded-xl border border-teal-100 bg-teal-50 px-5 py-4 text-sm text-teal-950">
-              <strong>{fa ? "خرید حرفه‌ای" : "Professional purchasing"}</strong>
-              <span className="mt-1 block text-teal-800">
-                {fa ? "برای کلینیک‌ها و متخصصان از حساب حرفه‌ای استفاده کنید." : "Professional accounts are available for clinics and specialists."}
-              </span>
-            </div>
+            <LocalizedClientLink href="/account" className="w-fit rounded-lg border border-teal-200 bg-white px-4 py-2.5 text-sm font-bold text-teal-800 hover:border-teal-400">{fa ? "خرید حرفه‌ای برای مراکز" : "Professional purchasing"}</LocalizedClientLink>
           </div>
 
-          <div className="mt-8 grid gap-3 xsmall:grid-cols-2 medium:grid-cols-4">
-            {departments.map(([title, subtitle], index) => (
-              <div key={title} className="group min-h-32 rounded-xl border border-slate-200 bg-white p-5 transition hover:border-teal-300 hover:shadow-sm">
-                <div className="mb-5 flex items-center justify-between">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-teal-50 text-xs font-bold text-teal-700">0{index + 1}</span>
-                  <span className="text-slate-300 transition group-hover:text-teal-600">←</span>
-                </div>
-                <h2 className="font-semibold text-slate-950">{title}</h2>
-                <p className="mt-1 text-xs leading-5 text-slate-500">{subtitle}</p>
-              </div>
+          <div className="mt-7 grid gap-3 xsmall:grid-cols-2 medium:grid-cols-4">
+            {departments.map(([title, subtitle, tone], index) => (
+              <LocalizedClientLink href="/store" key={title} className="group overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-teal-300 hover:shadow-sm">
+                <div className={`${tone} flex h-20 items-center justify-between px-4`}><span className="text-xs font-black text-slate-400">0{index + 1}</span><span className="text-xl font-black text-slate-300">{index === 0 ? "312" : index === 1 ? "CARE" : index === 2 ? "DRY" : "PARTS"}</span></div>
+                <div className="p-4"><h2 className="text-sm font-bold">{title}</h2><p className="mt-1 text-xs text-slate-500">{subtitle}</p></div>
+              </LocalizedClientLink>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="content-container py-8 small:py-12" data-testid="category-container">
-        <div className="mb-6 flex items-center justify-between border-b border-slate-200 pb-5">
-          <div>
-            <h2 className="text-xl font-semibold text-slate-950">{fa ? "همه محصولات" : "All products"}</h2>
-            <p className="mt-1 text-sm text-slate-500">{fa ? "مرتب‌سازی و فیلتر برای پیدا کردن سریع‌تر محصول" : "Sort and filter to find the right item faster"}</p>
-          </div>
+      <section className="content-container py-8 small:py-10" data-testid="category-container">
+        <div className="mb-6 flex items-center justify-between gap-4 border-b border-slate-200 pb-5">
+          <div><h2 className="text-xl font-bold">{fa ? "همه محصولات" : "All products"}</h2><p className="mt-1 text-xs text-slate-500">{fa ? "برای پیدا کردن سریع‌تر، جستجو یا مرتب‌سازی کنید." : "Search or sort to find products faster."}</p></div>
+          <LocalizedClientLink href="/" className="text-xs font-bold text-teal-700 hover:underline">{fa ? "بازگشت به خانه" : "Back home"}</LocalizedClientLink>
         </div>
-
-        <div className="flex flex-col gap-6 small:flex-row small:items-start">
-          <aside className="w-full shrink-0 small:w-56 medium:w-64">
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 small:sticky small:top-24">
-              <p className="mb-4 text-sm font-semibold text-slate-900">{fa ? "فیلتر و مرتب‌سازی" : "Filter & sort"}</p>
-              <RefinementList sortBy={sort} categories={categories} />
-            </div>
-          </aside>
-          <div className="min-w-0 flex-1">
-            <Suspense fallback={<SkeletonProductGrid />}>
-              <PaginatedProducts sortBy={sort} page={pageNumber} countryCode={countryCode} />
-            </Suspense>
-          </div>
+        <div className="grid gap-7 small:grid-cols-[220px_minmax(0,1fr)] medium:grid-cols-[240px_minmax(0,1fr)]">
+          <aside className="min-w-0"><div className="rounded-xl border border-slate-200 bg-white p-4 small:sticky small:top-24"><div className="mb-4 border-b border-slate-100 pb-3"><p className="text-sm font-bold">{fa ? "جستجو و مرتب‌سازی" : "Search & sort"}</p></div><RefinementList sortBy={sort} categories={categories} /></div></aside>
+          <div className="min-w-0"><Suspense fallback={<SkeletonProductGrid />}><PaginatedProducts sortBy={sort} page={pageNumber} countryCode={countryCode} /></Suspense></div>
         </div>
       </section>
     </main>
