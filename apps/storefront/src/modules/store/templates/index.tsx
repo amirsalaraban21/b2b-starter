@@ -1,4 +1,5 @@
 import { getLocale } from "@/lib/i18n"
+import { departmentReferenceImages } from "@/lib/product-demo-images"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import SkeletonProductGrid from "@/modules/skeletons/templates/skeleton-product-grid"
 import RefinementList from "@/modules/store/components/refinement-list"
@@ -39,7 +40,10 @@ const StoreTemplate = async ({ sortBy, page, countryCode, categories }: {
           <div className="mt-7 grid gap-3 xsmall:grid-cols-2 medium:grid-cols-4">
             {departments.map(([title, subtitle, tone], index) => (
               <LocalizedClientLink href="/store" key={title} className="group overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-teal-300 hover:shadow-sm">
-                <div className={`${tone} flex h-20 items-center justify-between px-4`}><span className="text-xs font-black text-slate-400">0{index + 1}</span><span className="text-xl font-black text-slate-300">{index === 0 ? "312" : index === 1 ? "CARE" : index === 2 ? "DRY" : "PARTS"}</span></div>
+                <div className={`${tone} relative h-32 overflow-hidden`}>
+                  <img src={departmentReferenceImages[index]} alt="" className="h-full w-full object-contain p-3 transition duration-200 group-hover:scale-105" />
+                  <span className="absolute start-3 top-3 rounded-full bg-white/90 px-2 py-1 text-[10px] font-black text-slate-500">0{index + 1}</span>
+                </div>
                 <div className="p-4"><h2 className="text-sm font-bold">{title}</h2><p className="mt-1 text-xs text-slate-500">{subtitle}</p></div>
               </LocalizedClientLink>
             ))}
