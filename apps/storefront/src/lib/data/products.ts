@@ -8,7 +8,7 @@ import { SortOptions } from "@/modules/store/components/refinement-list/sort-pro
 import { HttpTypes } from "@medusajs/types"
 
 const isEarMedProduct = (product?: HttpTypes.StoreProduct | null) =>
-  product?.metadata?.catalog_source === "earmed_demo"
+  product?.metadata?.catalog_source === "earmed_core"
 
 export const getProductsById = async ({
   ids,
@@ -33,12 +33,12 @@ export const getProductsById = async ({
         id: ids,
         region_id: regionId,
         fields:
-          "*variants,*variants.calculated_price,*variants.inventory_quantity",
+          "*variants,*variants.calculated_price,*variants.inventory_quantity,+metadata",
       },
       headers,
       next,
     })
-    .then(({ products }) => products)
+    .then(({ products }) => products.filter(isEarMedProduct))
 }
 
 export const getProductByHandle = async (handle: string, regionId: string) => {
@@ -117,8 +117,6 @@ export const listProducts = async ({
       }
     )
     .then(({ products }) => {
-      // The Store API does not support a metadata selector consistently across
-      // Medusa deployments. Keep the catalog boundary in one place instead.
       const earMedProducts = products.filter(isEarMedProduct)
       const nextPage = earMedProducts.length === limit ? pageParam + 1 : null
 
@@ -127,7 +125,7 @@ export const listProducts = async ({
           products: earMedProducts,
           count: earMedProducts.length,
         },
-        nextPage: nextPage,
+        nextPage,
         queryParams,
       }
     })
@@ -176,17 +174,10 @@ export const listProductsWithSort = async ({
   })
 
   const sortedProducts = sortProducts(products, sortBy)
-
-  // When filtering by option_value_id, the API's `count` may not reflect the
-  // filtered set in client-side sort flows that pre-fetch a page of 100.
-  // Recompute count from the actual returned list so pagination is correct.
   const effectiveCount = sortedProducts.length
-
   const pageParam = (page - 1) * limit
-
   const nextPage =
     effectiveCount > pageParam + limit ? pageParam + limit : null
-
   const paginatedProducts = sortedProducts.slice(pageParam, pageParam + limit)
 
   return {
