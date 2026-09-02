@@ -1,12 +1,11 @@
+import { getLocale } from "@/lib/i18n"
 import { getProductPrice } from "@/lib/util/get-product-price"
-import { HttpTypes } from "@medusajs/types"
-import { Text, clx } from "@medusajs/ui"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
+import { HttpTypes } from "@medusajs/types"
+import { cookies } from "next/headers"
 import Thumbnail from "../thumbnail"
 import PreviewAddToCart from "./preview-add-to-cart"
 import PreviewPrice from "./price"
-import { cookies } from "next/headers"
-import { getLocale } from "@/lib/i18n"
 
 export default async function ProductPreview({
   product,
@@ -17,61 +16,62 @@ export default async function ProductPreview({
   isFeatured?: boolean
   region: HttpTypes.StoreRegion
 }) {
-  if (!product) {
-    return null
-  }
+  if (!product) return null
 
-  const { cheapestPrice } = getProductPrice({
-    product,
-  })
-
-  const inventoryQuantity = product.variants?.reduce((acc, variant) => {
-    return acc + (variant?.inventory_quantity || 0)
-  }, 0)
+  const { cheapestPrice } = getProductPrice({ product })
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
-  const title = locale === "fa" && typeof product.metadata?.fa_title === "string" ? product.metadata.fa_title : product.title
-  const isAvailable = product.variants?.some((variant) => !variant.manage_inventory || (variant.inventory_quantity || 0) > 0)
+  const fa = locale === "fa"
+  const title = fa && typeof product.metadata?.fa_title === "string" ? product.metadata.fa_title : product.title
+  const shortDescription = fa && typeof product.metadata?.fa_short_description === "string"
+    ? product.metadata.fa_short_description
+    : product.subtitle
+  const isAvailable = product.variants?.some(
+    (variant) => !variant.manage_inventory || (variant.inventory_quantity || 0) > 0
+  )
 
   return (
-    <LocalizedClientLink href={`/products/${product.handle}`} className="group block h-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
-      <div
-        data-testid="product-wrapper"
-        className="flex h-full min-h-[340px] flex-col gap-4 relative w-full overflow-hidden border border-ui-border-base p-4 bg-white shadow-sm rounded-2xl group-hover:-translate-y-1 group-hover:shadow-[0_14px_32px_rgba(15,118,110,0.16)] transition duration-200 dark:bg-ui-bg-subtle"
+    <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-200 hover:border-teal-300 hover:shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+      <LocalizedClientLink
+        href={`/products/${product.handle}`}
+        className="relative block bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700"
       >
-        <div className="aspect-square w-full p-6">
-          <Thumbnail
-            thumbnail={product.thumbnail}
-            images={product.images}
-            size="square"
-            isFeatured={isFeatured}
-          />
+        <div className="absolute start-3 top-3 z-10 rounded-full border border-slate-200 bg-white/95 px-2.5 py-1 text-[11px] font-medium text-slate-600 shadow-sm">
+          {isAvailable ? (fa ? "موجود" : "In stock") : (fa ? "ناموجود" : "Unavailable")}
         </div>
-        <div className="flex flex-col txt-compact-medium">
-          {typeof product.metadata?.brand === "string" && <Text className="text-neutral-600 text-xs">{product.metadata.brand}</Text>}
-          <Text className="text-ui-fg-base" data-testid="product-title">
+        <div className="aspect-square w-full p-5 small:p-6">
+          <Thumbnail thumbnail={product.thumbnail} images={product.images} size="square" isFeatured={isFeatured} />
+        </div>
+      </LocalizedClientLink>
+
+      <div className="flex flex-1 flex-col p-4">
+        {typeof product.metadata?.brand === "string" && (
+          <span className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-teal-700">
+            {product.metadata.brand}
+          </span>
+        )}
+        <LocalizedClientLink href={`/products/${product.handle}`} className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700">
+          <h3 className="line-clamp-2 min-h-12 text-sm font-semibold leading-6 text-slate-900 transition group-hover:text-teal-800">
             {title}
-          </Text>
-        </div>
-        <div className="flex flex-col gap-0">
-          {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
-        </div>
-        <div className="flex justify-between">
-          <div className="flex flex-row gap-1 items-center">
-            <span
-              className={clx({
-                "text-green-500": isAvailable,
-                "text-red-500": !isAvailable,
-              })}
-            >
-              •
-            </span>
-            <Text className="text-neutral-600 text-xs">
-              {isAvailable ? (locale === "fa" ? "موجود برای سفارش" : "Available to order") : (locale === "fa" ? "ناموجود" : "Unavailable")}
-            </Text>
+          </h3>
+        </LocalizedClientLink>
+        {shortDescription && (
+          <p className="mt-1 line-clamp-2 min-h-10 text-xs leading-5 text-slate-500">{shortDescription}</p>
+        )}
+
+        <div className="mt-auto border-t border-slate-100 pt-4">
+          <div className="mb-3 min-h-6 font-semibold text-slate-950">
+            {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
           </div>
-          <PreviewAddToCart product={product} region={region} />
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] text-slate-500">
+              {fa ? "مشاهده جزئیات" : "View details"}
+            </span>
+            <div onClick={(event) => event.preventDefault()}>
+              <PreviewAddToCart product={product} region={region} />
+            </div>
+          </div>
         </div>
       </div>
-    </LocalizedClientLink>
+    </article>
   )
 }
