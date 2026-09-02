@@ -63,12 +63,10 @@ export default async function ProductPreview({
             {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
           </div>
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] text-slate-500">
+            <LocalizedClientLink href={`/products/${product.handle}`} className="text-[11px] text-slate-500 hover:text-teal-700">
               {fa ? "مشاهده جزئیات" : "View details"}
-            </span>
-            <div onClick={(event) => event.preventDefault()}>
-              <PreviewAddToCart product={product} region={region} />
-            </div>
+            </LocalizedClientLink>
+            <PreviewAddToCart product={product} region={region} />
           </div>
         </div>
       </div>
