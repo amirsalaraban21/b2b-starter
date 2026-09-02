@@ -26,7 +26,12 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   type,
 }) => {
   const fallback = thumbnail || images?.[0]?.url
-  const initialImage = getDemoProductImage(productTitle, fallback)
+  const genericDemoTitle = !productTitle && fallback?.includes("/products/demo/accessory.svg")
+    ? "Hearing Aid Cleaning Spray"
+    : !productTitle && fallback?.includes("/products/demo/consumable.svg")
+      ? "Hearing Aid Battery Size 312"
+      : productTitle
+  const initialImage = getDemoProductImage(genericDemoTitle, fallback)
 
   return (
     <div
