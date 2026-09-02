@@ -16,6 +16,7 @@ import { PencilSquare as Edit, Trash } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import { Heading, Text, clx } from "@medusajs/ui"
 import React, { useActionState, useEffect, useState } from "react"
+import { iranProvinces } from "@/lib/iran"
 
 type EditAddressProps = {
   region: HttpTypes.StoreRegion
@@ -189,13 +190,7 @@ const EditAddress: React.FC<EditAddressProps> = ({
                   data-testid="city-input"
                 />
               </div>
-              <Input
-                label="Province / State"
-                name="province"
-                autoComplete="address-level1"
-                defaultValue={address.province || undefined}
-                data-testid="state-input"
-              />
+              <label className="flex flex-col gap-y-2 text-small-regular">Province<select required name="province" autoComplete="address-level1" defaultValue={address.province || undefined} className="h-10 rounded-rounded border border-ui-border-base bg-ui-bg-base px-3" data-testid="state-input"><option value="">Select province</option>{iranProvinces.map(([fa, en]) => <option key={en} value={en}>{typeof document !== "undefined" && document.documentElement.lang === "fa" ? fa : en}</option>)}</select></label>
               <CountrySelect
                 name="country_code"
                 region={region}

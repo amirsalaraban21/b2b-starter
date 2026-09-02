@@ -26,6 +26,11 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
   return (
     <>
       <NavigationHeader />
+      {process.env.NEXT_PUBLIC_DEMO_MODE === "true" && (
+        <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-center text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
+          <span lang="fa">نسخه آزمایشی — اطلاعات و قیمت محصولات نمونه هستند</span><span className="mx-2">/</span><span lang="en">Demo version — product information and prices are placeholders</span>
+        </div>
+      )}
       {customer && cart && (
         <CartMismatchBanner customer={customer} cart={cart} />
       )}

@@ -7,6 +7,9 @@ import { sortProducts } from "@/lib/util/sort-products"
 import { SortOptions } from "@/modules/store/components/refinement-list/sort-products"
 import { HttpTypes } from "@medusajs/types"
 
+const isEarMedProduct = (product?: HttpTypes.StoreProduct | null) =>
+  product?.metadata?.catalog_source === "earmed_demo"
+
 export const getProductsById = async ({
   ids,
   regionId,
@@ -60,7 +63,7 @@ export const getProductByHandle = async (handle: string, regionId: string) => {
       headers,
       next,
     })
-    .then(({ products }) => products[0])
+    .then(({ products }) => products.find(isEarMedProduct))
 }
 
 export const listProducts = async ({
@@ -106,20 +109,23 @@ export const listProducts = async ({
           limit,
           offset,
           region_id: region.id,
-          fields: "*variants.calculated_price,*variants.options",
+          fields: "*variants.calculated_price,*variants.options,+metadata",
           ...queryParams,
         },
         headers,
         next,
       }
     )
-    .then(({ products, count }) => {
-      const nextPage = count > offset + limit ? pageParam + 1 : null
+    .then(({ products }) => {
+      // The Store API does not support a metadata selector consistently across
+      // Medusa deployments. Keep the catalog boundary in one place instead.
+      const earMedProducts = products.filter(isEarMedProduct)
+      const nextPage = earMedProducts.length === limit ? pageParam + 1 : null
 
       return {
         response: {
-          products,
-          count,
+          products: earMedProducts,
+          count: earMedProducts.length,
         },
         nextPage: nextPage,
         queryParams,

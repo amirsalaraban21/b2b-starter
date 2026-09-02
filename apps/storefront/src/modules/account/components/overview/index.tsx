@@ -3,6 +3,7 @@ import PreviouslyPurchasedProducts from "@/modules/account/components/previously
 import { B2BCustomer } from "@/types/global"
 import { HttpTypes } from "@medusajs/types"
 import { Heading } from "@medusajs/ui"
+import ProfessionalStatus from "@/modules/account/components/professional-status"
 
 type OverviewProps = {
   customer: B2BCustomer | null
@@ -30,6 +31,7 @@ const Overview = ({ customer, orders }: OverviewProps) => {
           </span>
         </div>
         <div className="flex flex-col gap py-8 border-t border-gray-200">
+          <div className="mb-6"><ProfessionalStatus /></div>
           <div className="flex flex-col gap-y-8 h-full col-span-1 row-span-2 flex-1">
             <div className="flex items-start gap-x-16 mb-6">
               <div className="flex flex-col gap-y-4">

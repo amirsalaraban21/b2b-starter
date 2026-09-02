@@ -2,6 +2,7 @@ import CountrySelect from "@/modules/checkout/components/country-select"
 import Input from "@/modules/common/components/input"
 import { B2BCart } from "@/types"
 import React, { useEffect, useState } from "react"
+import { iranProvinces, isIranianPostalCode, normalizeIranianMobile, normalizeIranianPostalCode } from "@/lib/iran"
 
 const BillingAddressForm = ({ cart }: { cart: B2BCart | null }) => {
   const [formData, setFormData] = useState<Record<string, any>>({
@@ -15,6 +16,7 @@ const BillingAddressForm = ({ cart }: { cart: B2BCart | null }) => {
     "billing_address.province": "",
     "billing_address.phone": "",
   })
+  const [errors, setErrors] = useState<{ phone?: string; postal?: string }>({})
 
   useEffect(() => {
     if (cart?.billing_address) {
@@ -37,10 +39,13 @@ const BillingAddressForm = ({ cart }: { cart: B2BCart | null }) => {
       HTMLInputElement | HTMLInputElement | HTMLSelectElement
     >
   ) => {
+    const iranField = e.target.name === "billing_address.phone" ? normalizeIranianMobile(e.target.value) || e.target.value : e.target.name === "billing_address.postal_code" ? normalizeIranianPostalCode(e.target.value) : e.target.value
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: iranField,
     })
+    if (e.target.name === "billing_address.phone") setErrors((current) => ({ ...current, phone: e.target.value && !normalizeIranianMobile(e.target.value) ? (document.documentElement.lang === "fa" ? "شماره موبایل ایران نامعتبر است." : "Enter a valid Iranian mobile number.") : undefined }))
+    if (e.target.name === "billing_address.postal_code") setErrors((current) => ({ ...current, postal: e.target.value && !isIranianPostalCode(e.target.value) ? (document.documentElement.lang === "fa" ? "کد پستی باید ۱۰ رقم باشد." : "Postal code must contain 10 digits.") : undefined }))
   }
 
   return (
@@ -72,7 +77,9 @@ const BillingAddressForm = ({ cart }: { cart: B2BCart | null }) => {
           onChange={handleChange}
           required
           data-testid="billing-phone-input"
+          pattern="^\\+989\\d{9}$"
         />
+        {errors.phone && <p className="col-span-2 text-sm text-ui-fg-error" role="alert">{errors.phone}</p>}
         <Input
           label="Company name"
           name="billing_address.company"
@@ -100,8 +107,10 @@ const BillingAddressForm = ({ cart }: { cart: B2BCart | null }) => {
           onChange={handleChange}
           required
           data-testid="billing-postal-code-input"
+          pattern="^\\d{10}$"
           colSpan={2}
         />
+        {errors.postal && <p className="col-span-2 text-sm text-ui-fg-error" role="alert">{errors.postal}</p>}
         <div className="grid small:grid-cols-3 grid-cols-2 gap-4 col-span-2">
           <Input
             label="City"
@@ -112,15 +121,7 @@ const BillingAddressForm = ({ cart }: { cart: B2BCart | null }) => {
             required
             data-testid="billing-city-input"
           />
-          <Input
-            label="Province"
-            name="billing_address.province"
-            autoComplete="address-level1"
-            value={formData["billing_address.province"]}
-            onChange={handleChange}
-            required
-            data-testid="billing-province-input"
-          />
+          <label className="flex flex-col gap-y-2 text-small-regular"><span>Province</span><select required name="billing_address.province" autoComplete="address-level1" value={formData["billing_address.province"]} onChange={handleChange} className="h-10 rounded-rounded border border-ui-border-base bg-ui-bg-base px-3" data-testid="billing-province-input"><option value="">Select province</option>{iranProvinces.map(([fa, en]) => <option key={en} value={en}>{document.documentElement.lang === "fa" ? fa : en}</option>)}</select></label>
           <CountrySelect
             name="billing_address.country_code"
             autoComplete="country"

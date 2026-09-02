@@ -11,6 +11,7 @@ import { Plus } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import { Heading } from "@medusajs/ui"
 import { useActionState, useEffect, useState } from "react"
+import { iranProvinces } from "@/lib/iran"
 
 const AddAddress = ({ region }: { region: HttpTypes.StoreRegion }) => {
   const [successState, setSuccessState] = useState(false)
@@ -108,12 +109,7 @@ const AddAddress = ({ region }: { region: HttpTypes.StoreRegion }) => {
                   data-testid="city-input"
                 />
               </div>
-              <Input
-                label="Province / State"
-                name="province"
-                autoComplete="address-level1"
-                data-testid="state-input"
-              />
+              <label className="flex flex-col gap-y-2 text-small-regular">Province<select required name="province" autoComplete="address-level1" className="h-10 rounded-rounded border border-ui-border-base bg-ui-bg-base px-3" data-testid="state-input"><option value="">Select province</option>{iranProvinces.map(([fa, en]) => <option key={en} value={en}>{typeof document !== "undefined" && document.documentElement.lang === "fa" ? fa : en}</option>)}</select></label>
               <CountrySelect
                 region={region}
                 name="country_code"

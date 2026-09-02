@@ -1,6 +1,7 @@
 "use server"
 
 import { sdk } from "@/lib/config"
+import { isIranianPostalCode, normalizeIranianMobile, normalizeIranianPostalCode } from "@/lib/iran"
 import medusaError from "@/lib/util/medusa-error"
 import { B2BCustomer } from "@/types/global"
 import { HttpTypes } from "@medusajs/types"
@@ -112,7 +113,6 @@ export async function signup(_currentState: unknown, formData: FormData) {
       is_admin: true,
       spending_limit: 0,
     }).catch((err) => {
-      console.log("error creating employee", err)
     })
 
     const cacheTag = await getCacheTag("customers")
@@ -126,7 +126,6 @@ export async function signup(_currentState: unknown, formData: FormData) {
       employee: createdEmployee,
     }
   } catch (error: any) {
-    console.log("error", error)
     return error.toString()
   }
 }
@@ -223,6 +222,10 @@ export const addCustomerAddress = async (
   _currentState: unknown,
   formData: FormData
 ): Promise<any> => {
+  const phone = normalizeIranianMobile(formData.get("phone") as string)
+  const postalCode = normalizeIranianPostalCode(formData.get("postal_code") as string)
+  if (!phone) return { success: false, error: "Invalid Iranian mobile number format." }
+  if (!isIranianPostalCode(postalCode)) return { success: false, error: "Iranian postal code must contain 10 digits." }
   const address = {
     first_name: formData.get("first_name") as string,
     last_name: formData.get("last_name") as string,
@@ -230,10 +233,10 @@ export const addCustomerAddress = async (
     address_1: formData.get("address_1") as string,
     address_2: formData.get("address_2") as string,
     city: formData.get("city") as string,
-    postal_code: formData.get("postal_code") as string,
+    postal_code: postalCode,
     province: formData.get("province") as string,
     country_code: formData.get("country_code") as string,
-    phone: formData.get("phone") as string,
+    phone,
   }
 
   const headers = {
@@ -276,6 +279,10 @@ export const updateCustomerAddress = async (
   formData: FormData
 ): Promise<any> => {
   const addressId = currentState.addressId as string
+  const phone = normalizeIranianMobile(formData.get("phone") as string)
+  const postalCode = normalizeIranianPostalCode(formData.get("postal_code") as string)
+  if (!phone) return { success: false, error: "Invalid Iranian mobile number format." }
+  if (!isIranianPostalCode(postalCode)) return { success: false, error: "Iranian postal code must contain 10 digits." }
 
   const address = {
     first_name: formData.get("first_name") as string,
@@ -284,10 +291,10 @@ export const updateCustomerAddress = async (
     address_1: formData.get("address_1") as string,
     address_2: formData.get("address_2") as string,
     city: formData.get("city") as string,
-    postal_code: formData.get("postal_code") as string,
+    postal_code: postalCode,
     province: formData.get("province") as string,
     country_code: formData.get("country_code") as string,
-    phone: formData.get("phone") as string,
+    phone,
   }
 
   const headers = {

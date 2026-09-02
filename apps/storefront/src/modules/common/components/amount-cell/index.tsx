@@ -1,6 +1,8 @@
 import { clx } from "@medusajs/ui"
+import { convertToLocale } from "@/lib/util/money"
 
 export const formatAmount = (amount: number, currency_code: string) => {
+  if (currency_code.toLowerCase() === "irr") return convertToLocale({ amount, currency_code, locale: "fa-IR" })
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: currency_code,
