@@ -19,203 +19,111 @@ import { Drawer, Text } from "@medusajs/ui"
 import { usePathname } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
 
+const isFaPath = (pathname: string) => pathname.split("/").filter(Boolean)[0] === "ir"
+
 type CartDrawerProps = {
   customer: B2BCustomer | null
   freeShippingPrices: StoreFreeShippingPrice[]
 }
 
-const CartDrawer = ({
-  customer,
-  freeShippingPrices,
-  ...props
-}: CartDrawerProps) => {
-  const [activeTimer, setActiveTimer] = useState<NodeJS.Timer | undefined>(
-    undefined
-  )
+const CartDrawer = ({ customer, freeShippingPrices, ...props }: CartDrawerProps) => {
+  const [activeTimer, setActiveTimer] = useState<ReturnType<typeof setTimeout> | undefined>()
   const [isOpen, setIsOpen] = useState(false)
-
-  const open = () => setIsOpen(true)
-  const close = () => setIsOpen(false)
-
   const { cart } = useCart()
+  const pathname = usePathname()
+  const fa = isFaPath(pathname)
 
   const items = cart?.items || []
   const promotions = cart?.promotions || []
-
-  const totalItems =
-    items?.reduce((acc, item) => {
-      return acc + item.quantity
-    }, 0) || 0
-
+  const totalItems = items.reduce((acc, item) => acc + item.quantity, 0)
   const subtotal = useMemo(() => cart?.item_subtotal ?? 0, [cart])
-
-  const spendLimitExceeded = useMemo(
-    () => checkSpendingLimit(cart, customer),
-    [cart, customer]
-  )
-
+  const spendLimitExceeded = useMemo(() => checkSpendingLimit(cart, customer), [cart, customer])
   const itemRef = useRef<number>(totalItems || 0)
 
+  const open = () => setIsOpen(true)
+  const close = () => setIsOpen(false)
+  const cancelTimer = () => activeTimer && clearTimeout(activeTimer)
+
   const timedOpen = () => {
-    if (isOpen) {
-      return
-    }
-
+    if (isOpen) return
     open()
-
     const timer = setTimeout(close, 5000)
-
     setActiveTimer(timer)
   }
 
-  // Clean up the timer when the component unmounts
+  useEffect(() => () => activeTimer && clearTimeout(activeTimer), [activeTimer])
+
   useEffect(() => {
-    return () => {
-      if (activeTimer) {
-        clearTimeout(activeTimer)
-      }
-    }
-  }, [activeTimer])
-
-  const pathname = usePathname()
-
-  const cancelTimer = () => {
-    if (activeTimer) {
-      clearTimeout(activeTimer)
-    }
-  }
-
-  // open cart dropdown when modifying the cart items, but only if we're not on the cart page
-  useEffect(() => {
-    if (
-      itemRef.current !== totalItems &&
-      !pathname.includes("/cart") &&
-      !pathname.includes("/account")
-    ) {
+    if (itemRef.current !== totalItems && !pathname.includes("/cart") && !pathname.includes("/account")) {
       timedOpen()
-      return
+      itemRef.current = totalItems
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totalItems, itemRef.current])
+  }, [totalItems])
 
-  //close cart drawer when navigating to a different page
   useEffect(() => {
     cancelTimer()
     close()
   }, [pathname])
 
   const checkoutStep = cart ? getCheckoutStep(cart) : undefined
-  const checkoutPath = customer
-    ? checkoutStep
-      ? `/checkout?step=${checkoutStep}`
-      : "/checkout"
-    : "/account"
+  const checkoutPath = customer ? (checkoutStep ? `/checkout?step=${checkoutStep}` : "/checkout") : "/account"
 
   return (
     <>
-      {isOpen && (
-        <div className="fixed inset-[-2rem] z-10 backdrop-blur-sm p-0" />
-      )}
-      <Drawer
-        onMouseEnter={cancelTimer}
-        className="rounded-none m-0 p-0 bg-none z-50"
-        open={isOpen}
-        onOpenChange={setIsOpen}
-        {...(props as any)}
-      >
+      {isOpen && <div className="fixed inset-[-2rem] z-10 backdrop-blur-sm p-0" />}
+      <Drawer onMouseEnter={cancelTimer} className="z-50 m-0 rounded-none bg-none p-0" open={isOpen} onOpenChange={setIsOpen} {...(props as any)}>
         <Drawer.Trigger asChild>
-          <button className="transition-fg relative inline-flex w-fit items-center justify-center overflow-hidden outline-none txt-compact-small-plus gap-x-1.5 px-3 py-1.5 rounded-full hover:bg-neutral-100">
+          <button className="relative inline-flex min-h-10 w-fit items-center justify-center gap-x-1.5 px-2 text-sm font-medium text-slate-600 outline-none transition hover:text-teal-700 dark:text-slate-300">
             <ShoppingBag />
-            <span className="text-sm font-normal hidden small:inline-block">
-              {cart && items && items.length > 0
-                ? convertToLocale({
-                    amount: subtotal,
-                    currency_code: cart.currency_code,
-                  })
-                : "Cart"}
+            <span className="hidden small:inline-block">
+              {cart && items.length > 0
+                ? convertToLocale({ amount: subtotal, currency_code: cart.currency_code })
+                : fa ? "سبد خرید" : "Cart"}
             </span>
-            <div className="bg-blue-500 text-white text-xs px-1.5 py-px rounded-full">
-              {totalItems}
-            </div>
+            <span className="grid min-w-5 place-items-center rounded-full bg-teal-700 px-1.5 py-0.5 text-[11px] text-white">{totalItems}</span>
           </button>
         </Drawer.Trigger>
-        <Drawer.Content
-          className="z-50 rounded-none m-0 p-0 inset-y-0 sm:right-0"
-          onMouseEnter={cancelTimer}
-        >
+
+        <Drawer.Content className="z-50 m-0 rounded-none p-0 inset-y-0 sm:right-0" onMouseEnter={cancelTimer}>
           <Drawer.Header className="flex self-center">
             <Drawer.Title>
               {totalItems > 0
-                ? `You have ${totalItems} items in your cart`
-                : "Your cart is empty"}
+                ? fa ? `${totalItems} کالا در سبد خرید` : `${totalItems} items in your cart`
+                : fa ? "سبد خرید شما خالی است" : "Your cart is empty"}
             </Drawer.Title>
           </Drawer.Header>
-          {cart?.approvals && cart.approvals.length > 0 && (
-            <div className="p-4">
-              <ApprovalStatusBanner cart={cart} />
-            </div>
-          )}
-          {promotions.length > 0 && (
-            <div className="p-4">
-              <AppliedPromotions promotions={promotions} />
-            </div>
-          )}
-          <div className="flex flex-col gap-y-4 h-full self-stretch justify-between overflow-auto">
+
+          {cart?.approvals && cart.approvals.length > 0 && <div className="p-4"><ApprovalStatusBanner cart={cart} /></div>}
+          {promotions.length > 0 && <div className="p-4"><AppliedPromotions promotions={promotions} /></div>}
+
+          <div className="flex h-full flex-col justify-between gap-y-4 self-stretch overflow-auto">
             {cart && cart.items && (
               <>
-                <ItemsTemplate
-                  cart={cart}
-                  showBorders={false}
-                  showTotal={false}
-                />
-                <div className="flex flex-col gap-y-3 w-full p-4">
-                  {cart && freeShippingPrices && (
-                    <FreeShippingPriceNudge
-                      variant="inline"
-                      cart={cart as StoreCart}
-                      freeShippingPrices={freeShippingPrices}
-                    />
-                  )}
+                <ItemsTemplate cart={cart} showBorders={false} showTotal={false} />
+                <div className="flex w-full flex-col gap-y-3 border-t border-ui-border-base p-4">
+                  {freeShippingPrices && <FreeShippingPriceNudge variant="inline" cart={cart as StoreCart} freeShippingPrices={freeShippingPrices} />}
                   <div className="flex justify-between">
-                    <Text>Subtotal</Text>
-                    <Text>
-                      {convertToLocale({
-                        amount: subtotal,
-                        currency_code: cart?.currency_code,
-                      })}
-                    </Text>
+                    <Text>{fa ? "جمع کالاها" : "Subtotal"}</Text>
+                    <Text>{convertToLocale({ amount: subtotal, currency_code: cart.currency_code })}</Text>
                   </div>
                   <div className="flex flex-col gap-y-2">
                     <LocalizedClientLink href="/cart">
-                      <Button
-                        variant="secondary"
-                        className="w-full"
-                        size="large"
-                      >
-                        View Cart
-                      </Button>
+                      <Button variant="secondary" className="w-full" size="large">{fa ? "مشاهده سبد خرید" : "View cart"}</Button>
                     </LocalizedClientLink>
                     <LocalizedClientLink href={checkoutPath}>
-                      <Button
-                        className="w-full"
-                        size="large"
-                        disabled={totalItems === 0 || spendLimitExceeded}
-                      >
+                      <Button className="w-full" size="large" disabled={totalItems === 0 || spendLimitExceeded}>
                         <LockClosedSolidMini />
                         {customer
                           ? spendLimitExceeded
-                            ? "Spending Limit Exceeded"
-                            : "Secure Checkout"
-                          : "Log in to checkout"}
+                            ? fa ? "سقف خرید رد شده" : "Spending limit exceeded"
+                            : fa ? "ادامه ثبت سفارش" : "Continue to checkout"
+                          : fa ? "برای ادامه وارد شوید" : "Log in to checkout"}
                       </Button>
                     </LocalizedClientLink>
                     {spendLimitExceeded && (
-                      <div className="flex items-center gap-x-2 bg-neutral-100 p-3 rounded-md shadow-borders-base">
-                        <ExclamationCircle className="text-orange-500 w-fit overflow-visible" />
-                        <p className="text-neutral-950 text-xs">
-                          This order exceeds your spending limit. Please contact
-                          your manager for approval.
-                        </p>
+                      <div className="flex items-center gap-x-2 bg-neutral-100 p-3 text-xs text-neutral-950">
+                        <ExclamationCircle className="w-fit overflow-visible text-orange-500" />
+                        <p>{fa ? "مبلغ این سفارش از سقف خرید حساب حرفه‌ای بیشتر است." : "This order exceeds your professional account spending limit."}</p>
                       </div>
                     )}
                   </div>
