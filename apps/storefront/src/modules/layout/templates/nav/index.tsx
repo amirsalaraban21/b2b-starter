@@ -8,12 +8,10 @@ import Brand from "@/modules/layout/components/brand"
 import Preferences from "@/modules/layout/components/preferences"
 import { getLocale, messages } from "@/lib/i18n"
 import { cookies } from "next/headers"
-import { MegaMenuWrapper } from "@/modules/layout/components/mega-menu"
 import { RequestQuoteConfirmation } from "@/modules/quotes/components/request-quote-confirmation"
 import { RequestQuotePrompt } from "@/modules/quotes/components/request-quote-prompt"
 import SkeletonAccountButton from "@/modules/skeletons/components/skeleton-account-button"
 import SkeletonCartButton from "@/modules/skeletons/components/skeleton-cart-button"
-import SkeletonMegaMenu from "@/modules/skeletons/components/skeleton-mega-menu"
 import { Suspense } from "react"
 
 export async function NavigationHeader() {
@@ -22,60 +20,60 @@ export async function NavigationHeader() {
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
   const t = messages[locale]
 
-  return (
-    <div className="sticky top-0 inset-x-0 group bg-white text-zinc-900 small:p-4 p-2 text-sm border-b duration-200 border-ui-border-base z-50">
-      <header className="flex w-full content-container relative small:mx-auto justify-between">
-        <div className="small:mx-auto flex justify-between items-center min-w-full">
-          <div className="flex items-center gap-3 small:gap-4">
-            <Brand className="text-sm small:text-base" />
+  const nav =
+    locale === "fa"
+      ? [
+          ["فروشگاه", "/store"],
+          ["معاینه گوش", "/store"],
+          ["ادیولوژی", "/store"],
+          ["مصرفی و جانبی", "/store"],
+          ["خرید حرفه‌ای", "/professional"],
+        ]
+      : [
+          ["Store", "/store"],
+          ["Ear examination", "/store"],
+          ["Audiology", "/store"],
+          ["Consumables & accessories", "/store"],
+          ["Professional", "/professional"],
+        ]
 
-            <nav>
-              <ul className="space-x-4 hidden small:flex">
-                <li>
-                  <Suspense fallback={<SkeletonMegaMenu />}>
-                    <MegaMenuWrapper />
-                  </Suspense>
-                </li>
-              </ul>
-            </nav>
-            <LocalizedClientLink href="/professional" className="hidden small:inline-flex rounded-md px-2 py-2 text-sm font-medium text-ui-fg-subtle hover:bg-ui-bg-subtle hover:text-ui-fg-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700">
-              {locale === "fa" ? "خرید حرفه‌ای" : "Professional"}
-            </LocalizedClientLink>
-            <LocalizedClientLink href="/store" className="small:hidden min-h-9 rounded-md px-2 py-2 text-xs font-semibold text-teal-700 hover:bg-ui-bg-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700">
-              {t.products}
-            </LocalizedClientLink>
+  const quoteButton = (
+    <button className="inline-flex min-h-9 items-center gap-1.5 border-s border-ui-border-base px-3 text-xs font-semibold text-ui-fg-subtle transition hover:text-teal-700">
+      <FilePlus />
+      <span className="hidden medium:inline">{t.quote}</span>
+    </button>
+  )
+
+  return (
+    <div className="sticky inset-x-0 top-0 z-50 border-b border-ui-border-base bg-white/95 text-zinc-900 backdrop-blur dark:bg-slate-950/95 dark:text-white">
+      <header className="content-container">
+        <div className="flex min-h-16 items-center justify-between gap-4">
+          <div className="flex shrink-0 items-center gap-4">
+            <Brand className="text-base" />
           </div>
-          <div className="flex justify-end items-center gap-2">
-            <div className="relative mr-2 hidden small:inline-flex">
+
+          <div className="hidden min-w-0 flex-1 justify-center small:flex">
+            <div className="relative w-full max-w-xl">
               <input
                 disabled
                 type="text"
                 placeholder={t.search}
-                className="bg-gray-100 text-zinc-900 px-4 py-2 rounded-full pr-10 shadow-borders-base hidden small:inline-block hover:cursor-not-allowed"
                 title={t.searchUnavailable}
+                className="h-10 w-full border border-ui-border-base bg-ui-bg-subtle px-4 text-sm text-ui-fg-base outline-none transition placeholder:text-ui-fg-muted hover:cursor-not-allowed"
               />
+              <span className="pointer-events-none absolute inset-y-0 end-3 flex items-center text-ui-fg-muted" aria-hidden="true">
+                ⌕
+              </span>
             </div>
+          </div>
 
+          <div className="flex shrink-0 items-center gap-0.5">
             <Preferences initialLocale={locale} />
-            <div className="h-4 w-px bg-neutral-300" />
 
             {customer && cart?.items && cart.items.length > 0 ? (
-              <RequestQuoteConfirmation>
-                <button
-                  className="flex gap-1.5 items-center rounded-2xl bg-none shadow-none border-none hover:bg-neutral-100 px-2 py-1"
-                  // disabled={isPendingApproval}
-                >
-                  <FilePlus />
-                  <span className="hidden small:inline-block">{t.quote}</span>
-                </button>
-              </RequestQuoteConfirmation>
+              <RequestQuoteConfirmation>{quoteButton}</RequestQuoteConfirmation>
             ) : (
-              <RequestQuotePrompt>
-                <button className="flex gap-1.5 items-center rounded-2xl bg-none shadow-none border-none hover:bg-neutral-100 px-2 py-1">
-                  <FilePlus />
-                  <span className="hidden small:inline-block">{t.quote}</span>
-                </button>
-              </RequestQuotePrompt>
+              <RequestQuotePrompt>{quoteButton}</RequestQuotePrompt>
             )}
 
             <Suspense fallback={<SkeletonAccountButton />}>
@@ -85,6 +83,33 @@ export async function NavigationHeader() {
             <Suspense fallback={<SkeletonCartButton />}>
               <CartButton />
             </Suspense>
+          </div>
+        </div>
+
+        <div className="hidden min-h-11 items-center justify-between border-t border-ui-border-base small:flex">
+          <nav aria-label={locale === "fa" ? "ناوبری اصلی" : "Main navigation"}>
+            <ul className="flex items-center gap-7">
+              {nav.map(([label, href], index) => (
+                <li key={label}>
+                  <LocalizedClientLink
+                    href={href}
+                    className={`inline-flex min-h-11 items-center border-b-2 text-sm font-medium transition ${
+                      index === 0
+                        ? "border-teal-700 text-ui-fg-base"
+                        : "border-transparent text-ui-fg-subtle hover:border-teal-600 hover:text-ui-fg-base"
+                    }`}
+                  >
+                    {label}
+                  </LocalizedClientLink>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="text-xs text-ui-fg-muted">
+            {locale === "fa"
+              ? "تجهیزات تخصصی گوش و ادیولوژی"
+              : "Specialist ear & audiology equipment"}
           </div>
         </div>
       </header>
