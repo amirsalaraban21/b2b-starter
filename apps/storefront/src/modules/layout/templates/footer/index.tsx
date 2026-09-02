@@ -1,120 +1,127 @@
-import { listCategories } from "@/lib/data/categories"
-import { listCollections } from "@/lib/data/collections"
-import { Text, clx } from "@medusajs/ui"
 import { cookies } from "next/headers"
-import { getLocale, messages } from "@/lib/i18n"
+import { getLocale } from "@/lib/i18n"
 
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import Brand from "@/modules/layout/components/brand"
 
+const footerCopy = {
+  fa: {
+    intro:
+      "فروشگاه تخصصی تجهیزات معاینه گوش، ادیولوژی، تجهیزات کلینیکی و اقلام مصرفی.",
+    store: "فروشگاه",
+    professional: "حرفه‌ای",
+    account: "حساب کاربری",
+    info: "اطلاعات",
+    products: "همه محصولات",
+    examination: "تجهیزات معاینه گوش",
+    audiology: "تجهیزات ادیولوژی",
+    consumables: "لوازم مصرفی",
+    accessories: "قطعات و لوازم جانبی",
+    professionalPurchase: "خرید حرفه‌ای",
+    quote: "درخواست پیش‌فاکتور",
+    signIn: "ورود به حساب",
+    orders: "سفارش‌ها",
+    cart: "سبد خرید",
+    about: "درباره EarMed",
+    contact: "تماس با ما",
+    copyright: "تمامی حقوق محفوظ است.",
+  },
+  en: {
+    intro:
+      "Specialist store for ear examination, audiology, clinical equipment and consumables.",
+    store: "Store",
+    professional: "Professional",
+    account: "Account",
+    info: "Information",
+    products: "All products",
+    examination: "Ear examination equipment",
+    audiology: "Audiology equipment",
+    consumables: "Consumables",
+    accessories: "Parts & accessories",
+    professionalPurchase: "Professional purchasing",
+    quote: "Request a quote",
+    signIn: "Sign in",
+    orders: "Orders",
+    cart: "Cart",
+    about: "About EarMed",
+    contact: "Contact",
+    copyright: "All rights reserved.",
+  },
+}
+
 export default async function Footer() {
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
-  const t = messages[locale]
-  const { collections } = await listCollections({
-    offset: "0",
-    limit: "6",
-  })
-  const product_categories = await listCategories({
-    offset: 0,
-    limit: 6,
-  })
+  const f = footerCopy[locale]
+
+  const groups = [
+    {
+      title: f.store,
+      links: [
+        [f.products, "/store"],
+        [f.examination, "/store"],
+        [f.audiology, "/store"],
+        [f.consumables, "/store"],
+        [f.accessories, "/store"],
+      ],
+    },
+    {
+      title: f.professional,
+      links: [
+        [f.professionalPurchase, "/professional"],
+        [f.quote, "/account"],
+      ],
+    },
+    {
+      title: f.account,
+      links: [
+        [f.signIn, "/account"],
+        [f.orders, "/account/orders"],
+        [f.cart, "/cart"],
+      ],
+    },
+    {
+      title: f.info,
+      links: [
+        [f.about, "/"],
+        [f.contact, "/"],
+      ],
+    },
+  ]
 
   return (
-    <footer className="border-t border-ui-border-base w-full">
-      <div className="content-container flex flex-col w-full">
-        <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-40">
-          <Brand />
-          <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
-            {product_categories && product_categories?.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  {t.categories}
-                </span>
-                <ul
-                  className="grid grid-cols-1 gap-2"
-                  data-testid="footer-categories"
-                >
-                  {product_categories?.slice(0, 6).map((c) => {
-                    if (c.parent_category) {
-                      return
-                    }
+    <footer className="w-full border-t border-slate-800 bg-slate-950 text-white">
+      <div className="content-container">
+        <div className="grid gap-12 py-14 small:grid-cols-[1.15fr_2fr] small:py-16">
+          <div className="max-w-sm">
+            <Brand className="text-white" />
+            <p className="mt-5 text-sm leading-7 text-slate-400">{f.intro}</p>
+            <div className="mt-8 h-px w-16 bg-teal-500" />
+          </div>
 
-                    const children =
-                      c.category_children?.map((child) => ({
-                        name: child.name,
-                        handle: child.handle,
-                        id: child.id,
-                      })) || null
-
-                    return (
-                      <li
-                        className="flex flex-col gap-2 text-ui-fg-subtle txt-small"
-                        key={c.id}
-                      >
-                        <LocalizedClientLink
-                          className={clx(
-                            "hover:text-ui-fg-base",
-                            children && "txt-small-plus"
-                          )}
-                          href={`/categories/${c.handle}`}
-                          data-testid="category-link"
-                        >
-                          {c.name}
-                        </LocalizedClientLink>
-                        {children && (
-                          <ul className="grid grid-cols-1 ml-3 gap-2">
-                            {children &&
-                              children.map((child) => (
-                                <li key={child.id}>
-                                  <LocalizedClientLink
-                                    className="hover:text-ui-fg-base"
-                                    href={`/categories/${child.handle}`}
-                                    data-testid="category-link"
-                                  >
-                                    {child.name}
-                                  </LocalizedClientLink>
-                                </li>
-                              ))}
-                          </ul>
-                        )}
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-            )}
-            {collections && collections.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  {t.collections}
-                </span>
-                <ul
-                  className={clx(
-                    "grid grid-cols-1 gap-2 text-ui-fg-subtle txt-small",
-                    {
-                      "grid-cols-2": (collections?.length || 0) > 3,
-                    }
-                  )}
-                >
-                  {collections?.slice(0, 6).map((c) => (
-                    <li key={c.id}>
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 small:grid-cols-4">
+            {groups.map((group) => (
+              <div key={group.title}>
+                <h3 className="text-sm font-semibold text-white">{group.title}</h3>
+                <ul className="mt-5 space-y-3">
+                  {group.links.map(([label, href]) => (
+                    <li key={label}>
                       <LocalizedClientLink
-                        className="hover:text-ui-fg-base"
-                        href={`/collections/${c.handle}`}
+                        href={href}
+                        className="text-sm text-slate-400 transition hover:text-teal-300"
                       >
-                        {c.title}
+                        {label}
                       </LocalizedClientLink>
                     </li>
                   ))}
                 </ul>
               </div>
-            )}
+            ))}
           </div>
         </div>
-        <div className="flex w-full mb-16 justify-between text-ui-fg-muted">
-          <Text className="txt-compact-small">
-            © {new Date().getFullYear()} EarMed Store. {t.copyright}
-          </Text>
+
+        <div className="flex flex-col gap-3 border-t border-slate-800 py-6 text-xs text-slate-500 small:flex-row small:items-center small:justify-between">
+          <p>© {new Date().getFullYear()} EarMed Store. {f.copyright}</p>
+          <p>{locale === "fa" ? "تجهیزات تخصصی برای محیط‌های درمانی" : "Specialist equipment for care environments"}</p>
         </div>
       </div>
     </footer>
