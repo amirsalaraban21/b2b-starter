@@ -1,4 +1,4 @@
-import { getDemoProductImage } from "@/lib/product-demo-images"
+import { getDemoProductImage, getDemoProductImageClass } from "@/lib/product-demo-images"
 import { HttpTypes } from "@medusajs/types"
 import { clx } from "@medusajs/ui"
 import React from "react"
@@ -32,6 +32,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
       ? "Hearing Aid Battery Size 312"
       : productTitle
   const initialImage = getDemoProductImage(genericDemoTitle, fallback)
+  const cropClass = getDemoProductImageClass(genericDemoTitle)
 
   return (
     <div
@@ -50,7 +51,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
         <img
           src={initialImage}
           alt={productTitle || ""}
-          className={clx("absolute inset-0 h-full w-full object-contain", {
+          className={clx("absolute object-contain", cropClass ? `h-[200%] w-[200%] max-w-none ${cropClass}` : "inset-0 h-full w-full", {
             "p-4": type === "full",
             "p-2": type === "preview",
           })}
