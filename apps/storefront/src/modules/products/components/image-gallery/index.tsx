@@ -1,9 +1,9 @@
 "use client"
 
+import { getDemoProductImage } from "@/lib/product-demo-images"
 import { ArrowLeftMini, ArrowRightMini } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import { clx, IconButton } from "@medusajs/ui"
-import Image from "next/image"
 import { useCallback, useEffect, useMemo, useState } from "react"
 
 type ImageGalleryProps = {
@@ -11,128 +11,60 @@ type ImageGalleryProps = {
 }
 
 const ImageGallery = ({ product }: ImageGalleryProps) => {
-  const thumbnail = product?.thumbnail
-  const images = useMemo(() => product?.images || [], [product])
+  const realDemoImage = getDemoProductImage(product.title, product.thumbnail || product.images?.[0]?.url)
+  const images = useMemo(() => {
+    if (!realDemoImage) return product?.images || []
+    return [{ id: "real-demo", url: realDemoImage } as HttpTypes.StoreProductImage]
+  }, [product, realDemoImage])
 
-  const [selectedImage, setSelectedImage] = useState(
-    images[0] || {
-      url: thumbnail,
-      id: "thumbnail",
-    }
-  )
+  const [selectedImage, setSelectedImage] = useState<HttpTypes.StoreProductImage | undefined>(images[0])
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
 
-  const handleArrowClick = useCallback(
-    (direction: "left" | "right") => {
-      if (
-        images.length === 0 ||
-        (selectedImageIndex === 0 && direction === "left") ||
-        (selectedImageIndex === images.length - 1 && direction === "right")
-      ) {
-        return
-      }
+  useEffect(() => {
+    setSelectedImage(images[0])
+    setSelectedImageIndex(0)
+  }, [images])
 
-      if (direction === "left") {
-        setSelectedImageIndex((prev) => prev - 1)
-        setSelectedImage(images[selectedImageIndex - 1])
-      } else {
-        setSelectedImageIndex((prev) => prev + 1)
-        setSelectedImage(images[selectedImageIndex + 1])
-      }
-    },
-    [images, selectedImageIndex]
-  )
-
-  const handleImageClick = useCallback(
-    (image: HttpTypes.StoreProductImage) => {
-      setSelectedImage(image)
-      setSelectedImageIndex(images.findIndex((img) => img.id === image.id))
-    },
-    [images]
-  )
+  const handleArrowClick = useCallback((direction: "left" | "right") => {
+    if (!images.length) return
+    const nextIndex = direction === "left" ? selectedImageIndex - 1 : selectedImageIndex + 1
+    if (nextIndex < 0 || nextIndex >= images.length) return
+    setSelectedImageIndex(nextIndex)
+    setSelectedImage(images[nextIndex])
+  }, [images, selectedImageIndex])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (document.activeElement instanceof HTMLInputElement) {
-        return
-      }
-
-      if (e.key === "ArrowLeft") {
-        handleArrowClick("left")
-      } else if (e.key === "ArrowRight") {
-        handleArrowClick("right")
-      }
+      if (document.activeElement instanceof HTMLInputElement) return
+      if (e.key === "ArrowLeft") handleArrowClick("left")
+      if (e.key === "ArrowRight") handleArrowClick("right")
     }
-
     window.addEventListener("keydown", handleKeyDown)
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-    }
+    return () => window.removeEventListener("keydown", handleKeyDown)
   }, [handleArrowClick])
 
   return (
-    <div className="flex flex-col justify-end items-center bg-neutral-100 p-8 pt-0 gap-6 w-full h-full">
-      <div
-        className="relative aspect-[29/34] w-full overflow-hidden"
-        id={selectedImage.id}
-      >
-        <div className="flex p-48">
-          {!!selectedImage.url && (
-            <Image
-              src={selectedImage.url}
-              priority
-              className="absolute inset-0 rounded-rounded p-20 overflow-visible object-contain"
-              alt={(selectedImage.metadata?.alt as string) || ""}
-              fill
-              sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
-            />
-          )}
-        </div>
-      </div>
-      <div className="flex small:flex-row flex-col-reverse gap-y-3 justify-between w-full">
-        {images.length > 1 && (
-          <div className="flex flex-row gap-x-2 self-end small:self-auto">
-            <IconButton
-              disabled={selectedImageIndex === 0}
-              className="rounded-full items-center justify-center"
-              onClick={() => handleArrowClick("left")}
-            >
-              <ArrowLeftMini />
-            </IconButton>
-            <IconButton
-              disabled={selectedImageIndex === images.length - 1}
-              className="rounded-full items-center justify-center"
-              onClick={() => handleArrowClick("right")}
-            >
-              <ArrowRightMini />
-            </IconButton>
-          </div>
+    <div className="flex h-full w-full flex-col items-center justify-center gap-5 rounded-2xl border border-slate-200 bg-slate-50 p-5 small:p-8">
+      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white">
+        {selectedImage?.url && (
+          <img src={selectedImage.url} alt={product.title || ""} className="absolute inset-0 h-full w-full object-contain p-8 small:p-12" />
         )}
-        <ul className="flex flex-row gap-x-4 overflow-x-auto">
-          {images.map((image, index) => (
-            <li
-              key={image.id}
-              className="flex aspect-[1/1] w-8 h-8 rounded-rounded"
-              onClick={() => handleImageClick(image)}
-              role="button"
-            >
-              <Image
-                src={image.url}
-              alt={(image.metadata?.alt as string) || ""}
-              height={32}
-              width={32}
-              sizes="32px"
-              loading="lazy"
-                className={clx(
-                  index === selectedImageIndex ? "opacity-100" : "opacity-40",
-                  "hover:opacity-100 object-contain"
-                )}
-              />
-            </li>
-          ))}
-        </ul>
       </div>
+      {images.length > 1 && (
+        <div className="flex w-full items-center justify-between">
+          <div className="flex gap-2">
+            <IconButton disabled={selectedImageIndex === 0} className="rounded-full" onClick={() => handleArrowClick("left")}><ArrowLeftMini /></IconButton>
+            <IconButton disabled={selectedImageIndex === images.length - 1} className="rounded-full" onClick={() => handleArrowClick("right")}><ArrowRightMini /></IconButton>
+          </div>
+          <ul className="flex gap-2 overflow-x-auto">
+            {images.map((image, index) => (
+              <li key={image.id} onClick={() => { setSelectedImage(image); setSelectedImageIndex(index) }} role="button" className={clx("h-14 w-14 overflow-hidden rounded-lg border bg-white p-1", index === selectedImageIndex ? "border-teal-500" : "border-slate-200")}>
+                <img src={image.url} alt="" className="h-full w-full object-contain" />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   )
 }
