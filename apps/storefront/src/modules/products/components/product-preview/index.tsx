@@ -18,19 +18,21 @@ export default async function ProductPreview({
 }) {
   if (!product) return null
 
-  const { cheapestPrice } = getProductPrice({ product })
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
+  const { cheapestPrice } = getProductPrice({ product, locale: locale === "fa" ? "fa-IR" : "en-US" })
   const fa = locale === "fa"
   const title = fa && typeof product.metadata?.fa_title === "string" ? product.metadata.fa_title : product.title
-  const shortDescription = fa && typeof product.metadata?.fa_short_description === "string"
-    ? product.metadata.fa_short_description
+  const shortDescription = fa
+    ? typeof product.metadata?.fa_short_description === "string"
+      ? product.metadata.fa_short_description
+      : null
     : product.subtitle
   const isAvailable = product.variants?.some(
     (variant) => !variant.manage_inventory || (variant.inventory_quantity || 0) > 0
   )
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-200 hover:border-teal-300 hover:shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+    <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-200 motion-reduce:transform-none motion-reduce:transition-none hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
       <LocalizedClientLink
         href={`/products/${product.handle}`}
         className="relative block bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700"
@@ -38,7 +40,7 @@ export default async function ProductPreview({
         <div className="absolute start-3 top-3 z-10 rounded-full border border-slate-200 bg-white/95 px-2.5 py-1 text-[11px] font-medium text-slate-600 shadow-sm">
           {isAvailable ? (fa ? "موجود" : "In stock") : (fa ? "ناموجود" : "Unavailable")}
         </div>
-        <div className="aspect-square w-full p-5 small:p-6">
+        <div className="aspect-square w-full p-5 transition-transform duration-300 motion-reduce:transform-none motion-reduce:transition-none group-hover:scale-[1.03] small:p-6">
           <Thumbnail thumbnail={product.thumbnail} images={product.images} productTitle={product.title} size="square" isFeatured={isFeatured} />
         </div>
       </LocalizedClientLink>
