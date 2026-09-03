@@ -6,6 +6,7 @@ import { Pagination } from "@/modules/store/components/pagination"
 import { SortOptions } from "@/modules/store/components/refinement-list/sort-products"
 import { B2BCustomer } from "@/types"
 import { cookies } from "next/headers"
+import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 
 const PRODUCT_LIMIT = 12
 
@@ -16,6 +17,7 @@ type PaginatedProductsParams = {
   id?: string[]
   order?: string
   customer_group_id?: string
+  q?: string
 }
 
 export default async function PaginatedProducts({
@@ -27,6 +29,9 @@ export default async function PaginatedProducts({
   countryCode,
   customer,
   optionValueIds,
+  batterySize,
+  availability,
+  query,
 }: {
   sortBy?: SortOptions
   page: number
@@ -36,6 +41,9 @@ export default async function PaginatedProducts({
   countryCode: string
   customer?: B2BCustomer | null
   optionValueIds?: string[]
+  batterySize?: string
+  availability?: "in-stock" | "out-of-stock"
+  query?: string
 }) {
   const queryParams: PaginatedProductsParams = { limit: PRODUCT_LIMIT }
 
@@ -50,13 +58,13 @@ export default async function PaginatedProducts({
 
   const {
     response: { products, count },
-  } = await listProductsWithSort({ page, queryParams, sortBy, countryCode, optionValueIds })
+  } = await listProductsWithSort({ page, queryParams, sortBy, countryCode, optionValueIds, batterySize, availability, searchQuery: query })
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
 
   return (
     <>
-      <div className="mb-5 flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-600">
+      <div className="mb-5 flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:bg-slate-900 dark:text-slate-300">
         <span>
           {locale === "fa" ? `${count.toLocaleString("fa-IR")} محصول` : `${count} products`}
         </span>
@@ -66,20 +74,24 @@ export default async function PaginatedProducts({
       </div>
 
       {products.length > 0 ? (
-        <ul className="grid w-full grid-cols-2 gap-x-4 gap-y-7 medium:grid-cols-3 large:grid-cols-4" data-testid="products-list">
+        <ul className="grid w-full grid-cols-2 gap-x-3 gap-y-6 medium:grid-cols-3 large:grid-cols-4" data-testid="products-list">
           {products.map((product) => (
             <li key={product.id} className="min-w-0">
-              <ProductPreview product={product} region={region} />
+              <ProductPreview product={product} region={region} catalogMode />
             </li>
           ))}
         </ul>
       ) : (
-        <div className="flex min-h-72 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+        <div className="flex min-h-72 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center dark:border-slate-700 dark:bg-slate-900">
           <div>
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white text-xl shadow-sm">⌕</div>
-            <p className="font-semibold text-slate-900">
-              {locale === "fa" ? "محصولی پیدا نشد" : "No products found"}
+            <p className="font-semibold text-slate-900 dark:text-slate-50">
+              {locale === "fa" ? "محصولی با این فیلترها پیدا نشد." : "No products match these filters."}
             </p>
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
+              <LocalizedClientLink href={query ? `/store?q=${encodeURIComponent(query)}` : "/store"} className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-bold transition hover:border-teal-600 dark:border-slate-700">{locale === "fa" ? "پاک کردن فیلترها" : "Clear filters"}</LocalizedClientLink>
+              <LocalizedClientLink href="/store" className="rounded-lg bg-teal-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-teal-800">{locale === "fa" ? "بازگشت به همه محصولات" : "Browse all products"}</LocalizedClientLink>
+            </div>
             <p className="mt-2 text-sm text-slate-500">
               {locale === "fa" ? "فیلترها را تغییر دهید یا دوباره همه محصولات را ببینید." : "Try changing the filters or browse all products again."}
             </p>

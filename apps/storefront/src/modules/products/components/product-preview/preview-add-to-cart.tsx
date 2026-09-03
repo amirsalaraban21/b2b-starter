@@ -9,9 +9,11 @@ import { useState } from "react"
 const PreviewAddToCart = ({
   product,
   region,
+  label = "Add to cart",
 }: {
   product: StoreProduct
   region: StoreRegion
+  label?: string
 }) => {
   const [isAdding, setIsAdding] = useState(false)
 
@@ -37,6 +39,8 @@ const PreviewAddToCart = ({
   }
   return (
     <Button
+      aria-label={label}
+      title={label}
       className="rounded-full p-3 border-none shadow-none"
       onClick={(e) => {
         e.preventDefault()

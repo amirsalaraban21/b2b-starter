@@ -141,6 +141,9 @@ export const listProductsWithSort = async ({
   sortBy = "created_at",
   countryCode,
   optionValueIds,
+  batterySize,
+  availability,
+  searchQuery,
 }: {
   page?: number
   queryParams?: HttpTypes.FindParams &
@@ -148,6 +151,9 @@ export const listProductsWithSort = async ({
   sortBy?: SortOptions
   countryCode: string
   optionValueIds?: string[]
+  batterySize?: string
+  availability?: "in-stock" | "out-of-stock"
+  searchQuery?: string
 }): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number }
   nextPage: number | null
@@ -173,7 +179,31 @@ export const listProductsWithSort = async ({
     countryCode,
   })
 
-  const sortedProducts = sortProducts(products, sortBy)
+  const filteredProducts = products.filter((product) => {
+    const specifications = product.metadata?.specifications
+    const productBatterySize =
+      specifications && typeof specifications === "object" && !Array.isArray(specifications)
+        ? (specifications as Record<string, unknown>).battery_size
+        : undefined
+    const isAvailable = product.variants?.some(
+      (variant) => !variant.manage_inventory || (variant.inventory_quantity || 0) > 0
+    )
+    const searchableText = [
+      product.title,
+      product.subtitle,
+      product.description,
+      product.metadata?.fa_title,
+      product.metadata?.fa_short_description,
+    ].filter((value): value is string => typeof value === "string").join(" ").toLocaleLowerCase()
+
+    if (searchQuery && !searchableText.includes(searchQuery.trim().toLocaleLowerCase())) return false
+    if (batterySize && String(productBatterySize) !== batterySize) return false
+    if (availability === "in-stock" && !isAvailable) return false
+    if (availability === "out-of-stock" && isAvailable) return false
+    return true
+  })
+
+  const sortedProducts = sortProducts(filteredProducts, sortBy)
   const effectiveCount = sortedProducts.length
   const pageParam = (page - 1) * limit
   const nextPage =

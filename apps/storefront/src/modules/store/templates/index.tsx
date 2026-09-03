@@ -1,64 +1,76 @@
+import { getCategoryImageKey, getLocalizedCategoryName } from "@/lib/category-localization"
 import { getLocale } from "@/lib/i18n"
-import { departmentReferenceImages } from "@/lib/product-demo-images"
+import { departmentImageByKey } from "@/lib/product-demo-images"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import SkeletonProductGrid from "@/modules/skeletons/templates/skeleton-product-grid"
-import RefinementList from "@/modules/store/components/refinement-list"
+import CatalogControls from "@/modules/store/components/catalog-controls"
 import { SortOptions } from "@/modules/store/components/refinement-list/sort-products"
 import PaginatedProducts from "@/modules/store/templates/paginated-products"
 import { HttpTypes } from "@medusajs/types"
 import { cookies } from "next/headers"
 import { Suspense } from "react"
 
-const StoreTemplate = async ({ sortBy, page, countryCode, categories }: {
+type StoreTemplateProps = {
   sortBy?: SortOptions
   page?: string
   countryCode: string
-  categories?: HttpTypes.StoreProductCategory[]
-}) => {
-  const pageNumber = page ? parseInt(page) : 1
+  categories: HttpTypes.StoreProductCategory[]
+  category?: string
+  batterySize?: string
+  availability?: "in-stock" | "out-of-stock"
+  query?: string
+}
+
+const StoreTemplate = async ({ sortBy, page, countryCode, categories, category, batterySize, availability, query }: StoreTemplateProps) => {
+  const pageNumber = Math.max(Number.parseInt(page || "1", 10) || 1, 1)
   const sort = sortBy || "created_at"
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
   const fa = locale === "fa"
+  const selectedCategory = categories.find((item) => item.handle === category)
 
-  const departments = fa
-    ? [["باتری سمعک", "۱۰ · ۱۳ · ۳۱۲ · ۶۷۵", "bg-amber-50"], ["نظافت و نگهداری", "اسپری · دستمال · برس", "bg-cyan-50"], ["رطوبت‌گیر و خشک‌کن", "کپسول · ظرف · کیت", "bg-teal-50"], ["قطعات مصرفی", "فیلتر · دام · تیوب", "bg-slate-100"]]
-    : [["Hearing aid batteries", "10 · 13 · 312 · 675", "bg-amber-50"], ["Cleaning & care", "Spray · wipes · brushes", "bg-cyan-50"], ["Drying & moisture care", "Capsules · cups · kits", "bg-teal-50"], ["Consumable parts", "Guards · domes · tubing", "bg-slate-100"]]
+  const categoryHref = (handle: string) => {
+    const params = new URLSearchParams()
+    params.set("category", handle)
+    if (query) params.set("q", query)
+    if (sort !== "created_at") params.set("sortBy", sort)
+    return `/store?${params.toString()}`
+  }
 
   return (
-    <main dir={fa ? "rtl" : "ltr"} className="bg-white text-slate-950">
-      <section className="border-b border-slate-200 bg-[#f6f9f9]">
-        <div className="content-container py-8 small:py-10">
-          <div className="flex flex-col gap-5 medium:flex-row medium:items-end medium:justify-between">
-            <div>
-              <div className="mb-2 flex items-center gap-2 text-xs text-slate-500"><LocalizedClientLink href="/" className="hover:text-teal-700">{fa ? "خانه" : "Home"}</LocalizedClientLink><span>/</span><span>{fa ? "فروشگاه" : "Store"}</span></div>
-              <h1 className="text-3xl font-bold small:text-4xl">{fa ? "فروشگاه لوازم سمعک" : "Hearing aid supplies"}</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">{fa ? "باتری، لوازم نگهداری و قطعات مصرفی؛ همه در یک کاتالوگ تخصصی." : "Batteries, care products and replacement consumables in one focused catalog."}</p>
-            </div>
-            <LocalizedClientLink href="/account" className="w-fit rounded-lg border border-teal-200 bg-white px-4 py-2.5 text-sm font-bold text-teal-800 hover:border-teal-400">{fa ? "خرید حرفه‌ای برای مراکز" : "Professional purchasing"}</LocalizedClientLink>
+    <main dir={fa ? "rtl" : "ltr"} className="min-h-screen bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-50">
+      <section className="border-b border-slate-200 bg-[#f5f8f8] dark:border-slate-800 dark:bg-slate-900/70">
+        <div className="content-container py-7 small:py-9">
+          <div className="mb-2 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <LocalizedClientLink href="/" className="transition hover:text-teal-700">{fa ? "خانه" : "Home"}</LocalizedClientLink><span>/</span><span>{fa ? "فروشگاه" : "Store"}</span>
+          </div>
+          <div className="flex flex-col gap-2 medium:flex-row medium:items-end medium:justify-between">
+            <div><h1 className="text-3xl font-black tracking-tight small:text-4xl">{fa ? "فروشگاه لوازم سمعک" : "Hearing aid supplies"}</h1><p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-300">{fa ? "محصولات مصرفی، نگهداری و مراقبت روزمره سمعک" : "Consumables, maintenance and everyday hearing aid care"}</p></div>
+            {query && <p className="text-sm font-semibold text-teal-800 dark:text-teal-300">{fa ? `نتایج جستجو برای «${query}»` : `Search results for “${query}”`}</p>}
           </div>
 
-          <div className="mt-7 grid gap-3 xsmall:grid-cols-2 medium:grid-cols-4">
-            {departments.map(([title, subtitle, tone], index) => (
-              <LocalizedClientLink href="/store" key={title} className="group overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-teal-300 hover:shadow-sm">
-                <div className={`${tone} relative h-32 overflow-hidden`}>
-                  <img src={departmentReferenceImages[index]} alt="" className="h-full w-full object-contain p-3 transition duration-200 group-hover:scale-105" />
-                  <span className="absolute start-3 top-3 rounded-full bg-white/90 px-2 py-1 text-[10px] font-black text-slate-500">0{index + 1}</span>
-                </div>
-                <div className="p-4"><h2 className="text-sm font-bold">{title}</h2><p className="mt-1 text-xs text-slate-500">{subtitle}</p></div>
-              </LocalizedClientLink>
-            ))}
+          <div className="mt-6 grid grid-cols-2 gap-3 medium:grid-cols-5">
+            {categories.map((item) => {
+              const selected = item.handle === category
+              const imageKey = getCategoryImageKey(item.handle)
+              return (
+                <LocalizedClientLink key={item.id} href={categoryHref(item.handle)} aria-current={selected ? "true" : undefined} className={`group overflow-hidden rounded-xl border bg-white transition duration-300 motion-reduce:transition-none ${selected ? "border-teal-600 ring-2 ring-teal-600/15 dark:border-teal-400" : "border-slate-200 hover:-translate-y-0.5 hover:border-teal-300 hover:shadow-md motion-reduce:transform-none dark:border-slate-700 dark:bg-slate-900 dark:hover:border-teal-700"}`}>
+                  <div className="relative aspect-[4/3] overflow-hidden bg-slate-50 dark:bg-slate-800"><img src={departmentImageByKey[imageKey]} alt="" className="h-full w-full object-contain p-2 transition duration-300 group-hover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none" /></div>
+                  <div className="p-3"><h2 className="text-xs font-bold leading-5 small:text-sm">{getLocalizedCategoryName(item, locale)}</h2></div>
+                </LocalizedClientLink>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      <section className="content-container py-8 small:py-10" data-testid="category-container">
-        <div className="mb-6 flex items-center justify-between gap-4 border-b border-slate-200 pb-5">
-          <div><h2 className="text-xl font-bold">{fa ? "همه محصولات" : "All products"}</h2><p className="mt-1 text-xs text-slate-500">{fa ? "برای پیدا کردن سریع‌تر، جستجو یا مرتب‌سازی کنید." : "Search or sort to find products faster."}</p></div>
-          <LocalizedClientLink href="/" className="text-xs font-bold text-teal-700 hover:underline">{fa ? "بازگشت به خانه" : "Back home"}</LocalizedClientLink>
-        </div>
-        <div className="grid gap-7 small:grid-cols-[220px_minmax(0,1fr)] medium:grid-cols-[240px_minmax(0,1fr)]">
-          <aside className="min-w-0"><div className="rounded-xl border border-slate-200 bg-white p-4 small:sticky small:top-24"><div className="mb-4 border-b border-slate-100 pb-3"><p className="text-sm font-bold">{fa ? "جستجو و مرتب‌سازی" : "Search & sort"}</p></div><RefinementList sortBy={sort} categories={categories} /></div></aside>
-          <div className="min-w-0"><Suspense fallback={<SkeletonProductGrid />}><PaginatedProducts sortBy={sort} page={pageNumber} countryCode={countryCode} /></Suspense></div>
+      <section className="content-container py-7 small:py-10" data-testid="category-container">
+        <div className="grid gap-5 small:grid-cols-[240px_minmax(0,1fr)] medium:grid-cols-[260px_minmax(0,1fr)]">
+          <CatalogControls categories={categories} locale={locale} sortBy={sort} category={category} batterySize={batterySize} availability={availability} query={query} />
+          <div className="min-w-0">
+            <Suspense fallback={<SkeletonProductGrid />}>
+              <PaginatedProducts sortBy={sort} page={pageNumber} countryCode={countryCode} categoryId={selectedCategory?.id} batterySize={batterySize} availability={availability} query={query} />
+            </Suspense>
+          </div>
         </div>
       </section>
     </main>

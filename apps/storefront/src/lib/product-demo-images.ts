@@ -6,6 +6,13 @@ const assets = {
   hero: "/products/earmed/care-assortment-v2.png",
 } as const
 
+export const departmentImageByKey = {
+  battery: assets.battery,
+  cleaning: assets.cleaning,
+  drying: assets.drying,
+  consumable: assets.consumable,
+} as const
+
 const titleValue = (title?: string | null) => (title || "").toLowerCase()
 
 export const getDemoProductImage = (title?: string | null, fallback?: string | null) => {
