@@ -6,8 +6,8 @@ export default function CheckoutLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="mb-2 w-full bg-white relative small:min-h-screen">
-      <div className="h-16 bg-white">
+    <div className="w-full bg-white relative min-h-screen dark:bg-slate-950">
+      <div className="h-16 border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
         <nav className="flex h-full items-center content-container justify-between">
           <Brand />
         </nav>
