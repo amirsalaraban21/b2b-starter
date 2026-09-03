@@ -4,6 +4,7 @@ import { QUOTE_MODULE } from "./src/modules/quote"
 import { APPROVAL_MODULE } from "./src/modules/approval"
 import { COMPANY_MODULE } from "./src/modules/company"
 import { PROFESSIONAL_APPLICATION_MODULE } from "./src/modules/professional-application"
+import { MANUAL_PAYMENT_MODULE } from "./src/modules/manual-payment"
 import { loadEnv, defineConfig } from "@medusajs/framework/utils"
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd())
@@ -50,6 +51,9 @@ module.exports = defineConfig({
     },
     [PROFESSIONAL_APPLICATION_MODULE]: {
       resolve: "./modules/professional-application",
+    },
+    [MANUAL_PAYMENT_MODULE]: {
+      resolve: "./modules/manual-payment",
     },
   },
 })

@@ -36,6 +36,9 @@ importers:
       '@medusajs/cli':
         specifier: 2.19.0
         version: 2.19.0(@types/node@20.19.27)
+      '@medusajs/core-flows':
+        specifier: 2.19.0
+        version: 2.19.0(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.19.27))(@types/node@20.19.27)(ioredis@5.8.2)(vite@7.3.6(@types/node@20.19.27)(jiti@2.7.0)(terser@5.44.1)(yaml@2.9.0))(zod@4.2.0))
       '@medusajs/dashboard':
         specifier: 2.19.0
         version: 2.19.0(@sinclair/typebox@0.34.41)(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(ajv-formats@2.1.1(ajv@8.13.0))(ajv@8.13.0)(typescript@5.9.3)
@@ -54,6 +57,9 @@ importers:
       '@tanstack/react-query':
         specifier: 5.64.2
         version: 5.64.2(react@18.3.1)
+      multer:
+        specifier: 2.2.0
+        version: 2.2.0
       react-i18next:
         specifier: 13.5.0
         version: 13.5.0(i18next@23.7.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
