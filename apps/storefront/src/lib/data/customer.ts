@@ -9,7 +9,6 @@ import { track } from "@vercel/analytics/server"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import { retrieveCart, updateCart } from "./cart"
-import { createCompany, createEmployee } from "./companies"
 import {
   getAuthHeaders,
   getCacheOptions,
@@ -64,12 +63,17 @@ export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
 
 export async function signup(_currentState: unknown, formData: FormData) {
   const password = formData.get("password") as string
+  const locale = formData.get("locale") === "en" ? "en" : "fa"
+  const phone = normalizeIranianMobile(formData.get("phone") as string)
   const customerForm = {
     email: formData.get("email") as string,
     first_name: formData.get("first_name") as string,
     last_name: formData.get("last_name") as string,
-    phone: formData.get("phone") as string,
-    company_name: formData.get("company_name") as string,
+    phone: phone || undefined,
+  }
+
+  if (!customerForm.email || !customerForm.first_name || !customerForm.last_name || !password || !phone) {
+    return locale === "fa" ? "لطفاً اطلاعات خواسته‌شده را کامل کنید." : "Please complete all required fields."
   }
 
   try {
@@ -91,41 +95,16 @@ export async function signup(_currentState: unknown, formData: FormData) {
       password,
     })
 
-    setAuthToken(loginToken as string)
-
-    const companyForm = {
-      name: formData.get("company_name") as string,
-      email: formData.get("email") as string,
-      phone: formData.get("company_phone") as string,
-      address: formData.get("company_address") as string,
-      city: formData.get("company_city") as string,
-      state: formData.get("company_state") as string,
-      zip: formData.get("company_zip") as string,
-      country: formData.get("company_country") as string,
-      currency_code: formData.get("currency_code") as string,
-    }
-
-    const createdCompany = await createCompany(companyForm)
-
-    const createdEmployee = await createEmployee({
-      company_id: createdCompany?.id as string,
-      customer_id: createdCustomer.id,
-      is_admin: true,
-      spending_limit: 0,
-    }).catch((err) => {
-    })
+    await setAuthToken(loginToken as string)
 
     const cacheTag = await getCacheTag("customers")
     revalidateTag(cacheTag)
 
     await transferCart()
 
-    return {
-      customer: createdCustomer,
-      company: createdCompany,
-      employee: createdEmployee,
-    }
+    redirect(safeReturnPath(formData.get("return_to"), formData.get("country_code")))
   } catch (error: any) {
+    if (error?.digest?.startsWith?.("NEXT_REDIRECT")) throw error
     return error.toString()
   }
 }
@@ -139,7 +118,7 @@ export async function login(_currentState: unknown, formData: FormData) {
       .login("customer", "emailpass", { email, password })
       .then(async (token) => {
         track("customer_logged_in")
-        setAuthToken(token as string)
+        await setAuthToken(token as string)
 
         const [customerCacheTag, productsCacheTag, cartsCacheTag] =
           await Promise.all([
@@ -174,6 +153,14 @@ export async function login(_currentState: unknown, formData: FormData) {
   } catch (error: any) {
     return error.toString()
   }
+
+  redirect(safeReturnPath(formData.get("return_to"), formData.get("country_code")))
+}
+
+function safeReturnPath(value: FormDataEntryValue | null, countryCodeValue: FormDataEntryValue | null) {
+  const countryCode = typeof countryCodeValue === "string" && /^[a-z]{2}$/i.test(countryCodeValue) ? countryCodeValue.toLowerCase() : "ir"
+  if (typeof value === "string" && value.startsWith("/") && !value.startsWith("//") && !value.includes("\\")) return value
+  return `/${countryCode}/account`
 }
 
 export async function signout(countryCode: string, customerId: string) {

@@ -1,146 +1,27 @@
-import OrderCard from "@/modules/account/components/order-card"
-import PreviouslyPurchasedProducts from "@/modules/account/components/previously-purchased"
+import { Locale } from "@/lib/i18n"
+import LocalizedClientLink from "@/modules/common/components/localized-client-link"
+import ProfessionalStatus from "@/modules/account/components/professional-status"
 import { B2BCustomer } from "@/types/global"
 import { HttpTypes } from "@medusajs/types"
-import { Heading } from "@medusajs/ui"
-import ProfessionalStatus from "@/modules/account/components/professional-status"
 
-type OverviewProps = {
-  customer: B2BCustomer | null
-  orders: HttpTypes.StoreOrder[] | null
-  region?: HttpTypes.StoreRegion | null
-}
-
-const Overview = ({ customer, orders }: OverviewProps) => {
+const Overview = ({ customer, orders, locale }: { customer: B2BCustomer; orders: HttpTypes.StoreOrder[] | null; locale: Locale }) => {
+  const fa = locale === "fa"
+  const cards = [
+    { href: "/account/orders", title: fa ? "سفارش‌های من" : "My orders", detail: fa ? `${(orders?.length || 0).toLocaleString("fa-IR")} سفارش` : `${orders?.length || 0} orders` },
+    { href: "/account/addresses", title: fa ? "آدرس‌های من" : "My addresses", detail: fa ? `${(customer.addresses?.length || 0).toLocaleString("fa-IR")} آدرس ذخیره‌شده` : `${customer.addresses?.length || 0} saved addresses` },
+    { href: "/account/profile", title: fa ? "اطلاعات حساب" : "Account details", detail: customer.email },
+  ]
   return (
-    <div data-testid="overview-page-wrapper">
-      <div className="hidden small:block">
-        <div className="text-xl-semi flex justify-between items-center mb-4">
-          <span data-testid="welcome-message" data-value={customer?.first_name}>
-            Hello {customer?.first_name}
-          </span>
-          <span className="text-small-regular text-ui-fg-base">
-            Signed in as:{" "}
-            <span
-              className="font-semibold"
-              data-testid="customer-email"
-              data-value={customer?.email}
-            >
-              {customer?.email}
-            </span>
-          </span>
-        </div>
-        <div className="flex flex-col gap py-8 border-t border-gray-200">
-          <div className="mb-6"><ProfessionalStatus /></div>
-          <div className="flex flex-col gap-y-8 h-full col-span-1 row-span-2 flex-1">
-            <div className="flex items-start gap-x-16 mb-6">
-              <div className="flex flex-col gap-y-4">
-                <h3 className="text-large-semi">Profile</h3>
-                <div className="flex items-end gap-x-2">
-                  <span
-                    className="text-3xl-semi leading-none"
-                    data-testid="customer-profile-completion"
-                    data-value={getProfileCompletion(customer)}
-                  >
-                    {getProfileCompletion(customer)}%
-                  </span>
-                  <span className="uppercase text-base-regular text-ui-fg-subtle">
-                    Completed
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-y-4">
-                <h3 className="text-large-semi">Addresses</h3>
-                <div className="flex items-end gap-x-2">
-                  <span
-                    className="text-3xl-semi leading-none"
-                    data-testid="addresses-count"
-                    data-value={customer?.addresses?.length || 0}
-                  >
-                    {customer?.addresses?.length || 0}
-                  </span>
-                  <span className="uppercase text-base-regular text-ui-fg-subtle">
-                    Saved
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-y-4">
-              <div className="flex items-center gap-x-2">
-                <Heading level="h3" className="text-xl text-neutral-950">
-                  Recent orders
-                </Heading>
-              </div>
-              <div
-                className="flex flex-col gap-y-2"
-                data-testid="orders-wrapper"
-              >
-                {orders && orders.length > 0 ? (
-                  orders
-                    .slice(0, 5)
-                    .map((order) => <OrderCard order={order} key={order.id} />)
-                ) : (
-                  <span data-testid="no-orders-message">No recent orders</span>
-                )}
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-y-4">
-              <div className="flex items-center gap-x-2">
-                <Heading level="h3" className="text-xl text-neutral-950">
-                  Previously purchased items
-                </Heading>
-              </div>
-              <div
-                className="flex flex-col gap-y-2"
-                data-testid="previously-purchased-items-wrapper"
-              >
-                {orders && orders.length > 0 ? (
-                  <PreviouslyPurchasedProducts orders={orders} />
-                ) : (
-                  <span data-testid="no-previously-purchased-items-message">
-                    No previously purchased items
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+    <div dir={fa ? "rtl" : "ltr"} data-testid="overview-page-wrapper">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 small:p-8">
+        <p className="text-sm font-bold text-teal-700 dark:text-teal-300">EarMed</p>
+        <h1 className="mt-2 text-3xl font-black" data-testid="welcome-message">{fa ? `سلام، ${customer.first_name || "دوست عزیز"}` : `Hello, ${customer.first_name || "there"}`}</h1>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{fa ? "سفارش‌ها، آدرس‌ها و اطلاعات حساب خود را مدیریت کنید." : "Manage your orders, addresses and account details."}</p>
       </div>
+      <div className="mt-5 grid gap-4 medium:grid-cols-3">{cards.map((card) => <LocalizedClientLink key={card.href} href={card.href} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 dark:border-slate-800 dark:bg-slate-900 motion-reduce:transform-none motion-reduce:transition-none"><h2 className="text-lg font-black">{card.title}</h2><p className="mt-2 truncate text-sm text-slate-500 dark:text-slate-400">{card.detail}</p></LocalizedClientLink>)}</div>
+      <div className="mt-5"><ProfessionalStatus locale={locale} /></div>
     </div>
   )
-}
-
-const getProfileCompletion = (customer: B2BCustomer | null) => {
-  let count = 0
-
-  if (!customer) {
-    return 0
-  }
-
-  if (customer.email) {
-    count++
-  }
-
-  if (customer.first_name && customer.last_name) {
-    count++
-  }
-
-  if (customer.phone) {
-    count++
-  }
-
-  const billingAddress = customer.addresses?.find(
-    (addr) => addr.is_default_billing
-  )
-
-  if (billingAddress) {
-    count++
-  }
-
-  return (count / 4) * 100
 }
 
 export default Overview

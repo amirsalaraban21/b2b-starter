@@ -11,17 +11,21 @@ import { B2BCustomer } from "@/types/global"
 import { ArrowRightOnRectangle, BuildingStorefront } from "@medusajs/icons"
 import { clx } from "@medusajs/ui"
 import { useParams, usePathname } from "next/navigation"
+import { Locale } from "@/lib/i18n"
 
 const AccountNav = ({
   customer,
   numPendingApprovals,
+  locale,
 }: {
   customer: B2BCustomer | null
   numPendingApprovals: number
+  locale: Locale
 }) => {
   const route = usePathname()
 
   const { countryCode } = useParams() as { countryCode: string }
+  const fa = locale === "fa"
 
   const handleLogout = async () => {
     await signout(countryCode, customer?.id as string)
@@ -38,13 +42,13 @@ const AccountNav = ({
           >
             <>
               <ChevronDown className="transform rotate-90" />
-              <span>Account</span>
+              <span>{fa ? "حساب کاربری" : "Account"}</span>
             </>
           </LocalizedClientLink>
         ) : (
           <>
             <div className="text-xl-semi mb-4 px-8">
-              Hello {customer?.first_name}
+              {fa ? `سلام، ${customer?.first_name || "دوست عزیز"}` : `Hello, ${customer?.first_name || "there"}`}
             </div>
             <div className="text-base-regular">
               <ul>
@@ -57,7 +61,7 @@ const AccountNav = ({
                     <>
                       <div className="flex items-center gap-x-2">
                         <User size={20} />
-                        <span>Profile</span>
+                        <span>{fa ? "اطلاعات حساب" : "Profile"}</span>
                       </div>
                       <ChevronDown className="transform -rotate-90" />
                     </>
@@ -72,7 +76,7 @@ const AccountNav = ({
                     <>
                       <div className="flex items-center gap-x-2">
                         <BuildingStorefront width={20} />
-                        <span>Company</span>
+                        <span>{fa ? "سازمان" : "Company"}</span>
                       </div>
                       <ChevronDown className="transform -rotate-90" />
                     </>
@@ -87,7 +91,7 @@ const AccountNav = ({
                     <>
                       <div className="flex items-center gap-x-2">
                         <MapPin size={20} />
-                        <span>Addresses</span>
+                        <span>{fa ? "آدرس‌ها" : "Addresses"}</span>
                       </div>
                       <ChevronDown className="transform -rotate-90" />
                     </>
@@ -101,7 +105,7 @@ const AccountNav = ({
                   >
                     <div className="flex items-center gap-x-2">
                       <Package size={20} />
-                      <span>Orders</span>
+                      <span>{fa ? "سفارش‌ها" : "Orders"}</span>
                     </div>
                     <ChevronDown className="transform -rotate-90" />
                   </LocalizedClientLink>
@@ -115,7 +119,7 @@ const AccountNav = ({
                     >
                       <div className="flex items-center gap-x-2">
                         <FilePlus size={16} />
-                        <span>Approvals</span>
+                        <span>{fa ? "تأییدها" : "Approvals"}</span>
                       </div>
                       <ChevronDown className="transform -rotate-90" />
                     </LocalizedClientLink>
@@ -129,7 +133,7 @@ const AccountNav = ({
                   >
                     <div className="flex items-center gap-x-2">
                       <FilePlus size={16} />
-                      <span>Quotes</span>
+                    <span>{fa ? "پیش‌فاکتورها" : "Quotes"}</span>
                     </div>
                     <ChevronDown className="transform -rotate-90" />
                   </LocalizedClientLink>
@@ -143,7 +147,7 @@ const AccountNav = ({
                   >
                     <div className="flex items-center gap-x-2">
                       <ArrowRightOnRectangle />
-                      <span>Log out</span>
+                      <span>{fa ? "خروج" : "Log out"}</span>
                     </div>
                     <ChevronDown className="transform -rotate-90" />
                   </button>
@@ -162,7 +166,7 @@ const AccountNav = ({
                 route={route!}
                 data-testid="overview-link"
               >
-                Overview
+                {fa ? "نمای کلی" : "Overview"}
               </AccountNavLink>
             </li>
             <li>
@@ -171,7 +175,7 @@ const AccountNav = ({
                 route={route!}
                 data-testid="profile-link"
               >
-                Profile
+                {fa ? "اطلاعات حساب" : "Profile"}
               </AccountNavLink>
             </li>
             <li>
@@ -180,7 +184,7 @@ const AccountNav = ({
                 route={route!}
                 data-testid="company-link"
               >
-                Company
+                {fa ? "سازمان" : "Company"}
               </AccountNavLink>
             </li>
             <li>
@@ -189,7 +193,7 @@ const AccountNav = ({
                 route={route!}
                 data-testid="addresses-link"
               >
-                Addresses
+                {fa ? "آدرس‌ها" : "Addresses"}
               </AccountNavLink>
             </li>
             <li>
@@ -198,7 +202,7 @@ const AccountNav = ({
                 route={route!}
                 data-testid="orders-link"
               >
-                Orders
+                {fa ? "سفارش‌ها" : "Orders"}
               </AccountNavLink>
             </li>
             {customer?.employee?.is_admin && (
@@ -208,7 +212,7 @@ const AccountNav = ({
                   route={route!}
                   data-testid="approvals-link"
                 >
-                  Approvals{" "}
+                    {fa ? "تأییدها" : "Approvals"}{" "}
                   {numPendingApprovals > 0 && (
                     <span className="bg-blue-500 text-white text-xs px-1.5 py-px rounded-full">
                       {numPendingApprovals}
@@ -223,7 +227,7 @@ const AccountNav = ({
                 route={route!}
                 data-testid="quotes-link"
               >
-                Quotes
+                {fa ? "پیش‌فاکتورها" : "Quotes"}
               </AccountNavLink>
             </li>
             <li className="text-neutral-400 hover:text-neutral-950">
@@ -232,7 +236,7 @@ const AccountNav = ({
                 onClick={handleLogout}
                 data-testid="logout-button"
               >
-                Log out
+                {fa ? "خروج" : "Log out"}
               </button>
             </li>
           </ul>

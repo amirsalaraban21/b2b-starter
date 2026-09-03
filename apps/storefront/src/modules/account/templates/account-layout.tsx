@@ -3,6 +3,8 @@ import AccountNav from "@/modules/account/components/account-nav"
 import { B2BCustomer } from "@/types"
 import { ApprovalStatusType, ApprovalType } from "@/types/approval"
 import React from "react"
+import { cookies } from "next/headers"
+import { getLocale } from "@/lib/i18n"
 
 interface AccountLayoutProps {
   customer: B2BCustomer | null
@@ -13,12 +15,15 @@ const AccountLayout: React.FC<AccountLayoutProps> = async ({
   customer,
   children,
 }) => {
-  const { carts_with_approvals } = await listApprovals({
-    type: ApprovalType.ADMIN,
-    status: ApprovalStatusType.PENDING,
-  })
+  const { carts_with_approvals } = customer?.employee?.is_admin
+    ? await listApprovals({
+        type: ApprovalType.ADMIN,
+        status: ApprovalStatusType.PENDING,
+      }).catch(() => ({ carts_with_approvals: [] }))
+    : { carts_with_approvals: [] }
 
   const numPendingApprovals = carts_with_approvals?.length || 0
+  const locale = getLocale((await cookies()).get("earmed-locale")?.value)
 
   return (
     <div
@@ -32,6 +37,7 @@ const AccountLayout: React.FC<AccountLayoutProps> = async ({
               <AccountNav
                 customer={customer}
                 numPendingApprovals={numPendingApprovals}
+                locale={locale}
               />
             )}
           </div>

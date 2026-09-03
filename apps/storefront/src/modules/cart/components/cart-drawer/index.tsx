@@ -15,7 +15,7 @@ import { B2BCustomer } from "@/types"
 import { StoreFreeShippingPrice } from "@/types/shipping-option/http"
 import { ExclamationCircle, XMark } from "@medusajs/icons"
 import { Drawer } from "@medusajs/ui"
-import { usePathname } from "next/navigation"
+import { useParams, usePathname } from "next/navigation"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 type CartDrawerProps = { customer: B2BCustomer | null; freeShippingPrices: StoreFreeShippingPrice[]; locale: Locale }
@@ -24,6 +24,7 @@ const CartDrawer = ({ customer, locale, ...props }: CartDrawerProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const { cart, isUpdatingCart } = useCart()
   const pathname = usePathname()
+  const { countryCode } = useParams<{ countryCode: string }>()
   const fa = locale === "fa"
   const items = cart?.items || []
   const totalItems = items.reduce((total, item) => total + item.quantity, 0)
@@ -52,7 +53,8 @@ const CartDrawer = ({ customer, locale, ...props }: CartDrawerProps) => {
   useEffect(() => { cancelTimer(); close() }, [cancelTimer, close, pathname])
 
   const checkoutStep = cart ? getCheckoutStep(cart) : undefined
-  const checkoutPath = customer ? (checkoutStep ? `/checkout?step=${checkoutStep}` : "/checkout") : "/account"
+  const checkoutRoute = checkoutStep ? `/checkout?step=${checkoutStep}` : "/checkout"
+  const checkoutPath = customer ? checkoutRoute : `/account/login?return_to=${encodeURIComponent(`/${countryCode}${checkoutRoute}`)}`
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen} onMouseEnter={cancelTimer} {...(props as any)}>

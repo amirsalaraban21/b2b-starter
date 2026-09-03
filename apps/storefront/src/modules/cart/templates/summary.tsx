@@ -10,17 +10,19 @@ import LocalizedClientLink from "@/modules/common/components/localized-client-li
 import { B2BCustomer } from "@/types"
 import { ExclamationCircle } from "@medusajs/icons"
 import { useState } from "react"
+import { useParams } from "next/navigation"
 
 type Props = { customer: B2BCustomer | null; spendLimitExceeded: boolean; locale: Locale }
 
 const Summary = ({ customer, spendLimitExceeded, locale }: Props) => {
   const { handleEmptyCart, cart, isUpdatingCart } = useCart()
   const [isClearing, setIsClearing] = useState(false)
+  const { countryCode } = useParams<{ countryCode: string }>()
   if (!cart) return null
   const fa = locale === "fa"
   const checkoutStep = getCheckoutStep(cart)
   const checkoutPath = checkoutStep ? `/checkout?step=${checkoutStep}` : "/checkout"
-  const checkoutButtonLink = customer ? checkoutPath : "/account"
+  const checkoutButtonLink = customer ? checkoutPath : `/account/login?return_to=${encodeURIComponent(`/${countryCode}${checkoutPath}`)}`
   const approval = getCartApprovalStatus(cart)
   const isPendingApproval = approval.isPendingAdminApproval || approval.isPendingSalesManagerApproval
 
