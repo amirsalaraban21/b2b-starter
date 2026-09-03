@@ -3,9 +3,11 @@ import { B2BCart } from "@/types"
 import { ApprovalStatusType } from "@/types/approval"
 import { CheckMini, LockClosedSolid, XMarkMini } from "@medusajs/icons"
 import { Container, Text } from "@medusajs/ui"
+import { Locale } from "@/lib/i18n"
 
-const ApprovalStatusBanner = ({ cart }: { cart: B2BCart }) => {
+const ApprovalStatusBanner = ({ cart, locale = "en" }: { cart: B2BCart; locale?: Locale }) => {
   const cartApprovalStatus = cart.approval_status?.status
+  const fa = locale === "fa"
 
   if (!cartApprovalStatus) {
     return null
@@ -16,22 +18,22 @@ const ApprovalStatusBanner = ({ cart }: { cart: B2BCart }) => {
       {cartApprovalStatus === ApprovalStatusType.PENDING && (
         <>
           <LockClosedSolid className="w-4 h-4" />
-          <Text className="text-left">This cart is locked for approval.</Text>
+          <Text>{fa ? "این سبد خرید برای بررسی تأیید قفل شده است." : "This cart is locked for approval."}</Text>
         </>
       )}
 
       {cartApprovalStatus === ApprovalStatusType.REJECTED && (
         <>
           <XMarkMini className="w-4 h-4" />
-          <Text className="text-left">
-            This cart has been rejected. You can re-request approval from the{" "}
+          <Text>
+            {fa ? "این سبد خرید تأیید نشده است. می‌توانید دوباره از " : "This cart has been rejected. You can re-request approval from the "}
             <LocalizedClientLink
               href="/checkout"
               className="text-ui-bg-interactive hover:text-ui-fg-interactive-hover"
             >
-              checkout page
+              {fa ? "صفحه ثبت سفارش" : "checkout page"}
             </LocalizedClientLink>
-            .
+            {fa ? " درخواست بررسی کنید." : "."}
           </Text>
         </>
       )}
@@ -39,9 +41,7 @@ const ApprovalStatusBanner = ({ cart }: { cart: B2BCart }) => {
       {cartApprovalStatus === ApprovalStatusType.APPROVED && (
         <>
           <CheckMini className="w-4 h-4" />
-          <Text className="text-left">
-            This cart has been approved and can now be completed.
-          </Text>
+          <Text>{fa ? "این سبد خرید تأیید شده و آماده تکمیل است." : "This cart has been approved and can now be completed."}</Text>
         </>
       )}
     </Container>

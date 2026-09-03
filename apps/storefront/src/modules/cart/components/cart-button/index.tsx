@@ -4,8 +4,11 @@ import { retrieveCustomer } from "@/lib/data/customer"
 import { listCartFreeShippingPrices } from "@/lib/data/fulfillment"
 import CartDrawer from "@/modules/cart/components/cart-drawer"
 import { StoreFreeShippingPrice } from "@/types/shipping-option/http"
+import { getLocale } from "@/lib/i18n"
+import { cookies } from "next/headers"
 
 export default async function CartButton() {
+  const locale = getLocale((await cookies()).get("earmed-locale")?.value)
   const cart = await retrieveCart().catch(() => null)
   const customer = await retrieveCustomer()
 
@@ -17,7 +20,7 @@ export default async function CartButton() {
 
   return (
     <CartProvider cart={cart}>
-      <CartDrawer customer={customer} freeShippingPrices={freeShippingPrices} />
+      <CartDrawer customer={customer} freeShippingPrices={freeShippingPrices} locale={locale} />
     </CartProvider>
   )
 }
