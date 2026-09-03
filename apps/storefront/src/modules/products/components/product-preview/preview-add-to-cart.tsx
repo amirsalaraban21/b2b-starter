@@ -41,7 +41,7 @@ const PreviewAddToCart = ({
     <Button
       aria-label={label}
       title={label}
-      className="rounded-full p-3 border-none shadow-none"
+      className="h-10 w-10 rounded-full border-none p-2.5 shadow-none transition duration-200 hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 motion-reduce:transform-none motion-reduce:transition-none"
       onClick={(e) => {
         e.preventDefault()
         handleAddToCart()

@@ -19,7 +19,7 @@ export default async function PreviewPrice({ price, catalogMode = false }: { pri
       )}
 
       <Text
-        className={clx("text-neutral-950 font-medium text-lg", {
+        className={clx("text-neutral-950 text-base font-bold leading-6 small:text-lg", {
           "text-ui-fg-interactive": price.price_type === "sale",
           "dark:text-slate-50": catalogMode,
         })}

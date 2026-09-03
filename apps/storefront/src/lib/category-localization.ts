@@ -3,9 +3,12 @@ import { HttpTypes } from "@medusajs/types"
 
 const categoryNames: Record<string, { fa: string; en: string }> = {
   "hearing-aid-batteries": { fa: "باتری سمعک", en: "Hearing Aid Batteries" },
+  "cleaning-&-care": { fa: "تمیزکاری و نگهداری", en: "Cleaning & Care" },
   "cleaning-care": { fa: "تمیزکاری و نگهداری", en: "Cleaning & Care" },
+  "drying-&-moisture-control": { fa: "خشک‌کن و کنترل رطوبت", en: "Drying & Moisture Control" },
   "drying-moisture-control": { fa: "خشک‌کن و کنترل رطوبت", en: "Drying & Moisture Control" },
   "hearing-aid-consumables": { fa: "قطعات مصرفی سمعک", en: "Hearing Aid Consumables" },
+  "care-&-accessories": { fa: "مراقبت و لوازم جانبی", en: "Care & Accessories" },
   "care-accessories": { fa: "مراقبت و لوازم جانبی", en: "Care & Accessories" },
 }
 
@@ -31,7 +34,7 @@ export const isEarMedCategory = (
 
 export const getCategoryImageKey = (handle: string) => {
   if (handle === "hearing-aid-batteries") return "battery"
-  if (handle === "cleaning-care") return "cleaning"
-  if (handle === "drying-moisture-control") return "drying"
+  if (handle === "cleaning-&-care" || handle === "cleaning-care") return "cleaning"
+  if (handle === "drying-&-moisture-control" || handle === "drying-moisture-control") return "drying"
   return "consumable"
 }

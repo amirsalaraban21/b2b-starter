@@ -64,8 +64,8 @@ export default async function PaginatedProducts({
 
   return (
     <>
-      <div className="mb-5 flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:bg-slate-900 dark:text-slate-300">
-        <span>
+      <div className="mb-5 flex min-h-12 items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+        <span className="font-bold text-slate-800 dark:text-slate-100">
           {locale === "fa" ? `${count.toLocaleString("fa-IR")} محصول` : `${count} products`}
         </span>
         <span className="hidden small:inline">
@@ -84,24 +84,24 @@ export default async function PaginatedProducts({
       ) : (
         <div className="flex min-h-72 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center dark:border-slate-700 dark:bg-slate-900">
           <div>
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white text-xl shadow-sm">⌕</div>
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white text-xl shadow-sm dark:bg-slate-800">⌕</div>
             <p className="font-semibold text-slate-900 dark:text-slate-50">
               {locale === "fa" ? "محصولی با این فیلترها پیدا نشد." : "No products match these filters."}
             </p>
-            <div className="mt-5 flex flex-wrap justify-center gap-2">
-              <LocalizedClientLink href={query ? `/store?q=${encodeURIComponent(query)}` : "/store"} className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-bold transition hover:border-teal-600 dark:border-slate-700">{locale === "fa" ? "پاک کردن فیلترها" : "Clear filters"}</LocalizedClientLink>
-              <LocalizedClientLink href="/store" className="rounded-lg bg-teal-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-teal-800">{locale === "fa" ? "بازگشت به همه محصولات" : "Browse all products"}</LocalizedClientLink>
-            </div>
             <p className="mt-2 text-sm text-slate-500">
               {locale === "fa" ? "فیلترها را تغییر دهید یا دوباره همه محصولات را ببینید." : "Try changing the filters or browse all products again."}
             </p>
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
+              {(categoryId || batterySize || availability) && <LocalizedClientLink href={query ? `/store?q=${encodeURIComponent(query)}` : "/store"} className="rounded-lg border border-slate-300 px-4 py-2.5 text-xs font-bold transition hover:border-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 dark:border-slate-700 dark:hover:border-teal-500">{locale === "fa" ? "پاک کردن فیلترها" : "Clear filters"}</LocalizedClientLink>}
+              <LocalizedClientLink href="/store" className="rounded-lg bg-teal-700 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-teal-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">{locale === "fa" ? "مشاهده همه محصولات" : "Browse all products"}</LocalizedClientLink>
+            </div>
           </div>
         </div>
       )}
 
       {totalPages > 1 && (
-        <div className="mt-10 border-t border-slate-200 pt-7">
-          <Pagination data-testid="product-pagination" page={page} totalPages={totalPages} />
+        <div className="mt-10 border-t border-slate-200 pt-7 dark:border-slate-800">
+          <Pagination data-testid="product-pagination" page={page} totalPages={totalPages} locale={locale} />
         </div>
       )}
     </>
