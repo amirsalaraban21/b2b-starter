@@ -74,7 +74,7 @@ export default async function PaginatedProducts({
       </div>
 
       {products.length > 0 ? (
-        <ul className="grid w-full grid-cols-2 gap-x-3 gap-y-6 medium:grid-cols-3 large:grid-cols-4" data-testid="products-list">
+        <ul className="grid w-full grid-cols-2 gap-x-3 gap-y-6 small:grid-cols-3 medium:grid-cols-4" data-testid="products-list">
           {products.map((product) => (
             <li key={product.id} className="min-w-0">
               <ProductPreview product={product} region={region} catalogMode />

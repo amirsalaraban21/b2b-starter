@@ -37,7 +37,7 @@ const StoreTemplate = async ({ sortBy, page, countryCode, categories, category, 
   }
 
   return (
-    <main dir={fa ? "rtl" : "ltr"} className="min-h-screen bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-50">
+    <main dir={fa ? "rtl" : "ltr"} className="bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-50">
       <section className="border-b border-slate-200 bg-[#f5f8f8] dark:border-slate-800 dark:bg-slate-900/70">
         <div className="content-container py-7 small:py-9">
           <div className="mb-2 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
@@ -48,7 +48,7 @@ const StoreTemplate = async ({ sortBy, page, countryCode, categories, category, 
             {query && <p className="text-sm font-semibold text-teal-800 dark:text-teal-300">{fa ? `نتایج جستجو برای «${query}»` : `Search results for “${query}”`}</p>}
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-3 medium:grid-cols-5">
+          <div className="mt-6 grid grid-cols-2 gap-3 small:grid-cols-5">
             {categories.map((item) => {
               const selected = item.handle === category
               const imageKey = getCategoryImageKey(item.handle)
@@ -63,8 +63,8 @@ const StoreTemplate = async ({ sortBy, page, countryCode, categories, category, 
         </div>
       </section>
 
-      <section className="content-container py-7 small:py-10" data-testid="category-container">
-        <div className="grid gap-5 small:grid-cols-[240px_minmax(0,1fr)] medium:grid-cols-[260px_minmax(0,1fr)]">
+      <section className="content-container pb-16 pt-7 small:pb-24 small:pt-10" data-testid="category-container">
+        <div className="grid gap-5 small:grid-cols-[220px_minmax(0,1fr)] medium:grid-cols-[224px_minmax(0,1fr)]">
           <CatalogControls categories={categories} locale={locale} sortBy={sort} category={category} batterySize={batterySize} availability={availability} query={query} />
           <div className="min-w-0">
             <Suspense fallback={<SkeletonProductGrid />}>
