@@ -5,8 +5,12 @@ import { getRegion, listRegions } from "@/lib/data/regions"
 import ProductTemplate from "@/modules/products/templates"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { cookies } from "next/headers"
+import { getLocale } from "@/lib/i18n"
+import { getLocalizedProductDescription, getLocalizedProductTitle } from "@/lib/product-localization"
 
 export const dynamicParams = true
+export const dynamic = "force-dynamic"
 
 type Props = {
   params: { countryCode: string; handle: string }
@@ -61,12 +65,16 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     notFound()
   }
 
+  const locale = getLocale((await cookies()).get("earmed-locale")?.value)
+  const title = getLocalizedProductTitle(product, locale)
+  const description = getLocalizedProductDescription(product, locale) || title
+
   return {
-    title: `${product.title} | Medusa Store`,
-    description: `${product.title}`,
+    title: `${title} | EarMed Store`,
+    description,
     openGraph: {
-      title: `${product.title} | Medusa Store`,
-      description: `${product.title}`,
+      title: `${title} | EarMed Store`,
+      description,
       images: product.thumbnail ? [product.thumbnail] : [],
     },
   }

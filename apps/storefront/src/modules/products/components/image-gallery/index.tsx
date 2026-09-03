@@ -1,65 +1,61 @@
 "use client"
 
-import { getDemoProductImage } from "@/lib/product-demo-images"
+import { Locale } from "@/lib/i18n"
+import { getDemoProductImage, getDemoProductImageClass } from "@/lib/product-demo-images"
+import { getLocalizedProductTitle } from "@/lib/product-localization"
 import { ArrowLeftMini, ArrowRightMini } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
-import { clx, IconButton } from "@medusajs/ui"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { IconButton } from "@medusajs/ui"
+import { useMemo, useState } from "react"
 
-type ImageGalleryProps = {
-  product: HttpTypes.StoreProduct
-}
+type GalleryImage = { id: string; url: string; mapped: boolean }
 
-const ImageGallery = ({ product }: ImageGalleryProps) => {
-  const realDemoImage = getDemoProductImage(product.title, product.thumbnail || product.images?.[0]?.url)
-  const images = useMemo(() => {
-    if (!realDemoImage) return product?.images || []
-    return [{ id: "real-demo", url: realDemoImage } as HttpTypes.StoreProductImage]
-  }, [product, realDemoImage])
+const cropStyle = (crop?: string) => ({
+  left: crop?.includes("end-0") ? "-100%" : "0",
+  top: crop?.includes("bottom-0") ? "-100%" : "0",
+})
 
-  const [selectedImage, setSelectedImage] = useState<HttpTypes.StoreProductImage | undefined>(images[0])
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-
-  useEffect(() => {
-    setSelectedImage(images[0])
-    setSelectedImageIndex(0)
-  }, [images])
-
-  const handleArrowClick = useCallback((direction: "left" | "right") => {
-    if (!images.length) return
-    const nextIndex = direction === "left" ? selectedImageIndex - 1 : selectedImageIndex + 1
-    if (nextIndex < 0 || nextIndex >= images.length) return
-    setSelectedImageIndex(nextIndex)
-    setSelectedImage(images[nextIndex])
-  }, [images, selectedImageIndex])
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (document.activeElement instanceof HTMLInputElement) return
-      if (e.key === "ArrowLeft") handleArrowClick("left")
-      if (e.key === "ArrowRight") handleArrowClick("right")
+export default function ImageGallery({ product, locale }: { product: HttpTypes.StoreProduct; locale: Locale }) {
+  const mappedImage = getDemoProductImage(product.title, product.thumbnail || product.images?.[0]?.url)
+  const crop = getDemoProductImageClass(product.title)
+  const images = useMemo<GalleryImage[]>(() => {
+    const result: GalleryImage[] = []
+    if (mappedImage) result.push({ id: "earmed-product", url: mappedImage, mapped: true })
+    for (const image of product.images || []) {
+      if (!image.url || image.url === mappedImage || image.url.includes("/products/demo/")) continue
+      if (!result.some((item) => item.url === image.url)) result.push({ id: image.id, url: image.url, mapped: false })
     }
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [handleArrowClick])
+    return result
+  }, [mappedImage, product.images])
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const selected = images[selectedIndex] || images[0]
+  const fa = locale === "fa"
+  const localizedTitle = getLocalizedProductTitle(product, locale)
+
+  const select = (index: number) => setSelectedIndex(Math.max(0, Math.min(index, images.length - 1)))
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-5 rounded-2xl border border-slate-200 bg-slate-50 p-5 small:p-8">
-      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white">
-        {selectedImage?.url && (
-          <img src={selectedImage.url} alt={product.title || ""} className="absolute inset-0 h-full w-full object-contain p-8 small:p-12" />
+    <div className="flex h-full w-full flex-col gap-4">
+      <div className="group relative aspect-square w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[inset_0_0_0_1px_rgba(15,23,42,0.015)] dark:border-slate-700 dark:bg-slate-950">
+        {selected?.url ? (
+          <img src={selected.url} alt={localizedTitle || ""} style={selected.mapped && crop ? cropStyle(crop) : undefined} className={`${selected.mapped && crop ? "absolute h-[200%] w-[200%] max-w-none" : "absolute inset-0 h-full w-full"} object-contain p-6 transition-transform duration-300 group-hover:scale-[1.025] motion-reduce:transform-none motion-reduce:transition-none small:p-8`} draggable={false} />
+        ) : (
+          <div className="flex h-full items-center justify-center text-sm text-slate-500">{fa ? "تصویری موجود نیست" : "No image available"}</div>
         )}
       </div>
+
       {images.length > 1 && (
-        <div className="flex w-full items-center justify-between">
-          <div className="flex gap-2">
-            <IconButton disabled={selectedImageIndex === 0} className="rounded-full" onClick={() => handleArrowClick("left")}><ArrowLeftMini /></IconButton>
-            <IconButton disabled={selectedImageIndex === images.length - 1} className="rounded-full" onClick={() => handleArrowClick("right")}><ArrowRightMini /></IconButton>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex gap-2" dir="ltr">
+            <IconButton aria-label={fa ? "تصویر قبلی" : "Previous image"} disabled={selectedIndex === 0} className="rounded-full border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900" onClick={() => select(selectedIndex - 1)}><ArrowLeftMini /></IconButton>
+            <IconButton aria-label={fa ? "تصویر بعدی" : "Next image"} disabled={selectedIndex === images.length - 1} className="rounded-full border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900" onClick={() => select(selectedIndex + 1)}><ArrowRightMini /></IconButton>
           </div>
-          <ul className="flex gap-2 overflow-x-auto">
+          <ul className="flex min-w-0 gap-2 overflow-x-auto py-1">
             {images.map((image, index) => (
-              <li key={image.id} onClick={() => { setSelectedImage(image); setSelectedImageIndex(index) }} role="button" className={clx("h-14 w-14 overflow-hidden rounded-lg border bg-white p-1", index === selectedImageIndex ? "border-teal-500" : "border-slate-200")}>
-                <img src={image.url} alt="" className="h-full w-full object-contain" />
+              <li key={image.id}>
+                <button type="button" onClick={() => select(index)} aria-label={`${fa ? "نمایش تصویر" : "Show image"} ${index + 1}`} aria-pressed={index === selectedIndex} className={`relative h-16 w-16 overflow-hidden rounded-lg border bg-white p-1 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 dark:bg-slate-900 ${index === selectedIndex ? "border-teal-600 ring-2 ring-teal-600/15" : "border-slate-200 hover:border-slate-400 dark:border-slate-700"}`}>
+                  <img src={image.url} alt="" style={image.mapped && crop ? cropStyle(crop) : undefined} className={`${image.mapped && crop ? "absolute h-[200%] w-[200%] max-w-none" : "absolute inset-0 h-full w-full"} object-contain p-1`} />
+                </button>
               </li>
             ))}
           </ul>
@@ -68,5 +64,3 @@ const ImageGallery = ({ product }: ImageGalleryProps) => {
     </div>
   )
 }
-
-export default ImageGallery

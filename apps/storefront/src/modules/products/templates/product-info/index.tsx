@@ -1,30 +1,21 @@
+import { Locale } from "@/lib/i18n"
+import { getLocalizedProductDescription, getLocalizedProductTitle } from "@/lib/product-localization"
 import { HttpTypes } from "@medusajs/types"
-import { Heading, Text } from "@medusajs/ui"
-import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 
-type ProductInfoProps = {
-  product: HttpTypes.StoreProduct
-}
+const ProductInfo = ({ product, locale }: { product: HttpTypes.StoreProduct; locale: Locale }) => {
+  const title = getLocalizedProductTitle(product, locale)
+  const description = getLocalizedProductDescription(product, locale)
 
-const ProductInfo = ({ product }: ProductInfoProps) => {
   return (
     <div id="product-info">
-      <div className="flex flex-col gap-y-4 w-full">
-        <Heading
-          level="h1"
-          className="text-[2.5rem] leading-10 text-ui-fg-base"
-          data-testid="product-title"
-        >
-          {product.title}
-        </Heading>
-
-        <Text
-          className="text-2xl text-ui-fg-subtle whitespace-pre-line"
-          data-testid="product-description"
-        >
-          {product.subtitle}
-        </Text>
-      </div>
+      <h1 className="text-3xl font-black leading-[1.3] tracking-tight text-slate-950 dark:text-slate-50 small:text-[2.6rem]" data-testid="product-title">
+        {title}
+      </h1>
+      {description && (
+        <p className="mt-3.5 max-w-xl whitespace-pre-line text-base leading-8 text-slate-600 dark:text-slate-300" data-testid="product-description">
+          {description}
+        </p>
+      )}
     </div>
   )
 }

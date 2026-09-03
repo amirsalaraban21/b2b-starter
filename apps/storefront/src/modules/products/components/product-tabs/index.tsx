@@ -1,108 +1,57 @@
-"use client"
-
+import { Locale } from "@/lib/i18n"
+import { getLocalizedProductDescription } from "@/lib/product-localization"
 import { HttpTypes } from "@medusajs/types"
-import { Table, Text } from "@medusajs/ui"
-import Markdown from "react-markdown"
-import Accordion from "./accordion"
 
-type ProductTabsProps = {
-  product: HttpTypes.StoreProduct
+const labels: Record<string, { fa: string; en: string }> = {
+  battery_size: { fa: "سایز باتری", en: "Battery size" },
+  color_code: { fa: "کد رنگ", en: "Color code" },
+  compatibility: { fa: "سازگاری", en: "Compatibility" },
+  weight: { fa: "وزن", en: "Weight" },
+  dimensions: { fa: "ابعاد", en: "Dimensions" },
 }
 
-const ProductTabs = ({ product }: ProductTabsProps) => {
-  const tabs = [
-    {
-      label: "Description",
-      component: <ProductSpecsTab product={product} />,
-    },
-    {
-      label: "Specifications",
-      component: <ProductSpecificationsTab product={product} />,
-    },
-  ]
-
-  return (
-    <div className="w-full">
-      <Accordion type="multiple" className="flex flex-col gap-y-2">
-        {tabs.map((tab, i) => (
-          <Accordion.Item
-            className="bg-neutral-100 small:px-24 px-6"
-            key={i}
-            title={tab.label}
-            headingSize="medium"
-            value={tab.label}
-          >
-            {tab.component}
-          </Accordion.Item>
-        ))}
-      </Accordion>
-    </div>
-  )
+const localizedValue = (value: unknown, locale: Locale) => {
+  const raw = String(value)
+  if (locale === "en") return raw
+  const translations: Record<string, string> = { yellow: "زرد", orange: "نارنجی", brown: "قهوه‌ای", blue: "آبی", "model dependent": "وابسته به مدل" }
+  return translations[raw.toLowerCase()] || (/^\d+$/.test(raw) ? Number(raw).toLocaleString("fa-IR", { useGrouping: false }) : raw)
 }
 
-const ProductSpecsTab = ({ product }: ProductTabsProps) => {
-  return (
-    <div className="text-small-regular py-8 xl:w-2/3">
-      <Markdown
-        components={{
-          p: ({ children }) => (
-            <Text className="text-neutral-950 mb-2">{children}</Text>
-          ),
-          h2: ({ children }) => (
-            <Text className="text-xl text-neutral-950 my-4 font-semibold">
-              {children}
-            </Text>
-          ),
-          h3: ({ children }) => (
-            <Text className="text-lg text-neutral-950 mb-2">{children}</Text>
-          ),
-        }}
-      >
-        {product.description ? product.description : "-"}
-      </Markdown>
-    </div>
-  )
-}
+export default function ProductTabs({ product, locale }: { product: HttpTypes.StoreProduct; locale: Locale }) {
+  const description = getLocalizedProductDescription(product, locale)
+  const rawSpecifications = product.metadata?.specifications
+  const specifications: [string, unknown][] = rawSpecifications && typeof rawSpecifications === "object" && !Array.isArray(rawSpecifications)
+    ? Object.entries(rawSpecifications as Record<string, unknown>).filter(([, value]) => value !== null && value !== undefined && value !== "")
+    : []
 
-const ProductSpecificationsTab = ({ product }: ProductTabsProps) => {
-  return (
-    <div className="text-small-regular py-8">
-      <Table className="rounded-lg shadow-borders-base overflow-hidden border-none">
-        <Table.Body>
-          {product.weight && (
-            <Table.Row>
-              <Table.Cell className="border-r">
-                <span className="font-semibold">Weight</span>
-              </Table.Cell>
-              <Table.Cell className="px-4">{product.weight} grams</Table.Cell>
-            </Table.Row>
-          )}
-          {(product.height || product.width || product.length) && (
-            <Table.Row>
-              <Table.Cell className="border-r">
-                <span className="font-semibold">Dimensions (HxWxL)</span>
-              </Table.Cell>
-              <Table.Cell className="px-4">
-                {product.height}mm x {product.width}mm x {product.length}mm
-              </Table.Cell>
-            </Table.Row>
-          )}
+  if (product.weight) specifications.push(["weight", `${product.weight} ${locale === "fa" ? "گرم" : "g"}`])
+  if (product.height || product.width || product.length) {
+    specifications.push(["dimensions", [product.height, product.width, product.length].filter(Boolean).join(" × ") + (locale === "fa" ? " میلی‌متر" : " mm")])
+  }
 
-          {product.metadata &&
-            Object.entries(product.metadata).map(([key, value]) => (
-              <Table.Row key={key}>
-                <Table.Cell className="border-r">
-                  <span className="font-semibold">{key}</span>
-                </Table.Cell>
-                <Table.Cell className="px-4">
-                  <p>{value as string}</p>
-                </Table.Cell>
-              </Table.Row>
+  if (!description && !specifications.length) return null
+
+  return (
+    <div className="grid items-start gap-5 medium:grid-cols-[1.1fr_.9fr]">
+      {description && (
+        <section className="rounded-xl border border-slate-200 bg-slate-50 p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900 small:p-6">
+          <h3 className="text-lg font-bold text-slate-950 dark:text-slate-50">{locale === "fa" ? "توضیحات محصول" : "Product description"}</h3>
+          <p className="mt-3 whitespace-pre-line text-sm leading-8 text-slate-600 dark:text-slate-300">{description}</p>
+        </section>
+      )}
+      {specifications.length > 0 && (
+        <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+          <h3 className="border-b border-slate-200 px-5 py-4 text-lg font-bold text-slate-950 dark:border-slate-700 dark:text-slate-50">{locale === "fa" ? "مشخصات" : "Specifications"}</h3>
+          <dl className="divide-y divide-slate-100 dark:divide-slate-800">
+            {specifications.map(([key, value]) => (
+              <div key={key} className="grid grid-cols-[minmax(0,.8fr)_minmax(0,1fr)] gap-4 px-5 py-3 text-sm">
+                <dt className="font-semibold text-slate-500 dark:text-slate-400">{labels[key]?.[locale] || key.replaceAll("_", " ")}</dt>
+                <dd className="text-slate-900 dark:text-slate-100">{localizedValue(value, locale)}</dd>
+              </div>
             ))}
-        </Table.Body>
-      </Table>
+          </dl>
+        </section>
+      )}
     </div>
   )
 }
-
-export default ProductTabs
