@@ -1,104 +1,48 @@
 "use client"
 
 import { useCart } from "@/lib/context/cart-context"
+import { Locale } from "@/lib/i18n"
+import { getCartApprovalStatus } from "@/lib/util/get-cart-approval-status"
 import { getCheckoutStep } from "@/lib/util/get-checkout-step"
-import CartToCsvButton from "@/modules/cart/components/cart-to-csv-button"
 import CartTotals from "@/modules/cart/components/cart-totals"
-import PromotionCode from "@/modules/checkout/components/promotion-code"
 import Button from "@/modules/common/components/button"
-import Divider from "@/modules/common/components/divider"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
-import { RequestQuoteConfirmation } from "@/modules/quotes/components/request-quote-confirmation"
-import { RequestQuotePrompt } from "@/modules/quotes/components/request-quote-prompt"
 import { B2BCustomer } from "@/types"
-import { ApprovalStatusType } from "@/types/approval"
 import { ExclamationCircle } from "@medusajs/icons"
-import { Container } from "@medusajs/ui"
+import { useState } from "react"
 
-type SummaryProps = {
-  customer: B2BCustomer | null
-  spendLimitExceeded: boolean
-}
+type Props = { customer: B2BCustomer | null; spendLimitExceeded: boolean; locale: Locale }
 
-const Summary = ({ customer, spendLimitExceeded }: SummaryProps) => {
-  const { handleEmptyCart, cart } = useCart()
-
+const Summary = ({ customer, spendLimitExceeded, locale }: Props) => {
+  const { handleEmptyCart, cart, isUpdatingCart } = useCart()
+  const [isClearing, setIsClearing] = useState(false)
   if (!cart) return null
-
+  const fa = locale === "fa"
   const checkoutStep = getCheckoutStep(cart)
-  const checkoutPath = checkoutStep
-    ? `/checkout?step=${checkoutStep}`
-    : "/checkout"
-
+  const checkoutPath = checkoutStep ? `/checkout?step=${checkoutStep}` : "/checkout"
   const checkoutButtonLink = customer ? checkoutPath : "/account"
+  const approval = getCartApprovalStatus(cart)
+  const isPendingApproval = approval.isPendingAdminApproval || approval.isPendingSalesManagerApproval
 
-  const isPendingApproval = cart?.approvals?.some(
-    (approval) => approval?.status === ApprovalStatusType.PENDING
-  )
+  const clearCart = async () => {
+    const confirmed = window.confirm(fa ? "همه کالاهای سبد خرید حذف شوند؟" : "Remove all items from your cart?")
+    if (!confirmed) return
+    setIsClearing(true)
+    try { await handleEmptyCart() } finally { setIsClearing(false) }
+  }
 
   return (
-    <Container className="flex flex-col gap-y-3">
-      <CartTotals />
-      <Divider />
-      <PromotionCode cart={cart} />
-      <Divider className="my-6" />
-      {spendLimitExceeded && (
-        <div className="flex items-center gap-x-2 bg-neutral-100 p-3 rounded-md shadow-borders-base">
-          <ExclamationCircle className="text-orange-500 w-fit overflow-visible" />
-          <p className="text-neutral-950 text-xs">
-            This order exceeds your spending limit.
-            <br />
-            Please contact your manager for approval.
-          </p>
-        </div>
-      )}
-      <LocalizedClientLink
-        href={checkoutButtonLink}
-        data-testid="checkout-button"
-      >
-        <Button
-          className="w-full h-10 rounded-full shadow-none"
-          disabled={spendLimitExceeded}
-        >
-          {customer
-            ? spendLimitExceeded
-              ? "Spending Limit Exceeded"
-              : "Checkout"
-            : "Log in to Checkout"}
-        </Button>
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_12px_35px_rgba(15,23,42,0.07)] dark:border-slate-800 dark:bg-slate-900 small:p-6">
+      <h2 className="text-xl font-black">{fa ? "خلاصه سفارش" : "Order summary"}</h2>
+      <CartTotals locale={locale} />
+      {spendLimitExceeded && <div className="mt-4 flex items-start gap-2 rounded-lg bg-orange-50 p-3 text-xs leading-5 text-orange-900 dark:bg-orange-950/40 dark:text-orange-200"><ExclamationCircle className="mt-0.5 shrink-0 text-orange-500" /><p>{fa ? "مبلغ سفارش از سقف خرید حساب حرفه‌ای بیشتر است. برای ادامه با مدیر حساب تماس بگیرید." : "This order exceeds your professional account spending limit. Contact your account manager to continue."}</p></div>}
+      <LocalizedClientLink href={checkoutButtonLink} data-testid="checkout-button" className="mt-5 block">
+        <Button className="w-full" size="large" disabled={spendLimitExceeded || isPendingApproval || isUpdatingCart}>{spendLimitExceeded ? fa ? "سقف خرید رد شده" : "Spending limit exceeded" : fa ? "ادامه ثبت سفارش" : "Continue to checkout"}</Button>
       </LocalizedClientLink>
-      {!!customer && (
-        <RequestQuoteConfirmation>
-          <Button
-            className="w-full h-10 rounded-full shadow-borders-base"
-            variant="secondary"
-            disabled={isPendingApproval}
-          >
-            Request Quote
-          </Button>
-        </RequestQuoteConfirmation>
-      )}
-      {!customer && (
-        <RequestQuotePrompt>
-          <Button
-            className="w-full h-10 rounded-full shadow-borders-base"
-            variant="secondary"
-            disabled={isPendingApproval}
-          >
-            Request Quote
-          </Button>
-        </RequestQuotePrompt>
-      )}
-      <CartToCsvButton cart={cart} />
-      <Button
-        onClick={handleEmptyCart}
-        className="w-full h-10 rounded-full shadow-borders-base"
-        variant="secondary"
-        disabled={isPendingApproval}
-      >
-        Empty Cart
-      </Button>
-    </Container>
+      <button type="button" onClick={clearCart} disabled={isClearing || isUpdatingCart || isPendingApproval} className="mx-auto mt-4 block min-h-9 rounded-md px-3 text-xs font-semibold text-slate-500 underline-offset-4 transition-colors hover:text-red-600 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-slate-400 dark:hover:text-red-400 motion-reduce:transition-none">
+        {isClearing ? fa ? "در حال خالی کردن…" : "Clearing…" : fa ? "خالی کردن سبد خرید" : "Clear cart"}
+      </button>
+    </div>
   )
 }
 
