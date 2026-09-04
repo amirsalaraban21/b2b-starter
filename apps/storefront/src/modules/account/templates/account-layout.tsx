@@ -5,6 +5,7 @@ import { ApprovalStatusType, ApprovalType } from "@/types/approval"
 import React from "react"
 import { cookies } from "next/headers"
 import { getLocale } from "@/lib/i18n"
+import { getProfessionalApplication } from "@/lib/data/professional-application"
 
 interface AccountLayoutProps {
   customer: B2BCustomer | null
@@ -24,6 +25,9 @@ const AccountLayout: React.FC<AccountLayoutProps> = async ({
 
   const numPendingApprovals = carts_with_approvals?.length || 0
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
+  const professionalApplication = customer
+    ? await getProfessionalApplication().catch(() => null)
+    : null
 
   return (
     <div
@@ -38,6 +42,9 @@ const AccountLayout: React.FC<AccountLayoutProps> = async ({
                 customer={customer}
                 numPendingApprovals={numPendingApprovals}
                 locale={locale}
+                isApprovedProfessional={
+                  professionalApplication?.status === "approved"
+                }
               />
             )}
           </div>

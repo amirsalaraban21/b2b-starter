@@ -5,6 +5,7 @@ import type {
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 import { createQuoteMessageWorkflow } from "../../../../../workflows/quote/workflows";
 import { StoreCreateQuoteMessageType } from "../../validators";
+import { assertQuoteOwnership } from "../../ownership";
 
 export const POST = async (
   req: AuthenticatedMedusaRequest<StoreCreateQuoteMessageType>,
@@ -12,6 +13,7 @@ export const POST = async (
 ) => {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
   const { id } = req.params;
+  await assertQuoteOwnership(req.scope, id, req.auth_context.actor_id);
 
   await createQuoteMessageWorkflow(req.scope).run({
     input: {
@@ -27,7 +29,7 @@ export const POST = async (
     {
       entity: "quote",
       fields: req.queryConfig.fields,
-      filters: { id },
+      filters: { id, customer_id: req.auth_context.actor_id },
     },
     { throwIfKeyNotFound: true }
   );

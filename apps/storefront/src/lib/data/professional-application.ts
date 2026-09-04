@@ -2,6 +2,7 @@
 
 import { sdk } from "@/lib/config"
 import { getAuthHeaders } from "@/lib/data/cookies"
+import { revalidatePath } from "next/cache"
 
 export type ProfessionalApplication = {
   id: string
@@ -27,4 +28,45 @@ export const getProfessionalApplication = async () => {
       if (error?.status === 404) return null
       throw error
     })
+}
+
+export type ProfessionalApplicationFormState = {
+  success: boolean
+  error: string | null
+}
+
+export const submitProfessionalApplication = async (
+  _state: ProfessionalApplicationFormState,
+  formData: FormData
+): Promise<ProfessionalApplicationFormState> => {
+  const body = Object.fromEntries(
+    [
+      "first_name",
+      "last_name",
+      "phone",
+      "email",
+      "professional_type",
+      "organization_name",
+      "professional_identifier",
+      "city",
+      "notes",
+    ].map((key) => [key, String(formData.get(key) || "")])
+  )
+  try {
+    await sdk.client.fetch("/store/professional-applications", {
+      method: "POST",
+      headers: await getAuthHeaders(),
+      body,
+    })
+    revalidatePath("/account/professional")
+    return { success: true, error: null }
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unable to submit application.",
+    }
+  }
 }

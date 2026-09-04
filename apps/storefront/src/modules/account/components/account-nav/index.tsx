@@ -17,10 +17,12 @@ const AccountNav = ({
   customer,
   numPendingApprovals,
   locale,
+  isApprovedProfessional,
 }: {
   customer: B2BCustomer | null
   numPendingApprovals: number
   locale: Locale
+  isApprovedProfessional: boolean
 }) => {
   const route = usePathname()
 
@@ -142,19 +144,21 @@ const AccountNav = ({
                     </LocalizedClientLink>
                   </li>
                 )}
-                <li>
-                  <LocalizedClientLink
-                    href="/account/quotes"
-                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
-                    data-testid="quotes-link"
-                  >
-                    <div className="flex items-center gap-x-2">
-                      <FilePlus size={16} />
-                      <span>{fa ? "پیش‌فاکتورها" : "Quotes"}</span>
-                    </div>
-                    <ChevronDown className="transform -rotate-90" />
-                  </LocalizedClientLink>
-                </li>
+                {isApprovedProfessional && (
+                  <li>
+                    <LocalizedClientLink
+                      href="/account/quotes"
+                      className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
+                      data-testid="quotes-link"
+                    >
+                      <div className="flex items-center gap-x-2">
+                        <FilePlus size={16} />
+                        <span>{fa ? "پیش‌فاکتورها" : "Quotes"}</span>
+                      </div>
+                      <ChevronDown className="transform -rotate-90" />
+                    </LocalizedClientLink>
+                  </li>
+                )}
                 <li>
                   <button
                     type="button"
@@ -247,15 +251,17 @@ const AccountNav = ({
                 </AccountNavLink>
               </li>
             )}
-            <li>
-              <AccountNavLink
-                href="/account/quotes"
-                route={route!}
-                data-testid="quotes-link"
-              >
-                {fa ? "پیش‌فاکتورها" : "Quotes"}
-              </AccountNavLink>
-            </li>
+            {isApprovedProfessional && (
+              <li>
+                <AccountNavLink
+                  href="/account/quotes"
+                  route={route!}
+                  data-testid="quotes-link"
+                >
+                  {fa ? "پیش‌فاکتورها" : "Quotes"}
+                </AccountNavLink>
+              </li>
+            )}
             <li className="text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white">
               <button
                 type="button"

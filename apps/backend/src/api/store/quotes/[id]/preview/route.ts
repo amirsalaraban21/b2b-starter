@@ -7,6 +7,7 @@ import {
   RemoteQueryFunction,
 } from "@medusajs/framework/types";
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
+import { assertQuoteOwnership } from "../../ownership";
 
 export const GET = async (
   req: AuthenticatedMedusaRequest,
@@ -16,6 +17,7 @@ export const GET = async (
   const query = req.scope.resolve<RemoteQueryFunction>(
     ContainerRegistrationKeys.QUERY
   );
+  await assertQuoteOwnership(req.scope, id, req.auth_context.actor_id);
 
   const {
     data: [quote],
@@ -23,7 +25,7 @@ export const GET = async (
     {
       entity: "quote",
       fields: req.queryConfig.fields,
-      filters: { id },
+      filters: { id, customer_id: req.auth_context.actor_id },
     },
     { throwIfKeyNotFound: true }
   );

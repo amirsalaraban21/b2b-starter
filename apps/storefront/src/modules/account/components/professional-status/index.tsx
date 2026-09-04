@@ -83,6 +83,26 @@ const ProfessionalStatus = ({
           {fa ? "ارسال اطلاعات تکمیلی" : "Submit additional information"}
         </LocalizedClientLink>
       )}
+      {application?.status === "approved" && (
+        <div className="mt-4 rounded-xl border border-teal-200 bg-teal-50 p-4 dark:border-teal-900 dark:bg-teal-950/50">
+          <p className="font-bold text-teal-900 dark:text-teal-100">
+            {fa
+              ? "حساب حرفه‌ای شما تأیید شده است"
+              : "Your professional account is verified"}
+          </p>
+          <p className="mt-1 text-sm text-teal-800 dark:text-teal-200">
+            {fa
+              ? "می‌توانید از سبد خرید، درخواست پیش‌فاکتور ثبت کنید یا خرید عادی را ادامه دهید."
+              : "You can request a quote from your cart or continue with normal checkout."}
+          </p>
+          <LocalizedClientLink
+            href="/cart"
+            className="mt-3 inline-block text-sm font-bold text-teal-800 underline-offset-4 hover:underline dark:text-teal-200"
+          >
+            {fa ? "رفتن به سبد خرید" : "Go to cart"}
+          </LocalizedClientLink>
+        </div>
+      )}
     </section>
   )
 }
