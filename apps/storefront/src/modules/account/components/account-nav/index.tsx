@@ -48,7 +48,9 @@ const AccountNav = ({
         ) : (
           <>
             <div className="text-xl-semi mb-4 px-8">
-              {fa ? `سلام، ${customer?.first_name || "دوست عزیز"}` : `Hello, ${customer?.first_name || "there"}`}
+              {fa
+                ? `سلام، ${customer?.first_name || "دوست عزیز"}`
+                : `Hello, ${customer?.first_name || "there"}`}
             </div>
             <div className="text-base-regular">
               <ul>
@@ -65,6 +67,21 @@ const AccountNav = ({
                       </div>
                       <ChevronDown className="transform -rotate-90" />
                     </>
+                  </LocalizedClientLink>
+                </li>
+                <li>
+                  <LocalizedClientLink
+                    href="/account/professional"
+                    className="flex items-center justify-between border-b border-gray-200 px-8 py-4"
+                    data-testid="professional-link"
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <User size={20} />
+                      <span>
+                        {fa ? "وضعیت حرفه‌ای" : "Professional status"}
+                      </span>
+                    </div>
+                    <ChevronDown className="-rotate-90" />
                   </LocalizedClientLink>
                 </li>
                 <li>
@@ -133,7 +150,7 @@ const AccountNav = ({
                   >
                     <div className="flex items-center gap-x-2">
                       <FilePlus size={16} />
-                    <span>{fa ? "پیش‌فاکتورها" : "Quotes"}</span>
+                      <span>{fa ? "پیش‌فاکتورها" : "Quotes"}</span>
                     </div>
                     <ChevronDown className="transform -rotate-90" />
                   </LocalizedClientLink>
@@ -180,6 +197,15 @@ const AccountNav = ({
             </li>
             <li>
               <AccountNavLink
+                href="/account/professional"
+                route={route!}
+                data-testid="professional-link"
+              >
+                {fa ? "وضعیت حرفه‌ای" : "Professional status"}
+              </AccountNavLink>
+            </li>
+            <li>
+              <AccountNavLink
                 href="/account/company"
                 route={route!}
                 data-testid="company-link"
@@ -212,7 +238,7 @@ const AccountNav = ({
                   route={route!}
                   data-testid="approvals-link"
                 >
-                    {fa ? "تأییدها" : "Approvals"}{" "}
+                  {fa ? "تأییدها" : "Approvals"}{" "}
                   {numPendingApprovals > 0 && (
                     <span className="bg-blue-500 text-white text-xs px-1.5 py-px rounded-full">
                       {numPendingApprovals}
@@ -230,7 +256,7 @@ const AccountNav = ({
                 {fa ? "پیش‌فاکتورها" : "Quotes"}
               </AccountNavLink>
             </li>
-            <li className="text-neutral-400 hover:text-neutral-950">
+            <li className="text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white">
               <button
                 type="button"
                 onClick={handleLogout}
@@ -266,9 +292,9 @@ const AccountNavLink = ({
     <LocalizedClientLink
       href={href}
       className={clx(
-        "text-neutral-400 hover:text-neutral-950 flex items-center gap-x-2",
+        "text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white flex items-center gap-x-2",
         {
-          "text-neutral-950": active,
+          "text-slate-950 dark:text-white font-semibold": active,
         }
       )}
       data-testid={dataTestId}

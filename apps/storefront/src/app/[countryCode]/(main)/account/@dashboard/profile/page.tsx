@@ -5,6 +5,8 @@ import SecurityCard from "@/modules/account/components/security-card"
 import { Heading } from "@medusajs/ui"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { cookies } from "next/headers"
+import { getLocale } from "@/lib/i18n"
 
 export const metadata: Metadata = {
   title: "Profile",
@@ -14,6 +16,7 @@ export const metadata: Metadata = {
 export default async function Profile() {
   const customer = await retrieveCustomer()
   const regions = await listRegions()
+  const locale = getLocale((await cookies()).get("earmed-locale")?.value)
 
   if (!customer || !regions) {
     notFound()
@@ -23,13 +26,13 @@ export default async function Profile() {
     <div className="w-full" data-testid="profile-page-wrapper">
       <div className="mb-8 flex flex-col gap-y-4">
         <Heading level="h2" className="text-lg text-neutral-950">
-          Details
+          {locale === "fa" ? "اطلاعات حساب" : "Account details"}
         </Heading>
-        <ProfileCard customer={customer} />
+        <ProfileCard customer={customer} locale={locale} />
       </div>
       <div className="mb-8 flex flex-col gap-y-4">
         <Heading level="h2" className="text-lg text-neutral-950">
-          Security
+          {locale === "fa" ? "امنیت" : "Security"}
         </Heading>
         <SecurityCard customer={customer} />
       </div>

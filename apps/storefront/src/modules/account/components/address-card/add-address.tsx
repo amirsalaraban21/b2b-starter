@@ -12,8 +12,16 @@ import { HttpTypes } from "@medusajs/types"
 import { Heading } from "@medusajs/ui"
 import { useActionState, useEffect, useState } from "react"
 import { iranProvinces } from "@/lib/iran"
+import { Locale } from "@/lib/i18n"
 
-const AddAddress = ({ region }: { region: HttpTypes.StoreRegion }) => {
+const AddAddress = ({
+  region,
+  locale,
+}: {
+  region: HttpTypes.StoreRegion
+  locale: Locale
+}) => {
+  const fa = locale === "fa"
   const [successState, setSuccessState] = useState(false)
   const { state, open, close: closeModal } = useToggleState(false)
 
@@ -47,27 +55,32 @@ const AddAddress = ({ region }: { region: HttpTypes.StoreRegion }) => {
         onClick={open}
         data-testid="add-address-button"
       >
-        <span className="text-base-semi">New address</span>
+        <span className="text-base-semi">
+          {fa ? "آدرس جدید" : "New address"}
+        </span>
         <Plus />
       </button>
 
       <Modal isOpen={state} close={close} data-testid="add-address-modal">
         <Modal.Title>
-          <Heading className="mb-2">Add address</Heading>
+          <Heading className="mb-2">
+            {fa ? "افزودن آدرس" : "Add address"}
+          </Heading>
         </Modal.Title>
         <form action={formAction}>
+          <input type="hidden" name="locale" value={locale} />
           <Modal.Body>
             <div className="flex flex-col gap-y-2">
               <div className="grid grid-cols-2 gap-x-2">
                 <Input
-                  label="First name"
+                  label={fa ? "نام" : "First name"}
                   name="first_name"
                   required
                   autoComplete="given-name"
                   data-testid="first-name-input"
                 />
                 <Input
-                  label="Last name"
+                  label={fa ? "نام خانوادگی" : "Last name"}
                   name="last_name"
                   required
                   autoComplete="family-name"
@@ -75,41 +88,61 @@ const AddAddress = ({ region }: { region: HttpTypes.StoreRegion }) => {
                 />
               </div>
               <Input
-                label="Company"
+                label={fa ? "شرکت (اختیاری)" : "Company (optional)"}
                 name="company"
                 autoComplete="organization"
                 data-testid="company-input"
               />
               <Input
-                label="Address"
+                label={fa ? "نشانی" : "Address"}
                 name="address_1"
                 required
                 autoComplete="address-line1"
                 data-testid="address-1-input"
               />
               <Input
-                label="Apartment, suite, etc."
+                label={
+                  fa ? "پلاک، واحد و توضیحات تکمیلی" : "Apartment, suite, etc."
+                }
                 name="address_2"
                 autoComplete="address-line2"
                 data-testid="address-2-input"
               />
               <div className="grid grid-cols-[144px_1fr] gap-x-2">
                 <Input
-                  label="Postal code"
+                  label={fa ? "کد پستی" : "Postal code"}
                   name="postal_code"
                   required
                   autoComplete="postal-code"
                   data-testid="postal-code-input"
                 />
                 <Input
-                  label="City"
+                  label={fa ? "شهر" : "City"}
                   name="city"
                   required
                   autoComplete="locality"
                   data-testid="city-input"
                 />
               </div>
-              <label className="flex flex-col gap-y-2 text-small-regular">Province<select required name="province" autoComplete="address-level1" className="h-10 rounded-rounded border border-ui-border-base bg-ui-bg-base px-3" data-testid="state-input"><option value="">Select province</option>{iranProvinces.map(([fa, en]) => <option key={en} value={en}>{typeof document !== "undefined" && document.documentElement.lang === "fa" ? fa : en}</option>)}</select></label>
+              <label className="flex flex-col gap-y-2 text-small-regular">
+                {fa ? "استان" : "Province"}
+                <select
+                  required
+                  name="province"
+                  autoComplete="address-level1"
+                  className="h-10 rounded-rounded border border-ui-border-base bg-ui-bg-base px-3"
+                  data-testid="state-input"
+                >
+                  <option value="">
+                    {fa ? "انتخاب استان" : "Select province"}
+                  </option>
+                  {iranProvinces.map(([faName, en]) => (
+                    <option key={en} value={en}>
+                      {fa ? faName : en}
+                    </option>
+                  ))}
+                </select>
+              </label>
               <CountrySelect
                 region={region}
                 name="country_code"
@@ -118,7 +151,7 @@ const AddAddress = ({ region }: { region: HttpTypes.StoreRegion }) => {
                 data-testid="country-select"
               />
               <Input
-                label="Phone"
+                label={fa ? "شماره موبایل" : "Mobile number"}
                 name="phone"
                 autoComplete="phone"
                 data-testid="phone-input"
@@ -142,9 +175,11 @@ const AddAddress = ({ region }: { region: HttpTypes.StoreRegion }) => {
                 className="h-10"
                 data-testid="cancel-button"
               >
-                Cancel
+                {fa ? "انصراف" : "Cancel"}
               </Button>
-              <SubmitButton data-testid="save-button">Save</SubmitButton>
+              <SubmitButton data-testid="save-button">
+                {fa ? "ذخیره آدرس" : "Save address"}
+              </SubmitButton>
             </div>
           </Modal.Footer>
         </form>

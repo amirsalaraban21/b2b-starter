@@ -1,7 +1,11 @@
 "use server"
 
 import { sdk } from "@/lib/config"
-import { isIranianPostalCode, normalizeIranianMobile, normalizeIranianPostalCode } from "@/lib/iran"
+import {
+  isIranianPostalCode,
+  normalizeIranianMobile,
+  normalizeIranianPostalCode,
+} from "@/lib/iran"
 import medusaError from "@/lib/util/medusa-error"
 import { B2BCustomer } from "@/types/global"
 import { HttpTypes } from "@medusajs/types"
@@ -72,8 +76,16 @@ export async function signup(_currentState: unknown, formData: FormData) {
     phone: phone || undefined,
   }
 
-  if (!customerForm.email || !customerForm.first_name || !customerForm.last_name || !password || !phone) {
-    return locale === "fa" ? "لطفاً اطلاعات خواسته‌شده را کامل کنید." : "Please complete all required fields."
+  if (
+    !customerForm.email ||
+    !customerForm.first_name ||
+    !customerForm.last_name ||
+    !password ||
+    !phone
+  ) {
+    return locale === "fa"
+      ? "لطفاً اطلاعات خواسته‌شده را کامل کنید."
+      : "Please complete all required fields."
   }
 
   try {
@@ -102,7 +114,9 @@ export async function signup(_currentState: unknown, formData: FormData) {
 
     await transferCart()
 
-    redirect(safeReturnPath(formData.get("return_to"), formData.get("country_code")))
+    redirect(
+      safeReturnPath(formData.get("return_to"), formData.get("country_code"))
+    )
   } catch (error: any) {
     if (error?.digest?.startsWith?.("NEXT_REDIRECT")) throw error
     return error.toString()
@@ -154,12 +168,26 @@ export async function login(_currentState: unknown, formData: FormData) {
     return error.toString()
   }
 
-  redirect(safeReturnPath(formData.get("return_to"), formData.get("country_code")))
+  redirect(
+    safeReturnPath(formData.get("return_to"), formData.get("country_code"))
+  )
 }
 
-function safeReturnPath(value: FormDataEntryValue | null, countryCodeValue: FormDataEntryValue | null) {
-  const countryCode = typeof countryCodeValue === "string" && /^[a-z]{2}$/i.test(countryCodeValue) ? countryCodeValue.toLowerCase() : "ir"
-  if (typeof value === "string" && value.startsWith("/") && !value.startsWith("//") && !value.includes("\\")) return value
+function safeReturnPath(
+  value: FormDataEntryValue | null,
+  countryCodeValue: FormDataEntryValue | null
+) {
+  const countryCode =
+    typeof countryCodeValue === "string" && /^[a-z]{2}$/i.test(countryCodeValue)
+      ? countryCodeValue.toLowerCase()
+      : "ir"
+  if (
+    typeof value === "string" &&
+    value.startsWith("/") &&
+    !value.startsWith("//") &&
+    !value.includes("\\")
+  )
+    return value
   return `/${countryCode}/account`
 }
 
@@ -210,9 +238,24 @@ export const addCustomerAddress = async (
   formData: FormData
 ): Promise<any> => {
   const phone = normalizeIranianMobile(formData.get("phone") as string)
-  const postalCode = normalizeIranianPostalCode(formData.get("postal_code") as string)
-  if (!phone) return { success: false, error: "Invalid Iranian mobile number format." }
-  if (!isIranianPostalCode(postalCode)) return { success: false, error: "Iranian postal code must contain 10 digits." }
+  const postalCode = normalizeIranianPostalCode(
+    formData.get("postal_code") as string
+  )
+  const fa = formData.get("locale") === "fa"
+  if (!phone)
+    return {
+      success: false,
+      error: fa
+        ? "شماره موبایل ایران معتبر نیست."
+        : "Invalid Iranian mobile number format.",
+    }
+  if (!isIranianPostalCode(postalCode))
+    return {
+      success: false,
+      error: fa
+        ? "کدپستی ایران باید ۱۰ رقم باشد."
+        : "Iranian postal code must contain 10 digits.",
+    }
   const address = {
     first_name: formData.get("first_name") as string,
     last_name: formData.get("last_name") as string,
@@ -267,9 +310,24 @@ export const updateCustomerAddress = async (
 ): Promise<any> => {
   const addressId = currentState.addressId as string
   const phone = normalizeIranianMobile(formData.get("phone") as string)
-  const postalCode = normalizeIranianPostalCode(formData.get("postal_code") as string)
-  if (!phone) return { success: false, error: "Invalid Iranian mobile number format." }
-  if (!isIranianPostalCode(postalCode)) return { success: false, error: "Iranian postal code must contain 10 digits." }
+  const postalCode = normalizeIranianPostalCode(
+    formData.get("postal_code") as string
+  )
+  const fa = formData.get("locale") === "fa"
+  if (!phone)
+    return {
+      success: false,
+      error: fa
+        ? "شماره موبایل ایران معتبر نیست."
+        : "Invalid Iranian mobile number format.",
+    }
+  if (!isIranianPostalCode(postalCode))
+    return {
+      success: false,
+      error: fa
+        ? "کدپستی ایران باید ۱۰ رقم باشد."
+        : "Iranian postal code must contain 10 digits.",
+    }
 
   const address = {
     first_name: formData.get("first_name") as string,

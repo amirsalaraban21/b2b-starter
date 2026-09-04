@@ -1,4 +1,10 @@
 import { retrieveOrder } from "@/lib/data/orders"
+import {
+  getManualPayment,
+  getManualPaymentConfig,
+} from "@/lib/data/manual-payment"
+import { getLocale } from "@/lib/i18n"
+import { cookies } from "next/headers"
 import OrderDetailsTemplate from "@/modules/order/templates/order-details-template"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
@@ -29,5 +35,19 @@ export default async function OrderDetailPage(props: Props) {
     notFound()
   }
 
-  return <OrderDetailsTemplate order={order} />
+  const locale = getLocale((await cookies()).get("earmed-locale")?.value)
+  const [manualPayment, paymentConfig] = await Promise.all([
+    getManualPayment(order.id).catch(() => null),
+    getManualPaymentConfig(locale).catch(() => ({
+      configured: false as const,
+    })),
+  ])
+  return (
+    <OrderDetailsTemplate
+      order={order}
+      locale={locale}
+      manualPayment={manualPayment}
+      paymentConfig={paymentConfig}
+    />
+  )
 }

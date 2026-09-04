@@ -1,122 +1,98 @@
+import { ManualPayment, ManualPaymentStatus } from "@/lib/data/manual-payment"
+import { Locale } from "@/lib/i18n"
 import { convertToLocale } from "@/lib/util/money"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
-import CalendarIcon from "@/modules/common/icons/calendar"
-import DocumentIcon from "@/modules/common/icons/document"
 import { HttpTypes } from "@medusajs/types"
-import { Button, clx, Container } from "@medusajs/ui"
-import Image from "next/image"
-import { useMemo } from "react"
 
-type OrderCardProps = {
-  order: HttpTypes.StoreOrder
+const paymentLabels: Record<Locale, Record<ManualPaymentStatus, string>> = {
+  fa: {
+    awaiting_payment: "در انتظار پرداخت",
+    receipt_submitted: "رسید ارسال شد",
+    under_review: "در حال بررسی",
+    approved: "پرداخت تأیید شد",
+    rejected: "رسید رد شد",
+  },
+  en: {
+    awaiting_payment: "Awaiting payment",
+    receipt_submitted: "Receipt submitted",
+    under_review: "Under review",
+    approved: "Payment approved",
+    rejected: "Receipt rejected",
+  },
+}
+const fulfillmentLabel = (status: string | undefined, locale: Locale) => {
+  if (status === "shipped" || status === "delivered")
+    return locale === "fa" ? "ارسال شده" : "Shipped"
+  if (status === "fulfilled" || status === "partially_fulfilled")
+    return locale === "fa" ? "در حال آماده‌سازی" : "Being prepared"
+  return locale === "fa" ? "هنوز آماده‌سازی نشده" : "Not yet fulfilled"
 }
 
-const OrderCard = ({ order }: OrderCardProps) => {
-  const createdAt = new Date(order.created_at)
-  const numberOfLines = useMemo(() => {
-    return (
-      order.items?.reduce((acc, item) => {
-        return acc + item.quantity
-      }, 0) ?? 0
-    )
-  }, [order])
-
+const OrderCard = ({
+  order,
+  locale,
+  manualPayment,
+}: {
+  order: HttpTypes.StoreOrder
+  locale: Locale
+  manualPayment: ManualPayment | null
+}) => {
+  const fa = locale === "fa"
+  const quantity =
+    order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0
+  const fulfillment = (
+    order as HttpTypes.StoreOrder & { fulfillment_status?: string }
+  ).fulfillment_status
   return (
-    <>
-      <Container className="bg-white flex small:flex-row flex-col p-4 rounded-md small:justify-between small:items-center gap-y-2 items-start">
-        <div className="flex gap-x-4 items-center pl-3">
-          <div className="flex min-w-10">
-            {order.items?.slice(0, 3).map((i, index) => {
-              const numItems = order.items?.length ?? 0
-
-              return (
-                <div
-                  key={i.id}
-                  className={clx(
-                    "block w-7 h-7 border border-white bg-neutral-100 p-2 bg-cover bg-center rounded-md ml-[-5px]",
-                    {
-                      "-rotate-3": index === 0 && numItems > 1,
-                      "rotate-0": index === 0 && numItems === 1,
-                      "rotate-3":
-                        (index === 1 && numItems === 2) ||
-                        (index === 2 && numItems > 2),
-                    }
-                  )}
-                >
-                  <Image
-                    src={i.thumbnail!}
-                    alt={i.title}
-                    className={clx("h-full w-full object-cover object-center", {
-                      "-rotate-3": index === 0 && numItems > 1,
-                      "rotate-0": index === 0 && numItems === 1,
-                      "rotate-3":
-                        (index === 1 && numItems === 2) ||
-                        (index === 2 && numItems > 2),
-                    })}
-                    draggable={false}
-                    quality={50}
-                    width={20}
-                    height={20}
-                  />
-                </div>
-              )
-            })}
-          </div>
-
-          <div
-            className="flex pr-2 text-small-regular items-center"
-            data-testid="order-created-at"
-          >
-            <CalendarIcon className="inline-block mr-1" />
-            {createdAt.toLocaleDateString("en-GB", {
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-            })}
-          </div>
-
-          <div className="flex items-center text-small-regular">
-            <DocumentIcon className="inline-block mr-1" />
-            <span data-testid="order-display-id">#{order.display_id}</span>
-          </div>
+    <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="font-black">
+            {fa ? "سفارش" : "Order"} #
+            {new Intl.NumberFormat(fa ? "fa-IR" : "en-US").format(
+              order.display_id || 0
+            )}
+          </p>
+          <p className="mt-1 text-sm text-slate-500">
+            {new Date(order.created_at).toLocaleDateString(
+              fa ? "fa-IR" : "en-US"
+            )}
+          </p>
         </div>
-
-        <div className="flex gap-x-4 small:divide-x divide-gray-200 small:justify-normal justify-between w-full small:w-auto">
-          <div className="flex items-center text-small-regular text-ui-fg-base">
-            <span className="px-2" data-testid="order-amount">
-              {convertToLocale({
-                amount: order.total,
-                currency_code: order.currency_code,
-              })}
-            </span>
-            {"·"}
-            <span className="px-2">{`${numberOfLines} ${
-              numberOfLines > 1 ? "items" : "item"
-            }`}</span>
-          </div>
-
-          <div className="flex items-center gap-x-2 pl-4">
-            {/* <Button
-              data-testid="card-details-link"
-              variant="secondary"
-              className="rounded-full text-xs"
-            >
-              Export to PDF
-            </Button> */}
-            <LocalizedClientLink href={`/account/orders/details/${order.id}`}>
-              <Button
-                data-testid="card-details-link"
-                variant="secondary"
-                className="rounded-full text-xs"
-              >
-                Details
-              </Button>
-            </LocalizedClientLink>
-          </div>
-        </div>
-      </Container>
-    </>
+        <p className="text-lg font-black text-teal-700 dark:text-teal-300">
+          {convertToLocale({
+            amount: order.total,
+            currency_code: order.currency_code,
+            locale,
+          })}
+        </p>
+      </div>
+      <div className="mt-4 grid gap-2 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-3">
+        <p>
+          {fa ? "تعداد" : "Items"}:{" "}
+          {new Intl.NumberFormat(fa ? "fa-IR" : "en-US").format(quantity)}
+        </p>
+        <p>
+          {fa ? "ارسال" : "Fulfillment"}:{" "}
+          {fulfillmentLabel(fulfillment, locale)}
+        </p>
+        <p>
+          {fa ? "پرداخت دستی" : "Manual payment"}:{" "}
+          {manualPayment
+            ? paymentLabels[locale][manualPayment.status]
+            : fa
+            ? "ثبت نشده"
+            : "Not available"}
+        </p>
+      </div>
+      <LocalizedClientLink
+        href={`/account/orders/details/${order.id}`}
+        className="mt-4 inline-block text-sm font-bold text-teal-700 hover:underline dark:text-teal-300"
+      >
+        {fa ? "جزئیات سفارش" : "Order details"}
+      </LocalizedClientLink>
+    </article>
   )
 }
-
+export { fulfillmentLabel, paymentLabels }
 export default OrderCard
