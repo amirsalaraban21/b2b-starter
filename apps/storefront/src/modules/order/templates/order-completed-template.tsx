@@ -22,10 +22,10 @@ export default function OrderCompletedTemplate({
     })
   const address = order.shipping_address
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-slate-50 py-10 dark:bg-slate-950">
+    <main className="min-h-[calc(100vh-64px)] bg-slate-50 py-6 dark:bg-slate-950 xsmall:py-10">
       <div className="content-container max-w-4xl">
         <article
-          className="space-y-7 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-10"
+          className="space-y-7 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 xsmall:p-6 sm:p-10"
           data-testid="order-complete-container"
         >
           <header>
@@ -64,16 +64,16 @@ export default function OrderCompletedTemplate({
                 return (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between gap-4 py-4"
+                    className="flex min-w-0 flex-col items-start gap-2 py-4 min-[360px]:flex-row min-[360px]:items-center min-[360px]:justify-between min-[360px]:gap-4"
                   >
-                    <div>
-                      <p className="font-bold">{title}</p>
+                    <div className="min-w-0">
+                      <p className="break-words font-bold">{title}</p>
                       <p className="mt-1 text-xs text-slate-500">
                         {fa ? "تعداد" : "Quantity"}:{" "}
                         {number.format(Number(item.quantity))}
                       </p>
                     </div>
-                    <span className="font-bold">
+                    <span className="max-w-full break-words font-bold min-[360px]:shrink-0 min-[360px]:text-end">
                       {money(Number(item.total || 0))}
                     </span>
                   </div>
@@ -100,7 +100,7 @@ export default function OrderCompletedTemplate({
                   value={`− ${money(order.discount_total)}`}
                 />
               )}
-              <div className="flex justify-between border-t border-slate-200 pt-4 text-base font-black dark:border-slate-800">
+              <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 border-t border-slate-200 pt-4 text-base font-black dark:border-slate-800">
                 <span>{fa ? "مبلغ قابل پرداخت" : "Amount due"}</span>
                 <span>{money(order.total || 0)}</span>
               </div>
@@ -147,8 +147,8 @@ export default function OrderCompletedTemplate({
 }
 
 const Row = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between text-slate-600 dark:text-slate-300">
-    <span>{label}</span>
-    <span>{value}</span>
+  <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 text-slate-600 dark:text-slate-300">
+    <span className="min-w-0">{label}</span>
+    <span className="max-w-full break-words text-end">{value}</span>
   </div>
 )

@@ -276,14 +276,14 @@ export default function ManualCheckout({
                         key={method.id}
                         type="button"
                         onClick={() => chooseShipping(method.id)}
-                        className={`flex w-full items-center justify-between rounded-2xl border p-4 text-start transition ${
+                        className={`flex w-full min-w-0 flex-wrap items-center justify-between gap-3 rounded-2xl border p-4 text-start transition ${
                           selectedShipping?.id === method.id
                             ? "border-teal-600 bg-teal-50 dark:bg-teal-950/30"
                             : "border-slate-200 hover:border-teal-400 dark:border-slate-700"
                         }`}
                       >
-                        <span className="font-bold">{method.name}</span>
-                        <span>{money(method.amount || 0)}</span>
+                        <span className="min-w-0 break-words font-bold">{method.name}</span>
+                        <span className="shrink-0 text-end">{money(method.amount || 0)}</span>
                       </button>
                     ))}
                   </div>
@@ -316,7 +316,7 @@ export default function ManualCheckout({
                       {fa ? "شماره کارت" : "Card number"}
                     </p>
                     <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
-                      <b dir="ltr" className="text-xl tracking-wider">
+                      <b dir="ltr" className="max-w-full break-all text-lg tracking-wider xsmall:text-xl">
                         {config.card_number}
                       </b>
                       <button
@@ -524,8 +524,8 @@ const Summary = ({
     </h2>
     <div className="mt-5 max-h-80 space-y-4 overflow-auto">
       {cart.items?.map((item) => (
-        <div key={item.id} className="flex gap-3">
-          <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
+        <div key={item.id} className="grid min-w-0 grid-cols-[56px_minmax(0,1fr)] gap-3 xsmall:flex">
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 xsmall:h-16 xsmall:w-16">
             {item.thumbnail && (
               <Image
                 src={item.thumbnail}
@@ -549,7 +549,7 @@ const Summary = ({
               )}
             </p>
           </div>
-          <span className="text-sm font-bold">
+          <span className="col-start-2 max-w-full break-words text-sm font-bold xsmall:shrink-0 xsmall:text-end">
             {money(Number(item.total || 0))}
           </span>
         </div>
@@ -570,7 +570,7 @@ const Summary = ({
           value={`− ${money(cart.discount_total)}`}
         />
       )}
-      <div className="mt-3 flex justify-between border-t border-slate-200 pt-4 text-base font-black dark:border-slate-800">
+      <div className="mt-3 flex flex-wrap justify-between gap-x-4 gap-y-1 border-t border-slate-200 pt-4 text-base font-black dark:border-slate-800">
         <span>{fa ? "مبلغ قابل پرداخت" : "Total"}</span>
         <span>{money(cart.total || 0)}</span>
       </div>
@@ -578,9 +578,9 @@ const Summary = ({
   </aside>
 )
 const Row = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between text-slate-600 dark:text-slate-300">
-    <span>{label}</span>
-    <span>{value}</span>
+  <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 text-slate-600 dark:text-slate-300">
+    <span className="min-w-0">{label}</span>
+    <span className="max-w-full break-words text-end">{value}</span>
   </div>
 )
 const friendlyError = (error: unknown, fa: boolean) => {

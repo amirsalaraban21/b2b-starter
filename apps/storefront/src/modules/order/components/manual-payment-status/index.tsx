@@ -87,8 +87,8 @@ export default function ManualPaymentStatus({
       className="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-950/50"
       aria-labelledby="manual-payment-heading"
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+      <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
+        <div className="min-w-0">
           <h2 id="manual-payment-heading" className="font-black">
             {fa ? "وضعیت پرداخت کارت‌به‌کارت" : "Manual payment status"}
           </h2>
@@ -97,7 +97,7 @@ export default function ManualPaymentStatus({
           </p>
         </div>
         <span
-          className={`rounded-full px-3 py-1 text-xs font-bold ${
+          className={`max-w-full break-words rounded-full px-3 py-1 text-center text-xs font-bold ${
             payment.status === "approved"
               ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200"
               : payment.status === "rejected"
@@ -126,7 +126,7 @@ export default function ManualPaymentStatus({
       {canUpload && (
         <form onSubmit={submit} className="mt-5 space-y-4">
           <label className="block cursor-pointer rounded-2xl border border-dashed border-slate-300 bg-white p-5 text-center transition hover:border-teal-500 dark:border-slate-700 dark:bg-slate-900">
-            <span className="block text-sm font-bold">
+            <span className="block break-all text-sm font-bold">
               {file
                 ? file.name
                 : fa
@@ -166,7 +166,7 @@ export default function ManualPaymentStatus({
               placeholder={
                 fa ? "نام پرداخت‌کننده (اختیاری)" : "Payer name (optional)"
               }
-              className="h-11 rounded-xl border border-slate-300 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="h-11 min-w-0 rounded-xl border border-slate-300 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
             />
             <input
               name="payment_reference"
@@ -174,7 +174,7 @@ export default function ManualPaymentStatus({
               placeholder={
                 fa ? "شماره پیگیری (اختیاری)" : "Payment reference (optional)"
               }
-              className="h-11 rounded-xl border border-slate-300 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="h-11 min-w-0 rounded-xl border border-slate-300 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
             />
           </div>
           <button

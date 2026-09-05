@@ -42,8 +42,8 @@ const CartPageItem = ({ item, currencyCode, locale }: Props) => {
   }
 
   return (
-    <article className="grid grid-cols-[104px_minmax(0,1fr)] gap-4 small:grid-cols-[124px_minmax(0,1fr)_auto] small:gap-5">
-      <LocalizedClientLink href={`/products/${item.product_handle || product?.handle}`} className="group relative h-[104px] overflow-hidden rounded-xl border border-slate-200 bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 dark:border-slate-700 dark:bg-slate-950 small:h-[124px]">
+    <article className="grid grid-cols-[88px_minmax(0,1fr)] gap-3 min-[360px]:grid-cols-[104px_minmax(0,1fr)] min-[360px]:gap-4 small:grid-cols-[124px_minmax(0,1fr)_auto] small:gap-5">
+      <LocalizedClientLink href={`/products/${item.product_handle || product?.handle}`} className="group relative h-[88px] overflow-hidden rounded-xl border border-slate-200 bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 dark:border-slate-700 dark:bg-slate-950 min-[360px]:h-[104px] small:h-[124px]">
         <Thumbnail thumbnail={item.thumbnail} images={product?.images} productTitle={product?.title || item.product_title} size="square" type="full" className="h-full transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none" />
       </LocalizedClientLink>
       <div className="min-w-0">
