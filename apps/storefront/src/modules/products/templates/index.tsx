@@ -51,8 +51,8 @@ const ProductTemplate = async ({ product, region, countryCode }: ProductTemplate
           </div>
 
           <div className="flex h-fit flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_12px_35px_rgba(15,23,42,0.07)] dark:border-slate-700 dark:bg-slate-900 small:p-7 medium:sticky medium:top-28">
-            <div className="mb-4 flex items-center justify-between gap-3 border-b border-slate-100 pb-3.5 dark:border-slate-800">
-              <span className="flex items-center gap-2 text-sm font-bold text-teal-700 dark:text-teal-300">
+            <div className="mb-4 flex flex-col items-start gap-2 border-b border-slate-100 pb-3.5 dark:border-slate-800 xsmall:flex-row xsmall:items-center xsmall:justify-between xsmall:gap-3">
+              <span className="flex min-w-0 items-center gap-2 text-sm font-bold text-teal-700 dark:text-teal-300">
                 {batteryAccent && <span className={`h-3 w-3 rounded-full border border-black/10 ${batteryAccent.tone}`} />}
                 {batteryAccent && batterySize ? `${fa ? Number(batterySize).toLocaleString("fa-IR", { useGrouping: false }) : batterySize} — ${fa ? batteryAccent.fa : batteryAccent.en}` : category ? getLocalizedCategoryName(category, locale) : (fa ? "محصول EarMed" : "EarMed catalog")}
               </span>
@@ -74,7 +74,7 @@ const ProductTemplate = async ({ product, region, countryCode }: ProductTemplate
         </section>
 
         <section className="mt-12 border-t border-slate-200 pt-7 dark:border-slate-800" data-testid="related-products-container">
-          <div className="mb-6 flex items-end justify-between gap-4"><div><p className="text-xs font-bold text-teal-700 dark:text-teal-300">{fa ? "از همین دسته‌بندی" : "FROM THE SAME CATEGORY"}</p><h2 className="mt-2 text-xl font-bold small:text-2xl">{fa ? "محصولات مرتبط" : "Related products"}</h2></div><LocalizedClientLink href={category ? `/store?category=${encodeURIComponent(category.handle)}` : "/store"} className="text-sm font-bold text-teal-700 underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 dark:text-teal-300">{fa ? "مشاهده دسته‌بندی" : "View category"}</LocalizedClientLink></div>
+          <div className="mb-6 flex flex-col items-start gap-3 xsmall:flex-row xsmall:items-end xsmall:justify-between xsmall:gap-4"><div><p className="text-xs font-bold text-teal-700 dark:text-teal-300">{fa ? "از همین دسته‌بندی" : "FROM THE SAME CATEGORY"}</p><h2 className="mt-2 text-xl font-bold small:text-2xl">{fa ? "محصولات مرتبط" : "Related products"}</h2></div><LocalizedClientLink href={category ? `/store?category=${encodeURIComponent(category.handle)}` : "/store"} className="shrink-0 text-sm font-bold text-teal-700 underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 dark:text-teal-300">{fa ? "مشاهده دسته‌بندی" : "View category"}</LocalizedClientLink></div>
           <Suspense fallback={<SkeletonRelatedProducts />}><RelatedProducts product={product} countryCode={countryCode} /></Suspense>
         </section>
       </div>

@@ -44,9 +44,9 @@ export default function ProductTabs({ product, locale }: { product: HttpTypes.St
           <h3 className="border-b border-slate-200 px-5 py-4 text-lg font-bold text-slate-950 dark:border-slate-700 dark:text-slate-50">{locale === "fa" ? "مشخصات" : "Specifications"}</h3>
           <dl className="divide-y divide-slate-100 dark:divide-slate-800">
             {specifications.map(([key, value]) => (
-              <div key={key} className="grid grid-cols-[minmax(0,.8fr)_minmax(0,1fr)] gap-4 px-5 py-3 text-sm">
-                <dt className="font-semibold text-slate-500 dark:text-slate-400">{labels[key]?.[locale] || key.replaceAll("_", " ")}</dt>
-                <dd className="text-slate-900 dark:text-slate-100">{localizedValue(value, locale)}</dd>
+              <div key={key} className="grid grid-cols-1 gap-1.5 px-5 py-3 text-sm xsmall:grid-cols-[minmax(0,.8fr)_minmax(0,1fr)] xsmall:gap-4">
+                <dt className="min-w-0 break-words font-semibold text-slate-500 dark:text-slate-400">{labels[key]?.[locale] || key.replaceAll("_", " ")}</dt>
+                <dd className="min-w-0 break-words text-slate-900 dark:text-slate-100">{localizedValue(value, locale)}</dd>
               </div>
             ))}
           </dl>

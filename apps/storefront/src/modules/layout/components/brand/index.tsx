@@ -17,7 +17,9 @@ export default function Brand({ className = "" }: BrandProps) {
           <path d="M18.5 5.5 20 4" />
         </svg>
       </span>
-      <span>EarMed Store</span>
+      <span className="whitespace-nowrap">
+        EarMed<span className="hidden xsmall:inline"> Store</span>
+      </span>
     </LocalizedClientLink>
   )
 }

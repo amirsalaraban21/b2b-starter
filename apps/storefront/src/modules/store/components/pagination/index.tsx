@@ -114,8 +114,8 @@ export function Pagination({
 
   // Render the component
   return (
-    <nav className="mt-8 flex w-full justify-center" aria-label={fa ? "صفحه‌بندی محصولات" : "Product pagination"} dir={fa ? "rtl" : "ltr"}>
-      <div className="flex max-w-full items-center gap-1 rounded-xl bg-slate-50 p-1.5 dark:bg-slate-900" data-testid={dataTestid}>
+    <nav className="mt-8 flex w-full max-w-full justify-start overflow-x-auto pb-1 xsmall:justify-center" aria-label={fa ? "صفحه‌بندی محصولات" : "Product pagination"} dir={fa ? "rtl" : "ltr"}>
+      <div className="flex shrink-0 items-center gap-1 rounded-xl bg-slate-50 p-1.5 dark:bg-slate-900" data-testid={dataTestid}>
         <button aria-label={fa ? "صفحه قبلی" : "Previous page"} className="inline-flex h-10 min-w-10 items-center justify-center rounded-lg px-2 text-lg transition duration-200 hover:bg-white disabled:cursor-not-allowed disabled:opacity-35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 motion-reduce:transition-none dark:hover:bg-slate-800" disabled={page <= 1} onClick={() => handlePageChange(page - 1)}><span aria-hidden="true">{fa ? "›" : "‹"}</span><span className="sr-only">{fa ? "قبلی" : "Previous"}</span></button>
         {renderPageButtons()}
         <button aria-label={fa ? "صفحه بعدی" : "Next page"} className="inline-flex h-10 min-w-10 items-center justify-center rounded-lg px-2 text-lg transition duration-200 hover:bg-white disabled:cursor-not-allowed disabled:opacity-35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 motion-reduce:transition-none dark:hover:bg-slate-800" disabled={page >= totalPages} onClick={() => handlePageChange(page + 1)}><span aria-hidden="true">{fa ? "‹" : "›"}</span><span className="sr-only">{fa ? "بعدی" : "Next"}</span></button>
