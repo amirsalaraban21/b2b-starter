@@ -14,7 +14,7 @@ const BillingDetails = ({ order }: BillingDetailsProps) => {
         </Heading>
 
         {!!order.billing_address && (
-          <div>
+          <div className="min-w-0 break-words">
             <Text className="txt-medium text-ui-fg-subtle capitalize">
               {order.billing_address?.company}
             </Text>

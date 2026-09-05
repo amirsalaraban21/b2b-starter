@@ -74,14 +74,14 @@ const OrderDetailsTemplate: React.FC<OrderDetailsTemplateProps> = ({
                 </h2>
                 {manualPayment.status === "awaiting_payment" &&
                   (paymentConfig.configured ? (
-                    <div className="mt-3 rounded-xl bg-slate-50 p-4 text-sm leading-7 dark:bg-slate-950">
-                      <p>{paymentConfig.card_number}</p>
-                      <p>{paymentConfig.account_holder}</p>
+                    <div className="mt-3 min-w-0 rounded-xl bg-slate-50 p-4 text-sm leading-7 dark:bg-slate-950">
+                      <p className="break-all" dir="ltr">{paymentConfig.card_number}</p>
+                      <p className="break-words">{paymentConfig.account_holder}</p>
                       {paymentConfig.bank_name && (
-                        <p>{paymentConfig.bank_name}</p>
+                        <p className="break-words">{paymentConfig.bank_name}</p>
                       )}
                       {paymentConfig.instructions && (
-                        <p>{paymentConfig.instructions}</p>
+                        <p className="break-words whitespace-pre-line">{paymentConfig.instructions}</p>
                       )}
                     </div>
                   ) : (
@@ -111,7 +111,7 @@ const OrderDetailsTemplate: React.FC<OrderDetailsTemplateProps> = ({
               {fulfillmentLabel(fulfillment, locale)}
             </p>
             {order.shipping_methods?.[0]?.name && (
-              <p className="mt-2 text-sm">
+              <p className="mt-2 break-words text-sm">
                 {fa ? "روش ارسال" : "Shipping method"}:{" "}
                 {order.shipping_methods[0].name}
               </p>
@@ -119,7 +119,7 @@ const OrderDetailsTemplate: React.FC<OrderDetailsTemplateProps> = ({
             {labels.map(
               (label: any, index: number) =>
                 label.tracking_number && (
-                  <p key={index} className="mt-2 text-sm">
+                  <p key={index} className="mt-2 break-all text-sm">
                     {fa ? "کد رهگیری" : "Tracking"}:{" "}
                     {label.tracking_url ? (
                       <a

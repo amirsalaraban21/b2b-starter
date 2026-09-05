@@ -59,7 +59,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
             <Container className="p-0">
               <div className="flex flex-col items-start justify-between gap-3 px-4 py-4 xsmall:flex-row xsmall:items-center small:px-6">
                 <Text className="txt-compact-small">
-                  <CheckCircleSolid className="inline-block mr-2 text-green-500 text-lg" />
+                  <CheckCircleSolid className="me-2 inline-block text-green-500 text-lg" />
                   Quote accepted by customer. Order is ready for processing.
                 </Text>
 
@@ -90,22 +90,22 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
 
           <Container className="p-0">
             <div className="py-4">
-              <div className="flex items-center justify-between mb-2 px-6">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 xsmall:px-6">
                 <span className="txt-small text-ui-fg-subtle font-semibold">
                   Current Total
                 </span>
 
-                <span className="txt-small text-ui-fg-subtle">
+                <span className="max-w-full break-words text-end txt-small text-ui-fg-subtle">
                   {formatAmount(order.total, order.currency_code)}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between px-6">
+              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 xsmall:px-6">
                 <span className="txt-small text-ui-fg-subtle font-semibold">
                   New Total
                 </span>
 
-                <span className="txt-small text-ui-fg-subtle">
+                <span className="max-w-full break-words text-end txt-small text-ui-fg-subtle">
                   {formatAmount(preview.total, order.currency_code)}
                 </span>
               </div>
@@ -157,7 +157,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
           <Container className="flex flex-wrap justify-between gap-3">
             <div className="text-sm">
               <span className="font-semibold text-ui-fg-subtle">Quote ID:</span>{" "}
-              #<span>{quote.draft_order.display_id}</span>
+              #<span className="break-all">{quote.draft_order.display_id}</span>
             </div>
 
             <QuoteStatusBadge status={quote.status} />
@@ -169,17 +169,17 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
             </Heading>
 
             <div className="text-sm text-ui-fg-subtle">
-              <div className="flex justify-between">
+              <div className="flex flex-wrap justify-between gap-x-4 gap-y-1">
                 <Text>Email</Text>
-                <Text>{quote.customer?.email || "-"}</Text>
+                <Text className="break-all text-end">{quote.customer?.email || "-"}</Text>
               </div>
 
-              <div className="flex justify-between">
+              <div className="flex flex-wrap justify-between gap-x-4 gap-y-1">
                 <Text>Phone</Text>
                 <Text>{quote.customer?.phone || "-"}</Text>
               </div>
 
-              <div className="flex justify-between">
+              <div className="flex flex-wrap justify-between gap-x-4 gap-y-1">
                 <Text>Spend Limit</Text>
                 <Text>
                   {(quote.customer?.employee?.spending_limit &&
@@ -199,9 +199,9 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
             </Heading>
 
             <div className="text-sm text-ui-fg-subtle">
-              <div className="flex justify-between">
+              <div className="flex flex-wrap justify-between gap-x-4 gap-y-1">
                 <Text>Name</Text>
-                <Text>{quote.customer?.employee?.company?.name || "-"}</Text>
+                <Text className="break-words text-end">{quote.customer?.employee?.company?.name || "-"}</Text>
               </div>
             </div>
           </Container>

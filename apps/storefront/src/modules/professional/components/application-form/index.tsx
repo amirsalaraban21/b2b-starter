@@ -38,7 +38,7 @@ export default function ProfessionalApplicationForm({
   return (
     <section
       dir={fa ? "rtl" : "ltr"}
-      className="mt-8 rounded-2xl border border-ui-border-base bg-ui-bg-subtle p-6 small:p-10"
+      className="mt-8 rounded-2xl border border-ui-border-base bg-ui-bg-subtle p-5 xsmall:p-6 small:p-10"
     >
       <h2 className="text-2xl font-semibold">
         {fa ? "درخواست حساب حرفه‌ای" : "Professional account application"}
@@ -140,7 +140,7 @@ export default function ProfessionalApplicationForm({
         <div className="small:col-span-2">
           <button
             disabled={pending}
-            className="rounded-lg bg-teal-700 px-5 py-3 text-white disabled:opacity-60"
+            className="w-full rounded-lg bg-teal-700 px-5 py-3 text-white disabled:opacity-60 xsmall:w-auto"
           >
             {pending
               ? fa
@@ -151,7 +151,7 @@ export default function ProfessionalApplicationForm({
               : "Submit application"}
           </button>
           {state.error && (
-            <p role="alert" className="mt-3 text-sm text-rose-600">
+            <p role="alert" className="mt-3 break-words text-sm text-rose-600">
               {state.error}
             </p>
           )}

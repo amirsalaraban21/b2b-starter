@@ -39,7 +39,7 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
         </Heading>
 
         {!!order.shipping_address && (
-          <div>
+          <div className="min-w-0 break-words">
             <Text className="txt-medium text-ui-fg-subtle capitalize">
               {order.shipping_address?.company}
             </Text>

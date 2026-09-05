@@ -30,11 +30,11 @@ export const QuoteTableItem = ({
   }, [item])
 
   return (
-    <div className="flex gap-x-4">
-      <Thumbnail thumbnail={item.thumbnail} size="square" className="w-16" />
+    <div className="flex min-w-0 gap-x-3 xsmall:gap-x-4">
+      <Thumbnail thumbnail={item.thumbnail} size="square" className="w-14 shrink-0 xsmall:w-16" />
 
-      <div className="flex flex-col w-full">
-        <div>
+      <div className="flex min-w-0 w-full flex-col">
+        <div className="min-w-0 break-words">
           <Text
             size="small"
             leading="compact"
@@ -54,16 +54,16 @@ export const QuoteTableItem = ({
           </Text>
         </div>
 
-        <div className="flex justify-between w-full items-center">
+        <div className="mt-2 flex w-full min-w-0 flex-col items-start gap-2 xsmall:flex-row xsmall:flex-wrap xsmall:items-center xsmall:justify-between">
           <div>
             <Text className="text-">
               <span>{item.quantity}</span>x{" "}
             </Text>
           </div>
 
-          <div className="flex gap-x-2">
+          <div className="flex max-w-full flex-wrap gap-2">
             <AmountCell
-              className="text-sm text-right justify-end items-end"
+                className="text-sm text-end justify-end items-end"
               currencyCode={currencyCode}
               amount={item.unit_price}
               originalAmount={originalItem?.unit_price}
@@ -74,14 +74,14 @@ export const QuoteTableItem = ({
                 size="2xsmall"
                 rounded="full"
                 color="blue"
-                className="mr-1"
+                className="me-1"
               >
                 New
               </Badge>
             )}
 
             {isItemRemoved ? (
-              <Badge size="2xsmall" rounded="full" color="red" className="mr-1">
+              <Badge size="2xsmall" rounded="full" color="red" className="me-1">
                 Removed
               </Badge>
             ) : (
@@ -90,7 +90,7 @@ export const QuoteTableItem = ({
                   size="2xsmall"
                   rounded="full"
                   color="orange"
-                  className="mr-1"
+                  className="me-1"
                 >
                   Modified
                 </Badge>
@@ -100,7 +100,7 @@ export const QuoteTableItem = ({
 
           <div>
             <AmountCell
-              className="text-sm text-right justify-end items-end"
+              className="text-sm text-end justify-end items-end"
               currencyCode={currencyCode}
               amount={item.total}
               originalAmount={originalItem?.total}

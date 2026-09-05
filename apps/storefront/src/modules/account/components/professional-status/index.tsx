@@ -32,7 +32,7 @@ const ProfessionalStatus = ({
           {fa ? "وضعیت حساب حرفه‌ای" : "Professional status"}
         </h3>
         {application && (
-          <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-800 dark:bg-teal-950 dark:text-teal-200">
+          <span className="max-w-full break-words rounded-full bg-teal-50 px-3 py-1 text-center text-xs font-bold text-teal-800 dark:bg-teal-950 dark:text-teal-200">
             {labels[locale][application.status]}
           </span>
         )}
@@ -41,21 +41,21 @@ const ProfessionalStatus = ({
         <div className="mt-4 grid gap-2 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-2">
           <p>
             {fa ? "نوع فعالیت" : "Professional type"}:{" "}
-            <strong>{application.professional_type}</strong>
+            <strong className="break-all">{application.professional_type}</strong>
           </p>
           <p>
             {fa ? "سازمان" : "Organization"}:{" "}
-            <strong>{application.organization_name || "—"}</strong>
+            <strong className="break-words">{application.organization_name || "—"}</strong>
           </p>
           <p>
             {fa ? "شناسه حرفه‌ای" : "Professional identifier"}:{" "}
-            <strong>{application.professional_identifier || "—"}</strong>
+            <strong className="break-all">{application.professional_identifier || "—"}</strong>
           </p>
           <p>
             {fa ? "شهر" : "City"}: <strong>{application.city || "—"}</strong>
           </p>
           {application.customer_feedback && (
-            <p className="sm:col-span-2 rounded-xl bg-amber-50 p-3 text-amber-900 dark:bg-amber-950 dark:text-amber-100">
+            <p className="break-words sm:col-span-2 rounded-xl bg-amber-50 p-3 text-amber-900 dark:bg-amber-950 dark:text-amber-100">
               {application.customer_feedback}
             </p>
           )}

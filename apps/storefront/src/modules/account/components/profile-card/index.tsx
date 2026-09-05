@@ -77,14 +77,14 @@ const ProfileCard = ({
                 }
               />
             ) : (
-              <Text className="mt-2 text-ui-fg-subtle">
+              <Text className="mt-2 break-all text-ui-fg-subtle">
                 {data[field.key] || "—"}
               </Text>
             )}
           </div>
         ))}
       </div>
-      <div className="flex justify-end gap-2 border-t bg-ui-bg-subtle p-4">
+      <div className="flex flex-wrap justify-end gap-2 border-t bg-ui-bg-subtle p-4">
         {editing ? (
           <>
             <Button

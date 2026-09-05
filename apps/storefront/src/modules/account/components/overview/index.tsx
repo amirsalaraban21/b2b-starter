@@ -69,7 +69,7 @@ const Overview = ({
             className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 dark:border-slate-800 dark:bg-slate-900 motion-reduce:transform-none motion-reduce:transition-none"
           >
             <h2 className="text-lg font-black">{card.title}</h2>
-            <p className="mt-2 truncate text-sm text-slate-500 dark:text-slate-400">
+            <p className="mt-2 break-all text-sm text-slate-500 dark:text-slate-400">
               {card.detail}
             </p>
           </LocalizedClientLink>
@@ -77,7 +77,7 @@ const Overview = ({
       </div>
       {orders.length > 0 && (
         <section className="mt-5">
-          <div className="mb-3 flex items-center justify-between">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-lg font-black">
               {fa ? "سفارش‌های اخیر" : "Recent orders"}
             </h2>

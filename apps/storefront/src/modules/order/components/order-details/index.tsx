@@ -14,13 +14,13 @@ const OrderDetails = ({ order }: OrderDetailsProps) => {
         Details
       </Heading>
 
-      <div className="text-sm text-ui-fg-subtle overflow-auto">
-        <div className="flex justify-between">
+      <div className="min-w-0 text-sm text-ui-fg-subtle">
+        <div className="flex flex-wrap justify-between gap-x-4 gap-y-1">
           <Text>Order Number</Text>
           <Text>#{order.display_id}</Text>
         </div>
 
-        <div className="flex justify-between mb-2">
+        <div className="flex flex-wrap justify-between gap-x-4 gap-y-1 mb-2">
           <Text>Order Date</Text>
           <Text>
             {" "}
@@ -31,7 +31,7 @@ const OrderDetails = ({ order }: OrderDetailsProps) => {
 
         <Text>
           We have sent the order confirmation details to{" "}
-          <span className="font-semibold">{order.email}</span>.
+          <span className="break-all font-semibold">{order.email}</span>.
         </Text>
       </div>
     </>

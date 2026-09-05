@@ -76,7 +76,7 @@ const QuoteMessages = ({
               "!bg-ui-bg-subtle !inset-x-5 !inset-y-3": !!message.customer_id,
             })}
           >
-            <div className="font-medium font-sans txt-compact-small text-ui-fg-subtle ">
+            <div className="break-words font-medium font-sans txt-compact-small text-ui-fg-subtle ">
               {!!message.admin &&
                 `${message.admin.first_name} ${message.admin.last_name}`}
 
@@ -95,7 +95,7 @@ const QuoteMessages = ({
               </div>
             )}
 
-            <div>{message.text}</div>
+            <div className="break-words">{message.text}</div>
           </div>
         ))}
       </div>
@@ -105,7 +105,7 @@ const QuoteMessages = ({
           onSubmit={handleSubmit(handleCreateMessage)}
           className="flex flex-col gap-y-3"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col items-stretch gap-3 xsmall:flex-row xsmall:items-center">
             <div className="flex-1">
               <div className="flex items-center gap-x-1">
                 <label className="font-sans txt-compact-small font-medium">
