@@ -3,7 +3,7 @@
 @import "tailwindcss/utilities";
 
 html[lang="fa"] body {
-  font-family: Vazirmatn, Tahoma, "Segoe UI", sans-serif;
+  font-family: var(--font-vazirmatn), var(--font-geist-sans), Tahoma, "Segoe UI", sans-serif;
   line-height: 1.75;
 }
 
