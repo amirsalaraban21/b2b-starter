@@ -7,9 +7,6 @@ checkEnvVariables()
  */
 const nextConfig = {
   reactStrictMode: true,
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   logging: {
     fetches: {
       fullUrl: true,

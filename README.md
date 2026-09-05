@@ -84,7 +84,7 @@ cp apps/backend/.env.template apps/backend/.env
 
 ```bash
 # Replace with actual database URL, make sure the database exists.
-DATABASE_URL=postgres://postgres:@localhost:5432/medusa-b2b-starter
+DATABASE_URL=postgres://<user>:<password>@localhost:5432/<database>
 ```
 
 4. Run migrations:
@@ -98,7 +98,7 @@ pnpm medusa db:migrate
 
 ```bash
 cd apps/backend
-pnpm medusa user -e admin@test.com -p supersecret
+pnpm medusa user -e <admin-email> -p <generate-a-unique-strong-password>
 ```
 
 6. Start Medusa backend:
@@ -154,7 +154,7 @@ pnpm dev
 |----------|-------------|
 | `NEXT_PUBLIC_MEDUSA_BACKEND_URL` | URL of the Medusa backend |
 | `NEXT_PUBLIC_BASE_URL` | Public URL of the storefront |
-| `NEXT_PUBLIC_DEFAULT_REGION` | Default region code (e.g. `us`) |
+| `NEXT_PUBLIC_DEFAULT_REGION` | Default region code (`ir` for the EarMed storefront) |
 | `REVALIDATE_SECRET` | Secret for on-demand cache revalidation |
 
 ## Resources

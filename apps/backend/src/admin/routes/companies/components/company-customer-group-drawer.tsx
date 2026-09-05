@@ -29,7 +29,7 @@ export function CompanyCustomerGroupDrawer({
         setOpen(false);
         toast.success(`Company added to customer group successfully`);
       },
-      onError: (error) => {
+      onError: () => {
         toast.error("Failed to add company to customer group");
       },
     });
@@ -40,8 +40,7 @@ export function CompanyCustomerGroupDrawer({
       onSuccess: async () => {
         toast.success(`Company removed from customer group successfully`);
       },
-      onError: (error) => {
-        console.log(error);
+      onError: () => {
         toast.error("Failed to remove company from customer group");
       },
     });
