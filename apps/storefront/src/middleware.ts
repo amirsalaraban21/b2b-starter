@@ -55,6 +55,15 @@ async function getRegionMap(cacheId: string) {
   return regionMapCache.regionMap
 }
 
+function getFallbackRegionMap(request: NextRequest) {
+  const pathCountryCode = request.nextUrl.pathname.split("/")[1]?.toLowerCase()
+  const countryCode = pathCountryCode && /^[a-z]{2}$/.test(pathCountryCode)
+    ? pathCountryCode
+    : DEFAULT_REGION
+
+  return new Map<string, number>([[countryCode, 1]])
+}
+
 /**
  * Fetches regions from Medusa and sets the region cookie.
  * @param request
@@ -123,7 +132,15 @@ export async function middleware(request: NextRequest) {
   // Set a cache id to invalidate the cache for this instance only
   const cacheId = await setCacheId(request, response)
 
-  const regionMap = await getRegionMap(cacheId)
+  // Keep routing available during a temporary backend outage. Pages that need
+  // commerce data still handle their own API failures; this fallback only
+  // prevents the Edge middleware itself from turning every route into a 500.
+  let regionMap: Map<string, HttpTypes.StoreRegion | number>
+  try {
+    regionMap = await getRegionMap(cacheId)
+  } catch {
+    regionMap = getFallbackRegionMap(request)
+  }
 
   const countryCode = regionMap && (await getCountryCode(request, regionMap))
 

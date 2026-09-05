@@ -159,7 +159,15 @@ const StorefrontContentPage = () => {
 
 const StringList = ({ values = [], onChange, label, dir }: { values?: string[]; onChange: (value: string[]) => void; label: string; dir: "rtl" | "ltr" }) => <div className="grid gap-2">
   {values.map((value, index) => <div key={index} className="flex gap-2"><Input dir={dir} aria-label={`${label} ${index + 1}`} value={value} onChange={(event) => onChange(values.map((item, i) => i === index ? event.target.value : item))} /><Button size="small" variant="secondary" disabled={values.length === 1} onClick={() => onChange(values.filter((_, i) => i !== index))}>Remove</Button></div>)}
-  <Button size="small" variant="secondary" onClick={() => onChange([...values, ""])}>Add {label.toLowerCase()}</Button>
+  <Button
+    size="small"
+    variant="secondary"
+    onClick={() => {
+      onChange(values.concat(""))
+    }}
+  >
+    Add {label.toLowerCase()}
+  </Button>
 </div>
 
 const moveItem = (items: Document[], index: number, delta: number, done: (items: Document[]) => void) => {
