@@ -10,6 +10,7 @@ const footerCopy = {
     store: "فروشگاه",
     professional: "حرفه‌ای",
     account: "حساب کاربری",
+    information: "اطلاعات",
     products: "همه محصولات",
     examination: "تجهیزات معاینه گوش",
     audiology: "تجهیزات ادیولوژی",
@@ -20,11 +21,15 @@ const footerCopy = {
     signIn: "ورود به حساب",
     orders: "سفارش‌ها",
     cart: "سبد خرید",
+    about: "درباره ما",
+    contact: "تماس با ما",
+    faq: "سوالات متداول",
   },
   en: {
     store: "Store",
     professional: "Professional",
     account: "Account",
+    information: "Information",
     products: "All products",
     examination: "Ear examination equipment",
     audiology: "Audiology equipment",
@@ -35,6 +40,9 @@ const footerCopy = {
     signIn: "Sign in",
     orders: "Orders",
     cart: "Cart",
+    about: "About Us",
+    contact: "Contact Us",
+    faq: "FAQ",
   },
 }
 
@@ -69,6 +77,14 @@ export default async function Footer() {
         [f.cart, "/cart"],
       ],
     },
+    {
+      title: f.information,
+      links: [
+        [f.about, "/about"],
+        [f.contact, "/contact"],
+        [f.faq, "/faq"],
+      ],
+    },
   ]
 
   return (
@@ -81,7 +97,7 @@ export default async function Footer() {
             <div className="mt-8 h-px w-16 bg-teal-500" />
           </div>
 
-          <div className="grid grid-cols-1 gap-x-8 gap-y-10 xsmall:grid-cols-2 small:grid-cols-3">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 xsmall:grid-cols-2 small:grid-cols-4">
             {groups.map((group) => (
               <div key={group.title}>
                 <h3 className="text-sm font-semibold text-white">
