@@ -6,6 +6,7 @@ import { storeFreeShippingMiddlewares } from "./free-shipping/middlewares";
 import { storeQuotesMiddlewares } from "./quotes/middlewares";
 import { storeProfessionalApplicationMiddlewares } from "./professional-applications/middlewares";
 import { storeManualPaymentMiddlewares } from "./manual-payment/middlewares";
+import { storeOrderMiddlewares } from "./orders/middlewares";
 
 export const storeMiddlewares: MiddlewareRoute[] = [
   ...storeCartsMiddlewares,
@@ -15,4 +16,5 @@ export const storeMiddlewares: MiddlewareRoute[] = [
   ...storeApprovalsMiddlewares,
   ...storeProfessionalApplicationMiddlewares,
   ...storeManualPaymentMiddlewares,
+  ...storeOrderMiddlewares,
 ];
