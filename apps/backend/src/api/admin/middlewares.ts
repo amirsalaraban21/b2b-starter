@@ -4,6 +4,7 @@ import { adminQuotesMiddlewares } from "./quotes/middlewares";
 import { adminApprovalsMiddlewares } from "./approvals/middlewares";
 import { adminProfessionalApplicationMiddlewares } from "./professional-applications/middlewares";
 import { adminManualPaymentMiddlewares } from "./manual-payments/middlewares";
+import { adminStorefrontContentMiddlewares } from "./storefront-content/middlewares";
 
 export const adminMiddlewares: MiddlewareRoute[] = [
   ...adminCompaniesMiddlewares,
@@ -11,4 +12,5 @@ export const adminMiddlewares: MiddlewareRoute[] = [
   ...adminApprovalsMiddlewares,
   ...adminProfessionalApplicationMiddlewares,
   ...adminManualPaymentMiddlewares,
+  ...adminStorefrontContentMiddlewares,
 ];

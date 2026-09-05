@@ -5,6 +5,7 @@ import { APPROVAL_MODULE } from "./src/modules/approval"
 import { COMPANY_MODULE } from "./src/modules/company"
 import { PROFESSIONAL_APPLICATION_MODULE } from "./src/modules/professional-application"
 import { MANUAL_PAYMENT_MODULE } from "./src/modules/manual-payment"
+import { STOREFRONT_CONTENT_MODULE } from "./src/modules/storefront-content"
 import { loadEnv, defineConfig } from "@medusajs/framework/utils"
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd())
@@ -54,6 +55,9 @@ module.exports = defineConfig({
     },
     [MANUAL_PAYMENT_MODULE]: {
       resolve: "./modules/manual-payment",
+    },
+    [STOREFRONT_CONTENT_MODULE]: {
+      resolve: "./modules/storefront-content",
     },
   },
 })
