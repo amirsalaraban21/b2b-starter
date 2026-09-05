@@ -25,16 +25,16 @@ export default async function Profile() {
   return (
     <div className="w-full" data-testid="profile-page-wrapper">
       <div className="mb-8 flex flex-col gap-y-4">
-        <Heading level="h2" className="text-lg text-neutral-950">
+        <Heading level="h2" className="text-lg text-slate-950 dark:text-slate-50">
           {locale === "fa" ? "اطلاعات حساب" : "Account details"}
         </Heading>
         <ProfileCard customer={customer} locale={locale} />
       </div>
       <div className="mb-8 flex flex-col gap-y-4">
-        <Heading level="h2" className="text-lg text-neutral-950">
+        <Heading level="h2" className="text-lg text-slate-950 dark:text-slate-50">
           {locale === "fa" ? "امنیت" : "Security"}
         </Heading>
-        <SecurityCard customer={customer} />
+        <SecurityCard customer={customer} locale={locale} />
       </div>
     </div>
   )

@@ -57,7 +57,7 @@ const ProfileCard = ({
     { key: "phone", label: fa ? "موبایل" : "Mobile" },
   ] as const
   return (
-    <Container className="overflow-hidden p-0">
+    <Container className="overflow-hidden border border-slate-200 bg-white p-0 text-slate-950 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50">
       <div className="grid gap-4 p-5 sm:grid-cols-2">
         {fields.map((field) => (
           <div key={field.key}>
@@ -84,7 +84,7 @@ const ProfileCard = ({
           </div>
         ))}
       </div>
-      <div className="flex flex-wrap justify-end gap-2 border-t bg-ui-bg-subtle p-4">
+      <div className="flex flex-wrap justify-end gap-2 border-t border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/60">
         {editing ? (
           <>
             <Button

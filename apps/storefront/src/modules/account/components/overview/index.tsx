@@ -46,7 +46,7 @@ const Overview = ({
   ]
   return (
     <div dir={fa ? "rtl" : "ltr"} data-testid="overview-page-wrapper">
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 small:p-8">
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 small:p-6">
         <p className="text-sm font-bold text-teal-700 dark:text-teal-300">
           EarMed
         </p>
@@ -61,12 +61,12 @@ const Overview = ({
             : "Manage your orders, addresses, and account details."}
         </p>
       </div>
-      <div className="mt-5 grid gap-4 medium:grid-cols-3">
+      <div className="mt-4 grid gap-3 small:grid-cols-3">
         {cards.map((card) => (
           <LocalizedClientLink
             key={card.href}
             href={card.href}
-            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 dark:border-slate-800 dark:bg-slate-900 motion-reduce:transform-none motion-reduce:transition-none"
+            className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 dark:border-slate-800 dark:bg-slate-900 motion-reduce:transform-none motion-reduce:transition-none"
           >
             <h2 className="text-lg font-black">{card.title}</h2>
             <p className="mt-2 break-all text-sm text-slate-500 dark:text-slate-400">
@@ -100,7 +100,7 @@ const Overview = ({
           </div>
         </section>
       )}
-      <div className="mt-5">
+      <div className="mt-4">
         <ProfessionalStatus locale={locale} application={application} />
       </div>
     </div>

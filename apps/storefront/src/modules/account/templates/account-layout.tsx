@@ -31,11 +31,11 @@ const AccountLayout: React.FC<AccountLayoutProps> = async ({
 
   return (
     <div
-      className="flex-1 bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50 small:py-12"
+      className="flex-1 bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50"
       data-testid="account-page"
     >
       <div className="flex-1 content-container h-full max-w-7xl mx-auto flex flex-col">
-        <div className="grid grid-cols-1 gap-6 py-8 small:grid-cols-[220px_minmax(0,1fr)] small:py-12">
+        <div className="grid grid-cols-1 gap-6 py-8 small:grid-cols-[220px_minmax(0,1fr)]">
           <div>
             {customer && (
               <AccountNav

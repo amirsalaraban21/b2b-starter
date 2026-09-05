@@ -59,7 +59,7 @@ const AccountNav = ({
                 <li>
                   <LocalizedClientLink
                     href="/account/profile"
-                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
+                    className="flex items-center justify-between border-b border-slate-200 px-8 py-4 dark:border-slate-800"
                     data-testid="profile-link"
                   >
                     <>
@@ -74,7 +74,7 @@ const AccountNav = ({
                 <li>
                   <LocalizedClientLink
                     href="/account/professional"
-                    className="flex items-center justify-between border-b border-gray-200 px-8 py-4"
+                    className="flex items-center justify-between border-b border-slate-200 px-8 py-4 dark:border-slate-800"
                     data-testid="professional-link"
                   >
                     <div className="flex items-center gap-x-2">
@@ -89,7 +89,7 @@ const AccountNav = ({
                 <li>
                   <LocalizedClientLink
                     href="/account/company"
-                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
+                    className="flex items-center justify-between border-b border-slate-200 px-8 py-4 dark:border-slate-800"
                     data-testid="company-link"
                   >
                     <>
@@ -104,7 +104,7 @@ const AccountNav = ({
                 <li>
                   <LocalizedClientLink
                     href="/account/addresses"
-                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
+                    className="flex items-center justify-between border-b border-slate-200 px-8 py-4 dark:border-slate-800"
                     data-testid="addresses-link"
                   >
                     <>
@@ -119,7 +119,7 @@ const AccountNav = ({
                 <li>
                   <LocalizedClientLink
                     href="/account/orders"
-                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
+                    className="flex items-center justify-between border-b border-slate-200 px-8 py-4 dark:border-slate-800"
                     data-testid="orders-link"
                   >
                     <div className="flex items-center gap-x-2">
@@ -133,7 +133,7 @@ const AccountNav = ({
                   <li>
                     <LocalizedClientLink
                       href="/account/approvals"
-                      className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
+                      className="flex items-center justify-between border-b border-slate-200 px-8 py-4 dark:border-slate-800"
                       data-testid="approvals-link"
                     >
                       <div className="flex items-center gap-x-2">
@@ -148,7 +148,7 @@ const AccountNav = ({
                   <li>
                     <LocalizedClientLink
                       href="/account/quotes"
-                      className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
+                      className="flex items-center justify-between border-b border-slate-200 px-8 py-4 dark:border-slate-800"
                       data-testid="quotes-link"
                     >
                       <div className="flex items-center gap-x-2">
@@ -162,7 +162,7 @@ const AccountNav = ({
                 <li>
                   <button
                     type="button"
-                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8 w-full"
+                    className="flex w-full items-center justify-between border-b border-slate-200 px-8 py-4 dark:border-slate-800"
                     onClick={handleLogout}
                     data-testid="logout-button"
                   >

@@ -26,7 +26,7 @@ const ProfessionalStatus = ({
 }) => {
   const fa = locale === "fa"
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h3 className="font-bold">
           {fa ? "وضعیت حساب حرفه‌ای" : "Professional status"}
@@ -48,7 +48,7 @@ const ProfessionalStatus = ({
             <strong className="break-words">{application.organization_name || "—"}</strong>
           </p>
           <p>
-            {fa ? "شناسه حرفه‌ای" : "Professional identifier"}:{" "}
+            {fa ? "شماره نظام پزشکی / شناسه حرفه‌ای" : "Medical Council / Professional ID"}:{" "}
             <strong className="break-all">{application.professional_identifier || "—"}</strong>
           </p>
           <p>

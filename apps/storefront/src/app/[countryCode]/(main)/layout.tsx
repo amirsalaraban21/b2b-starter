@@ -9,6 +9,8 @@ import FreeShippingPriceNudge from "@/modules/shipping/components/free-shipping-
 import { StoreFreeShippingPrice } from "@/types/shipping-option/http"
 import { StoreCart } from "@medusajs/types"
 import { Metadata } from "next"
+import NavigationProgress from "@/modules/layout/components/navigation-progress"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -25,6 +27,9 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
 
   return (
     <>
+      <Suspense fallback={null}>
+        <NavigationProgress />
+      </Suspense>
       <NavigationHeader />
       {process.env.NEXT_PUBLIC_DEMO_MODE === "true" && (
         <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-center text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">

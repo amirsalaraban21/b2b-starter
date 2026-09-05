@@ -13,6 +13,21 @@ html[lang="fa"] body {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+
+  .navigation-progress-bar {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+html.dark input:-webkit-autofill,
+html.dark input:-webkit-autofill:hover,
+html.dark input:-webkit-autofill:focus,
+html.dark textarea:-webkit-autofill,
+html.dark select:-webkit-autofill {
+  border-color: #334155;
+  -webkit-text-fill-color: #f8fafc;
+  -webkit-box-shadow: 0 0 0 1000px #020617 inset;
 }
 
 @layer utilities {
@@ -63,6 +78,15 @@ html[lang="fa"] body {
 }
 
 @layer components {
+  @keyframes navigation-progress {
+    from { transform: translateX(-120%); }
+    to { transform: translateX(420%); }
+  }
+
+  .navigation-progress-bar {
+    animation: navigation-progress 1.1s ease-in-out infinite;
+  }
+
   .content-container {
     @apply max-w-[1440px] w-full mx-auto px-6;
   }

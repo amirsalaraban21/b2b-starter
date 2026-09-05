@@ -49,7 +49,7 @@ export default async function Orders() {
       </div>
       {approval_required && (
         <div>
-          <Heading level="h2" className="text-neutral-700 mb-4">
+          <Heading level="h2" className="mb-4 text-slate-700 dark:text-slate-200">
             {locale === "fa" ? "تأییدهای در انتظار" : "Pending Approvals"}
           </Heading>
 
@@ -57,7 +57,7 @@ export default async function Orders() {
         </div>
       )}
       <div>
-        <Heading level="h2" className="text-neutral-700 mb-4">
+        <Heading level="h2" className="mb-4 text-slate-700 dark:text-slate-200">
           {locale === "fa" ? "سفارش‌های ثبت‌شده" : "Orders"}
         </Heading>
 

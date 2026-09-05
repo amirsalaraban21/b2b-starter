@@ -23,7 +23,7 @@ export default function ProfessionalApplicationForm({
     { success: false, error: null }
   )
   const input =
-    "mt-2 w-full rounded-lg border border-ui-border-base bg-ui-bg-base px-3 py-3 text-sm outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20"
+    "mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm text-slate-950 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-50"
   if (state.success)
     return (
       <div
@@ -38,7 +38,7 @@ export default function ProfessionalApplicationForm({
   return (
     <section
       dir={fa ? "rtl" : "ltr"}
-      className="mt-8 rounded-2xl border border-ui-border-base bg-ui-bg-subtle p-5 xsmall:p-6 small:p-10"
+      className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 xsmall:p-6 small:p-10"
     >
       <h2 className="text-2xl font-semibold">
         {fa ? "درخواست حساب حرفه‌ای" : "Professional account application"}
@@ -117,7 +117,7 @@ export default function ProfessionalApplicationForm({
           />
         </label>
         <label className="text-sm font-medium">
-          {fa ? "شناسه حرفه‌ای" : "Professional identifier"}
+          {fa ? "شماره نظام پزشکی / شناسه حرفه‌ای" : "Medical Council / Professional ID"}
           <input
             name="professional_identifier"
             defaultValue={application?.professional_identifier || ""}
@@ -140,7 +140,7 @@ export default function ProfessionalApplicationForm({
         <div className="small:col-span-2">
           <button
             disabled={pending}
-            className="w-full rounded-lg bg-teal-700 px-5 py-3 text-white disabled:opacity-60 xsmall:w-auto"
+            className="w-full rounded-lg bg-teal-700 px-5 py-3 text-white transition hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transition-none xsmall:w-auto"
           >
             {pending
               ? fa
