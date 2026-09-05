@@ -10,7 +10,7 @@ import { getProfessionalApplication } from "@/lib/data/professional-application"
 export async function generateMetadata(): Promise<Metadata> {
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
   return {
-    title: locale === "fa" ? "سبد خرید | EarMed" : "Shopping cart | EarMed",
+    title: locale === "fa" ? "سبد خرید" : "Shopping cart",
     description:
       locale === "fa"
         ? "مشاهده و مدیریت سبد خرید"

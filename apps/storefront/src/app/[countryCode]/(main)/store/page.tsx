@@ -7,7 +7,7 @@ import { isEarMedCategory } from "@/lib/category-localization"
 export const dynamicParams = true
 
 export const metadata: Metadata = {
-  title: "EarMed Store",
+  title: { absolute: "EarMed Store" },
   description: "Hearing aid batteries, cleaning, drying and care supplies.",
 }
 

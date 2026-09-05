@@ -5,9 +5,9 @@ import { Text } from "@medusajs/ui"
 import { checkSpendingLimit } from "@/lib/util/check-spending-limit"
 import PaymentButton from "@/modules/checkout/components/payment-button"
 import Button from "@/modules/common/components/button"
-import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import { B2BCart, B2BCustomer } from "@/types"
 import { ExclamationCircle } from "@medusajs/icons"
+import { useEffect, useState } from "react"
 
 const Review = ({
   cart,
@@ -16,6 +16,8 @@ const Review = ({
   cart: B2BCart
   customer: B2BCustomer | null
 }) => {
+  const [locale, setLocale] = useState<"fa" | "en">("fa")
+  useEffect(() => setLocale(document.documentElement.lang === "en" ? "en" : "fa"), [])
   const spendLimitExceeded = customer
     ? checkSpendingLimit(cart, customer)
     : false
@@ -24,22 +26,9 @@ const Review = ({
     <div className="flex flex-col gap-y-2">
       <div className="flex items-start gap-x-1 w-full">
         <Text className="txt-xsmall text-neutral-500 mb-1">
-          By Completing this order, I agree to Medusa&apos;s{" "}
-          <LocalizedClientLink
-            href="/terms-of-sale"
-            className="hover:text-neutral-800"
-            target="_blank"
-          >
-            Terms of Sale ↗
-          </LocalizedClientLink>{" "}
-          and{" "}
-          <LocalizedClientLink
-            href="/privacy-policy"
-            className="hover:text-neutral-800"
-            target="_blank"
-          >
-            Privacy Policy ↗
-          </LocalizedClientLink>
+          {locale === "fa"
+            ? "پیش از ثبت سفارش، کالاها، نشانی ارسال و مبلغ نهایی را بررسی کنید. وضعیت پرداخت دستی پس از بررسی رسید مشخص می‌شود."
+            : "Before placing the order, review the items, shipping address, and final total. Manual payment remains pending until the receipt is reviewed."}
         </Text>
       </div>
       {spendLimitExceeded ? (

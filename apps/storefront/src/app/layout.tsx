@@ -5,12 +5,21 @@ import { GeistSans } from "geist/font/sans"
 import { Metadata } from "next"
 import { cookies } from "next/headers"
 import { getLocale, localeDirection } from "@/lib/i18n"
+import { getSiteConfig } from "@/lib/site-config"
 import "@/styles/globals.css"
+
+const defaultSite = getSiteConfig("fa")
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
-  title: { default: "EarMed Store | تجهیزات شنوایی", template: "%s | EarMed Store" },
-  description: "EarMed Store — تجهیزات و محصولات تخصصی شنوایی برای مراکز درمانی و متخصصان.",
+  title: { default: defaultSite.metadataTitle, template: `%s | ${defaultSite.displayName}` },
+  description: defaultSite.metadataDescription,
+  openGraph: {
+    type: "website",
+    siteName: defaultSite.displayName,
+    title: defaultSite.metadataTitle,
+    description: defaultSite.metadataDescription,
+  },
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {

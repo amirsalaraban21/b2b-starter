@@ -70,7 +70,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const description = getLocalizedProductDescription(product, locale) || title
 
   return {
-    title: `${title} | EarMed Store`,
+    title,
     description,
     openGraph: {
       title: `${title} | EarMed Store`,

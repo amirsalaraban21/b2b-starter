@@ -5,6 +5,7 @@ import { SortOptions } from "@/modules/store/components/refinement-list/sort-pro
 import { StoreCollection, StoreRegion } from "@medusajs/types"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { getLocale } from "@/lib/i18n"
 
 export const dynamicParams = true
 
@@ -60,9 +61,13 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     notFound()
   }
 
+  const locale = getLocale(params.countryCode === "ir" ? "fa" : "en")
   const metadata = {
-    title: `${collection.title} | Medusa Store`,
-    description: `${collection.title} collection`,
+    title: collection.title,
+    description:
+      locale === "fa"
+        ? `مشاهده محصولات مجموعه ${collection.title}`
+        : `Browse the ${collection.title} collection.`,
   } as Metadata
 
   return metadata

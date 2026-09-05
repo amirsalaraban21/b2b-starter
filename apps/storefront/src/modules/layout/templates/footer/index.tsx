@@ -3,15 +3,13 @@ import { getLocale } from "@/lib/i18n"
 
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import Brand from "@/modules/layout/components/brand"
+import { getSiteConfig } from "@/lib/site-config"
 
 const footerCopy = {
   fa: {
-    intro:
-      "فروشگاه تخصصی تجهیزات معاینه گوش، ادیولوژی، تجهیزات کلینیکی و اقلام مصرفی.",
     store: "فروشگاه",
     professional: "حرفه‌ای",
     account: "حساب کاربری",
-    info: "اطلاعات",
     products: "همه محصولات",
     examination: "تجهیزات معاینه گوش",
     audiology: "تجهیزات ادیولوژی",
@@ -22,17 +20,11 @@ const footerCopy = {
     signIn: "ورود به حساب",
     orders: "سفارش‌ها",
     cart: "سبد خرید",
-    about: "درباره EarMed",
-    contact: "تماس با ما",
-    copyright: "تمامی حقوق محفوظ است.",
   },
   en: {
-    intro:
-      "Specialist store for ear examination, audiology, clinical equipment and consumables.",
     store: "Store",
     professional: "Professional",
     account: "Account",
-    info: "Information",
     products: "All products",
     examination: "Ear examination equipment",
     audiology: "Audiology equipment",
@@ -43,15 +35,13 @@ const footerCopy = {
     signIn: "Sign in",
     orders: "Orders",
     cart: "Cart",
-    about: "About EarMed",
-    contact: "Contact",
-    copyright: "All rights reserved.",
   },
 }
 
 export default async function Footer() {
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
   const f = footerCopy[locale]
+  const site = getSiteConfig(locale)
 
   const groups = [
     {
@@ -79,13 +69,6 @@ export default async function Footer() {
         [f.cart, "/cart"],
       ],
     },
-    {
-      title: f.info,
-      links: [
-        [f.about, "/"],
-        [f.contact, "/"],
-      ],
-    },
   ]
 
   return (
@@ -94,11 +77,11 @@ export default async function Footer() {
         <div className="grid gap-12 py-14 small:grid-cols-[1.15fr_2fr] small:py-16">
           <div className="max-w-sm">
             <Brand className="text-white" />
-            <p className="mt-5 text-sm leading-7 text-slate-400">{f.intro}</p>
+            <p className="mt-5 text-sm leading-7 text-slate-400">{site.description}</p>
             <div className="mt-8 h-px w-16 bg-teal-500" />
           </div>
 
-          <div className="grid grid-cols-1 gap-x-8 gap-y-10 xsmall:grid-cols-2 small:grid-cols-4">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 xsmall:grid-cols-2 small:grid-cols-3">
             {groups.map((group) => (
               <div key={group.title}>
                 <h3 className="text-sm font-semibold text-white">
@@ -123,7 +106,7 @@ export default async function Footer() {
 
         <div className="flex flex-col gap-3 border-t border-slate-800 py-6 text-xs text-slate-500 small:flex-row small:items-center small:justify-between">
           <p>
-            © {new Date().getFullYear()} EarMed Store. {f.copyright}
+            © {new Date().getFullYear()} {site.copyrightOwner}. {site.copyright}
           </p>
           <p>
             {locale === "fa"
