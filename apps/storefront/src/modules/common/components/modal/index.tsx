@@ -40,7 +40,7 @@ const Modal = ({
         <div className="fixed inset-0 overflow-y-hidden">
           <div
             className={clx(
-              "flex min-h-full h-full justify-center p-4 text-center",
+              "flex min-h-full h-full justify-center p-2 text-center xsmall:p-4",
               {
                 "items-center": !search,
                 "items-start": search,
@@ -59,13 +59,14 @@ const Modal = ({
               <Dialog.Panel
                 data-testid={dataTestId}
                 className={clx(
-                  "flex flex-col justify-start w-full transform p-5 text-left align-middle transition-all max-h-[75vh] h-fit",
+                  "flex h-fit max-h-[calc(100dvh-1rem)] w-full transform flex-col justify-start overflow-y-auto p-4 text-start align-middle transition-all xsmall:max-h-[85dvh] xsmall:p-5",
                   {
                     "max-w-md": size === "small",
                     "max-w-xl": size === "medium",
                     "max-w-3xl": size === "large",
                     "bg-transparent shadow-none": search,
-                    "bg-white shadow-xl border rounded-rounded": !search,
+                    "border bg-white shadow-xl rounded-rounded dark:border-slate-700 dark:bg-slate-900":
+                      !search,
                   }
                 )}
               >
@@ -86,7 +87,13 @@ const Title: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <Dialog.Title className="flex items-center justify-between">
       <div className="text-large-semi">{children}</div>
       <div>
-        <button onClick={close} data-testid="close-modal-button">
+        <button
+          type="button"
+          onClick={close}
+          aria-label="Close dialog"
+          className="grid h-10 w-10 place-items-center rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-600"
+          data-testid="close-modal-button"
+        >
           <X size={20} />
         </button>
       </div>

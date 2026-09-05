@@ -125,7 +125,7 @@ export default function ManualCheckout({
   return (
     <main className="min-h-[calc(100vh-64px)] bg-slate-50 py-8 text-slate-900 dark:bg-slate-950 dark:text-white">
       <div className="content-container">
-        <div className="mb-7 flex items-center justify-between gap-4">
+        <div className="mb-7 flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs font-bold uppercase tracking-[.2em] text-teal-700 dark:text-teal-300">
               EarMed Checkout
@@ -145,13 +145,13 @@ export default function ManualCheckout({
           {steps.map((item, index) => (
             <li
               key={item}
-              className={`border-e border-slate-200 px-2 py-4 text-center text-xs font-bold last:border-0 dark:border-slate-800 ${
+              className={`min-w-0 break-words border-e border-slate-200 px-1 py-3 text-center text-[10px] font-bold leading-4 last:border-0 xsmall:px-2 xsmall:py-4 xsmall:text-xs dark:border-slate-800 ${
                 step === item
                   ? "bg-teal-50 text-teal-800 dark:bg-teal-950/40 dark:text-teal-200"
                   : "text-slate-500"
               }`}
             >
-              <span className="me-1">
+              <span className="mx-auto block xsmall:me-1 xsmall:inline">
                 {new Intl.NumberFormat(fa ? "fa-IR" : "en-US", {
                   minimumIntegerDigits: 2,
                 }).format(index + 1)}

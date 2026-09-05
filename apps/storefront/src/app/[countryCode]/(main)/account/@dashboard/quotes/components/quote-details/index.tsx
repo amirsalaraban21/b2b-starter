@@ -57,7 +57,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
         <div className="small:col-span-4 flex flex-col gap-y-2">
           {quote.status === "accepted" && (
             <Container className="p-0">
-              <div className="flex items-center justify-between px-6 py-4">
+              <div className="flex flex-col items-start justify-between gap-3 px-4 py-4 xsmall:flex-row xsmall:items-center small:px-6">
                 <Text className="txt-compact-small">
                   <CheckCircleSolid className="inline-block mr-2 text-green-500 text-lg" />
                   Quote accepted by customer. Order is ready for processing.
@@ -113,7 +113,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
           </Container>
 
           {quote.status === "pending_customer" && (
-            <div className="flex gap-x-3 justify-end my-4">
+            <div className="my-4 flex flex-wrap justify-end gap-3">
               <PromptModal
                 title="Reject Quote?"
                 description="Are you sure you want to reject quote? This action is irreversible."
@@ -154,7 +154,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
         </div>
 
         <div className="col-span-2 flex flex-col gap-y-2">
-          <Container className="flex gap-x-3 justify-between">
+          <Container className="flex flex-wrap justify-between gap-3">
             <div className="text-sm">
               <span className="font-semibold text-ui-fg-subtle">Quote ID:</span>{" "}
               #<span>{quote.draft_order.display_id}</span>

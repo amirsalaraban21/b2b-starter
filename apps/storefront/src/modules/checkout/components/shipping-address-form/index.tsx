@@ -5,7 +5,12 @@ import { B2BCart, B2BCustomer } from "@/types"
 import { HttpTypes } from "@medusajs/types"
 import { Container } from "@medusajs/ui"
 import { mapKeys } from "lodash"
-import { iranProvinces, isIranianPostalCode, normalizeIranianMobile, normalizeIranianPostalCode } from "@/lib/iran"
+import {
+  iranProvinces,
+  isIranianPostalCode,
+  normalizeIranianMobile,
+  normalizeIranianPostalCode,
+} from "@/lib/iran"
 import React, { useEffect, useMemo, useState } from "react"
 
 const ShippingAddressForm = ({
@@ -80,13 +85,36 @@ const ShippingAddressForm = ({
       HTMLInputElement | HTMLInputElement | HTMLSelectElement
     >
   ) => {
-    const iranField = e.target.name === "shipping_address.phone" ? normalizeIranianMobile(e.target.value) || e.target.value : e.target.name === "shipping_address.postal_code" ? normalizeIranianPostalCode(e.target.value) : e.target.value
+    const iranField =
+      e.target.name === "shipping_address.phone"
+        ? normalizeIranianMobile(e.target.value) || e.target.value
+        : e.target.name === "shipping_address.postal_code"
+        ? normalizeIranianPostalCode(e.target.value)
+        : e.target.value
     setFormData({
       ...formData,
       [e.target.name]: iranField,
     })
-    if (e.target.name === "shipping_address.phone") setErrors((current) => ({ ...current, phone: e.target.value && !normalizeIranianMobile(e.target.value) ? (document.documentElement.lang === "fa" ? "شماره موبایل ایران نامعتبر است." : "Enter a valid Iranian mobile number.") : undefined }))
-    if (e.target.name === "shipping_address.postal_code") setErrors((current) => ({ ...current, postal: e.target.value && !isIranianPostalCode(e.target.value) ? (document.documentElement.lang === "fa" ? "کد پستی باید ۱۰ رقم باشد." : "Postal code must contain 10 digits.") : undefined }))
+    if (e.target.name === "shipping_address.phone")
+      setErrors((current) => ({
+        ...current,
+        phone:
+          e.target.value && !normalizeIranianMobile(e.target.value)
+            ? document.documentElement.lang === "fa"
+              ? "شماره موبایل ایران نامعتبر است."
+              : "Enter a valid Iranian mobile number."
+            : undefined,
+      }))
+    if (e.target.name === "shipping_address.postal_code")
+      setErrors((current) => ({
+        ...current,
+        postal:
+          e.target.value && !isIranianPostalCode(e.target.value)
+            ? document.documentElement.lang === "fa"
+              ? "کد پستی باید ۱۰ رقم باشد."
+              : "Postal code must contain 10 digits."
+            : undefined,
+      }))
   }
 
   return (
@@ -136,7 +164,11 @@ const ShippingAddressForm = ({
           data-testid="shipping-phone-input"
           pattern="^\\+989\\d{9}$"
         />
-        {errors.phone && <p className="col-span-2 text-sm text-ui-fg-error" role="alert">{errors.phone}</p>}
+        {errors.phone && (
+          <p className="col-span-2 text-sm text-ui-fg-error" role="alert">
+            {errors.phone}
+          </p>
+        )}
         <Input
           label="Company name"
           name="shipping_address.company"
@@ -167,8 +199,12 @@ const ShippingAddressForm = ({
           pattern="^\\d{10}$"
           colSpan={2}
         />
-        {errors.postal && <p className="col-span-2 text-sm text-ui-fg-error" role="alert">{errors.postal}</p>}
-        <div className="grid small:grid-cols-3 grid-cols-2 gap-4 col-span-2">
+        {errors.postal && (
+          <p className="col-span-2 text-sm text-ui-fg-error" role="alert">
+            {errors.postal}
+          </p>
+        )}
+        <div className="col-span-2 grid grid-cols-1 gap-4 xsmall:grid-cols-2 small:grid-cols-3">
           <Input
             label="City"
             name="shipping_address.city"
@@ -178,7 +214,25 @@ const ShippingAddressForm = ({
             required
             data-testid="shipping-city-input"
           />
-          <label className="flex flex-col gap-y-2 text-small-regular"><span>Province</span><select required name="shipping_address.province" autoComplete="address-level1" value={formData["shipping_address.province"]} onChange={handleChange} className="h-10 rounded-rounded border border-ui-border-base bg-ui-bg-base px-3" data-testid="shipping-province-input"><option value="">Select province</option>{iranProvinces.map(([fa, en]) => <option key={en} value={en}>{document.documentElement.lang === "fa" ? fa : en}</option>)}</select></label>
+          <label className="flex flex-col gap-y-2 text-small-regular">
+            <span>Province</span>
+            <select
+              required
+              name="shipping_address.province"
+              autoComplete="address-level1"
+              value={formData["shipping_address.province"]}
+              onChange={handleChange}
+              className="h-10 rounded-rounded border border-ui-border-base bg-ui-bg-base px-3"
+              data-testid="shipping-province-input"
+            >
+              <option value="">Select province</option>
+              {iranProvinces.map(([fa, en]) => (
+                <option key={en} value={en}>
+                  {document.documentElement.lang === "fa" ? fa : en}
+                </option>
+              ))}
+            </select>
+          </label>
           <CountrySelect
             className="col-span-2"
             name="shipping_address.country_code"

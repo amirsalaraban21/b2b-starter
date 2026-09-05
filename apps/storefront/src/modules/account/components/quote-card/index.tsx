@@ -24,8 +24,8 @@ const QuoteCard = ({ quote }: QuoteCardProps) => {
   )
 
   return (
-    <Container className="bg-white flex small:flex-row flex-col p-4 rounded-md small:justify-between small:items-center gap-y-2 items-start">
-      <div className="flex gap-x-4 items-center pl-3">
+    <Container className="flex min-w-0 flex-col items-start gap-y-3 rounded-md bg-white p-4 dark:bg-slate-900 small:flex-row small:items-center small:justify-between">
+      <div className="flex min-w-0 flex-wrap items-center gap-3">
         <div className="flex">
           {order.items?.slice(0, 3).map((item, index) => {
             const numItems = order.items?.length ?? 0
@@ -64,13 +64,13 @@ const QuoteCard = ({ quote }: QuoteCardProps) => {
           })}
         </div>
 
-        <div className="flex pr-2 text-small-regular items-center">
-          <CalendarMini className="inline-block mr-1" />
+        <div className="flex items-center text-small-regular">
+          <CalendarMini className="me-1 inline-block" />
           {createdAt.getDate()}-{createdAt.getMonth()}-{createdAt.getFullYear()}
         </div>
 
         <div className="flex text-small-regular items-center">
-          <DocumentText className="inline-block mr-1" />#
+          <DocumentText className="me-1 inline-block" />#
           <span>{order.display_id}</span>
         </div>
 
@@ -79,8 +79,8 @@ const QuoteCard = ({ quote }: QuoteCardProps) => {
         </div>
       </div>
 
-      <div className="flex gap-x-4 small:divide-x divide-gray-200 small:justify-normal justify-between w-full small:w-auto">
-        <div className="flex items-center text-small-regular text-ui-fg-base">
+      <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-3 small:w-auto small:flex-nowrap">
+        <div className="flex min-w-0 flex-wrap items-center text-small-regular text-ui-fg-base">
           <span className="px-2">
             {convertToLocale({
               amount: order.total,
@@ -93,7 +93,7 @@ const QuoteCard = ({ quote }: QuoteCardProps) => {
           }`}</span>
         </div>
 
-        <div className="pl-4">
+        <div className="small:ps-4">
           <LocalizedClientLink href={`/account/quotes/details/${quote.id}`}>
             <Button variant="secondary" className="rounded-full text-xs">
               See details

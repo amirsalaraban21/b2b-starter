@@ -10,12 +10,18 @@ function setCookie(name: string, value: string) {
   document.cookie = `${name}=${value}; path=/; max-age=31536000; samesite=lax`
 }
 
-export default function Preferences({ initialLocale }: { initialLocale: Locale }) {
+export default function Preferences({
+  initialLocale,
+}: {
+  initialLocale: Locale
+}) {
   const [locale, setLocale] = useState(initialLocale)
   const [theme, setTheme] = useState<Theme>("light")
 
   useEffect(() => {
-    const savedTheme = document.cookie.match(/(?:^|; )earmed-theme=([^;]*)/)?.[1]
+    const savedTheme = document.cookie.match(
+      /(?:^|; )earmed-theme=([^;]*)/
+    )?.[1]
     const nextTheme: Theme = savedTheme === "dark" ? "dark" : "light"
     setTheme(nextTheme)
     document.documentElement.classList.toggle("dark", nextTheme === "dark")
@@ -41,10 +47,22 @@ export default function Preferences({ initialLocale }: { initialLocale: Locale }
 
   return (
     <div className="flex items-center gap-1" dir="ltr">
-      <button type="button" onClick={changeLocale} className="min-h-9 rounded-md px-2 text-xs font-semibold text-ui-fg-subtle hover:bg-ui-bg-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-600" aria-label="Change language">
+      <button
+        type="button"
+        onClick={changeLocale}
+        className="min-h-10 min-w-10 rounded-md px-2 text-xs font-semibold text-ui-fg-subtle hover:bg-ui-bg-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-600"
+        aria-label="Change language"
+      >
         {getLocale(locale) === "fa" ? "EN" : "فا"}
       </button>
-      <button type="button" onClick={changeTheme} className="grid min-h-9 min-w-9 place-items-center rounded-md text-ui-fg-subtle hover:bg-ui-bg-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-600" aria-label={theme === "light" ? "Enable dark mode" : "Enable light mode"}>
+      <button
+        type="button"
+        onClick={changeTheme}
+        className="grid min-h-10 min-w-10 place-items-center rounded-md text-ui-fg-subtle hover:bg-ui-bg-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-600"
+        aria-label={
+          theme === "light" ? "Enable dark mode" : "Enable light mode"
+        }
+      >
         {theme === "light" ? <Moon /> : <Sun />}
       </button>
     </div>

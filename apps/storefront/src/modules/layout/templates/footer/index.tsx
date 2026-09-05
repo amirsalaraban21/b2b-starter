@@ -98,10 +98,12 @@ export default async function Footer() {
             <div className="mt-8 h-px w-16 bg-teal-500" />
           </div>
 
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 small:grid-cols-4">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 xsmall:grid-cols-2 small:grid-cols-4">
             {groups.map((group) => (
               <div key={group.title}>
-                <h3 className="text-sm font-semibold text-white">{group.title}</h3>
+                <h3 className="text-sm font-semibold text-white">
+                  {group.title}
+                </h3>
                 <ul className="mt-5 space-y-3">
                   {group.links.map(([label, href]) => (
                     <li key={label}>
@@ -120,8 +122,14 @@ export default async function Footer() {
         </div>
 
         <div className="flex flex-col gap-3 border-t border-slate-800 py-6 text-xs text-slate-500 small:flex-row small:items-center small:justify-between">
-          <p>© {new Date().getFullYear()} EarMed Store. {f.copyright}</p>
-          <p>{locale === "fa" ? "تجهیزات تخصصی برای محیط‌های درمانی" : "Specialist equipment for care environments"}</p>
+          <p>
+            © {new Date().getFullYear()} EarMed Store. {f.copyright}
+          </p>
+          <p>
+            {locale === "fa"
+              ? "تجهیزات تخصصی برای محیط‌های درمانی"
+              : "Specialist equipment for care environments"}
+          </p>
         </div>
       </div>
     </footer>

@@ -139,7 +139,7 @@ const EditAddress: React.FC<EditAddressProps> = ({
           <input type="hidden" name="locale" value={locale} />
           <Modal.Body>
             <div className="grid grid-cols-1 gap-y-2">
-              <div className="grid grid-cols-2 gap-x-2">
+              <div className="grid grid-cols-1 gap-2 xsmall:grid-cols-2">
                 <Input
                   label={fa ? "نام" : "First name"}
                   name="first_name"
@@ -181,7 +181,7 @@ const EditAddress: React.FC<EditAddressProps> = ({
                 defaultValue={address.address_2 || undefined}
                 data-testid="address-2-input"
               />
-              <div className="grid grid-cols-[144px_1fr] gap-x-2">
+              <div className="grid grid-cols-1 gap-2 xsmall:grid-cols-[144px_1fr]">
                 <Input
                   label={fa ? "کد پستی" : "Postal code"}
                   name="postal_code"
