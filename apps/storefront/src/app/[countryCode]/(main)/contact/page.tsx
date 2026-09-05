@@ -4,6 +4,7 @@ import { getSiteConfig } from "@/lib/site-config"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
+import { getStorefrontContent } from "@/lib/data/storefront-content"
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
@@ -14,13 +15,15 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ContactPage() {
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
-  const page = getInformationalContent(locale).contact
+  const fallback = getInformationalContent(locale).contact
+  const cms = await getStorefrontContent("contact", locale)
+  const page = cms ? { ...fallback, eyebrow: cms.eyebrow, title: cms.title, intro: cms.intro } : fallback
   const site = getSiteConfig(locale)
   const details = [
-    { label: page.phone, value: site.supportPhone },
-    { label: page.email, value: site.supportEmail },
-    { label: page.address, value: site.contactAddress },
-    { label: page.hours, value: site.workingHours },
+    { label: page.phone, value: cms ? cms.phone : site.supportPhone },
+    { label: page.email, value: cms ? cms.email : site.supportEmail },
+    { label: page.address, value: cms ? cms.address : site.contactAddress },
+    { label: page.hours, value: cms ? cms.working_hours : site.workingHours },
   ].filter((item) => Boolean(item.value))
 
   return (
@@ -40,7 +43,7 @@ export default async function ContactPage() {
             ) : (
               <p className="mt-5 border-s-4 border-amber-500 bg-amber-50 p-4 text-sm leading-7 text-amber-950 dark:bg-amber-950/40 dark:text-amber-100">{page.unavailable}</p>
             )}
-            {site.additionalContactText && <p className="mt-5 leading-7 text-slate-600 dark:text-slate-300">{site.additionalContactText}</p>}
+            {(cms ? cms.additional_text : site.additionalContactText) && <p className="mt-5 leading-7 text-slate-600 dark:text-slate-300">{cms ? cms.additional_text : site.additionalContactText}</p>}
           </section>
           <aside className="border-t border-slate-200 bg-slate-100 p-6 dark:border-slate-800 dark:bg-slate-950/60 xsmall:p-8 small:border-s small:border-t-0 small:p-10">
             <h2 className="text-xl font-black">{page.noteTitle}</h2>

@@ -4,6 +4,7 @@ import { getSiteConfig } from "@/lib/site-config"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
+import { getStorefrontContent } from "@/lib/data/storefront-content"
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
@@ -14,7 +15,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   const locale = getLocale((await cookies()).get("earmed-locale")?.value)
-  const page = getInformationalContent(locale).about
+  const fallback = getInformationalContent(locale).about
+  const cms = await getStorefrontContent("about", locale)
+  const page = cms ? {
+    ...fallback,
+    eyebrow: cms.eyebrow, title: cms.title, intro: cms.intro,
+    scopeTitle: cms.scope_title, scopeBody: cms.scope_body,
+    categoriesTitle: cms.categories_title, categories: cms.categories,
+    professionalTitle: cms.professional_title, professionalBody: cms.professional_body,
+    professionalAction: cms.professional_action, approachTitle: cms.approach_title,
+    approachItems: cms.approach_items,
+  } : fallback
   const fa = locale === "fa"
 
   return (
